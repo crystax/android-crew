@@ -23,7 +23,6 @@ module Crew
     Command.check_args_is_empty(args)
 
     installed = Command.read_installed
-    puts "installed: #{installed}"
     formulas = Command.read_formulas
 
     list = []
@@ -34,8 +33,9 @@ module Crew
       end
     end
 
+    # todo: output as a table, count columns width's
     list.each do |l|
-      puts "#{l.installed_sign}  #{l.name}\t\t#{l.version}"
+      puts "#{l.installed_sign}\t#{l.name}\t\t#{l.version}"
     end
   end
 end

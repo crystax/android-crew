@@ -25,7 +25,6 @@ module Command
     list = []
     FileUtils.cd(Global::LIBRARY_DIR) {
       Dir.foreach('.') do |name|
-        puts "analizing: #{name}"
         if name == '.' or name == '..' or !File.directory?(name) or Global.standard_dir?(name)
           next
         end
@@ -38,7 +37,6 @@ module Command
               warning "directory #{File.join(Global::LIBRARY_DIR, name)} contains foreign object #{ver}"
             end
             # todo: create version object
-            puts "adding: #{name}, #{ver}"
             list << [name, ver]
           end
         }
