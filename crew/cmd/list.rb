@@ -25,13 +25,6 @@ module Crew
     installed = Command.read_installed
     formulas = Command.read_formulas
 
-    formulas.each do |f|
-      puts "name: #{f.name}"
-      puts "\thomepage: #{f.homepage}"
-      puts "\treleases: #{f.releases}"
-      puts "\tdependencies: #{f.dependencies}"
-    end
-
     list = []
     formulas.each do |f|
       f.releases.each do |r|
