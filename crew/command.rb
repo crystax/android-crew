@@ -2,6 +2,7 @@ require 'fileutils'
 require_relative 'exceptions.rb'
 require_relative 'global.rb'
 require_relative 'formula.rb'
+require_relative 'formulary.rb'
 
 
 module Command
@@ -49,14 +50,14 @@ module Command
   # return list of all formulas
   #
   def self.read_formulas
-    # list = []
-    # Dir.foreach(Global::FORMULA_DIR) do |item|
-    #   if item == '.' or item == '..'
-    #     next
-    #   end
-    #   list << Formula.new(item)
-    # end
-    # list
-    [Formula.new("boost", "1.57.0"), Formula.new("icu", "54.1")]
+    list = []
+    Dir.foreach(Global::FORMULA_DIR) do |name|
+      if name == '.' or name == '..'
+        next
+      end
+      # todo: check for .rb extension
+      list << Formulary.factory(File.join(Global::FORMULA_DIR, name));
+    end
+    list
   end
 end

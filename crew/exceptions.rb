@@ -1,19 +1,18 @@
-class UnknownCommand < StandardError
-  attr_reader :cmd
+class UsageError < RuntimeError; end
 
+
+class FormulaUnspecifiedError < UsageError; end
+
+
+class UnknownCommand < UsageError
   def initialize(cmd)
-    @cmd = cmd
     super "unknown command \'#{cmd}\'"
   end
 end
 
 
-class CommandRequresNoArguments < StandardError
-  attr_reader :cmd, :args
-  
+class CommandRequresNoArguments < UsageError
   def initialize(cmd, args)
-    @cmd = cmd
-    @args = args
     super "command \'#{cmd}\' does not requires arguments: \'#{args}\'"
   end
 end

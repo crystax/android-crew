@@ -25,9 +25,17 @@ module Crew
     installed = Command.read_installed
     formulas = Command.read_formulas
 
+    formulas.each do |f|
+      puts "name: #{f.name}"
+      puts "\thomepage: #{f.homepage}"
+      puts "\treleases: #{f.releases}"
+      puts "\tdependencies: #{f.dependencies}"
+    end
+
     list = []
     formulas.each do |f|
-      f.versions.each do |ver|
+      f.releases.each do |r|
+        ver = r[:version]
         iflag = installed.delete([f.name, ver]) != nil
         list << Library.new(f.name, ver, iflag)
       end
