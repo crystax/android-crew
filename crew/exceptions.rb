@@ -1,7 +1,8 @@
 class UsageError < RuntimeError; end
 
-
 class FormulaUnspecifiedError < UsageError; end
+
+class CommandRequresNoArguments < UsageError; end
 
 
 class UnknownCommand < UsageError
@@ -11,8 +12,19 @@ class UnknownCommand < UsageError
 end
 
 
-class CommandRequresNoArguments < UsageError
-  def initialize(cmd, args)
-    super "command \'#{cmd}\' does not requires arguments: \'#{args}\'"
+class FormulaUnavailableError < RuntimeError
+  attr_reader :name
+  attr_accessor :dependent
+
+  def initialize name
+    @name = name
+  end
+
+  def dependent_s
+    "(dependency of #{dependent})" if dependent and dependent != name
+  end
+
+  def to_s
+    "No available formula for #{name} #{dependent_s}"
   end
 end

@@ -1,9 +1,12 @@
-# This file was copied from homebrew sources verbatim
+# This file was copied from homebrew sources verbatim.
+# After that it was changed.
 
 # The Formulary is responsible for creating instances of Formula.
 # It is not meant to be used directy from formulae.
 
 require 'pathname'
+require_relative 'exceptions.rb'
+require_relative 'global.rb'
 
 class Formulary
   module Formulae
@@ -136,5 +139,17 @@ class Formulary
     end
 
     return NullLoader.new(ref)
+  end
+
+  def self.read_all
+    list = []
+    Dir.foreach(Global::FORMULA_DIR) do |name|
+      if name == '.' or name == '..'
+        next
+      end
+      # todo: check for .rb extension
+      list << factory(File.join(Global::FORMULA_DIR, name));
+    end
+    list
   end
 end

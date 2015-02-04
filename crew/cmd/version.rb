@@ -1,13 +1,10 @@
-require_relative '../exceptions.rb'
-
-
 module Crew
 
-  VERSION = "0.0.1"
+  VERSION = "0.0.2"
 
   def self.version(args)
     if args.length > 0
-      raise CommandRequresNoArguments.new('version', args)
+      raise CommandRequresNoArguments
     end
     puts VERSION
   end

@@ -24,7 +24,20 @@ class Formula
   end
 
   def dependencies
-    self.class.releases
+    self.class.dependencies ? self.class.dependencies : []
+  end
+
+  class Dependency
+
+    def initialize(libname, options)
+      #todo: check keys in options
+      @options = options
+      @options[:name] = libname
+    end
+
+    def libname
+      @options[:name]
+    end
   end
 
   class << self
@@ -42,10 +55,7 @@ class Formula
 
     def depends_on(libname, options = {})
       @dependencies = [] if !@dependencies
-      #todo: keys in options
-      d = options ? options : Hash.new
-      d[:name] = libname
-      @dependencies << d
+      @dependencies << Dependency.new(libname, options)
     end
   end
 end

@@ -1,4 +1,6 @@
-require_relative '../command.rb'
+require_relative '../exceptions.rb'
+require_relative '../formulary.rb'
+require_relative '../hold.rb'
 
 
 class Library
@@ -20,17 +22,18 @@ end
 module Crew
 
   def self.list(args)
-    Command.check_args_is_empty(args)
+    if args.length > 0
+      raise CommandRequresNoArguments
+    end
 
-    installed = Command.read_installed
-    formulas = Command.read_formulas
+    hold = Hold.new
+    formulas = Formulary.read_all
 
     list = []
     formulas.each do |f|
       f.releases.each do |r|
         ver = r[:version]
-        iflag = installed.delete([f.name, ver]) != nil
-        list << Library.new(f.name, ver, iflag)
+        list << Library.new(f.name, ver, hold.installed?(f.name, ver))
       end
     end
 
