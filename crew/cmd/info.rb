@@ -6,26 +6,30 @@ require_relative '../hold.rb'
 module Crew
 
   def self.info(args)
-    if args.count != 1
+    if args.count < 1
       raise FormulaUnspecifiedError
     end
 
-    formula = Formulary.factory(args[0])
     hold = Hold.new
 
-    puts "#{formula.name}: #{formula.homepage}"
+    args.each.with_index do |name, index|
+      formula = Formulary.factory(name)
+      puts "#{formula.name}: #{formula.homepage}"
 
-    puts "releases:"
-    formula.releases.each do |r|
-      installed = hold.installed?(formula.name, r[:version]) ? "installed" : ""
-      puts "  #{r[:version]}  #{installed}"
-    end
+      puts "releases:"
+      formula.releases.each do |r|
+        installed = hold.installed?(formula.name, r[:version]) ? "installed" : ""
+        puts "  #{r[:version]}  #{installed}"
+      end
 
-    puts "dependencies:"
-    formula.dependencies.each.with_index do |d, ind|
-      prefix = ind > 0 ? ", " : ""
-      installed = hold.installed?(d.libname) ? " (*)" : ""
-      puts "  #{prefix}#{d.libname}#{installed}"
+      puts "dependencies:"
+      formula.dependencies.each.with_index do |d, ind|
+        prefix = ind > 0 ? ", " : ""
+        installed = hold.installed?(d.libname) ? " (*)" : ""
+        puts "  #{prefix}#{d.libname}#{installed}"
+      end
+
+      puts "" if index + 1 < args.count
     end
   end
 end

@@ -2,6 +2,8 @@ class UsageError < RuntimeError; end
 
 class FormulaUnspecifiedError < UsageError; end
 
+class LibraryUnspecifiedError < UsageError; end
+
 class CommandRequresNoArguments < UsageError; end
 
 

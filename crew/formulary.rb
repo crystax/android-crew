@@ -39,18 +39,18 @@ class Formulary
     end
   end
 
-  def self.unload_formula formula_name
+  def self.unload_formula(formula_name)
     Formulae.remove_formula_const(class_s(formula_name))
   end
 
-  def self.restore_formula formula_name, value
+  def self.restore_formula(formula_name, value)
     old_verbose, $VERBOSE = $VERBOSE, nil
     Formulae.formula_const_set(class_s(formula_name), value)
   ensure
     $VERBOSE = old_verbose
   end
 
-  def self.class_s name
+  def self.class_s(name)
     class_name = name.capitalize
     class_name.gsub!(/[-_.\s]([a-zA-Z0-9])/) { $1.upcase }
     class_name.gsub!('+', 'x')
@@ -141,6 +141,7 @@ class Formulary
     return NullLoader.new(ref)
   end
 
+  # todo: write iterator
   def self.read_all
     list = []
     Dir.foreach(Global::FORMULA_DIR) do |name|
@@ -150,6 +151,32 @@ class Formulary
       # todo: check for .rb extension
       list << factory(File.join(Global::FORMULA_DIR, name));
     end
+    list
+  end
+
+  def initialize
+    @formulary = []
+    Dir.foreach(Global::FORMULA_DIR) do |name|
+      if name == '.' or name == '..'
+        next
+      end
+      # todo: check for .rb extension
+      @formulary << self.class.factory(File.join(Global::FORMULA_DIR, name));
+    end
+  end
+
+  def dependants_of(libname)
+    debug "searching dependants of #{libname}"
+    list = []
+    @formulary.each do |f|
+      f.dependencies.each do |d|
+        if d.libname == libname
+          list << f
+          break
+        end
+      end
+    end
+    debug "dependants of #{libname} are: #{list}"
     list
   end
 end

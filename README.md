@@ -41,11 +41,13 @@ Example:
     version         output version information
     help            show this help message
     list            list all available libraries
-    info libname    show information about the specified library
-    install libname [version]
+    info libname ...
+                    show information about the specified
+                    libraries
+    install libname[:version]
                     install the specified library
-                        uninstall libname [version|--all]                    
-                    uninstall the specified library
+    remove libname[:version|:all] ...
+                    uninstall the specified libraries
     update          update crew repository information
     upgrade         install most recent versions
     cleanup [--dry-run]
@@ -66,7 +68,7 @@ Example:
     freetype  2.5.5    installed
 
 
-### info libname
+### info libname1 [libname2...]
 
 Show information about the specified library, including dependencies
 required, which versions are present in the repository, and which
@@ -82,12 +84,11 @@ Example:
     space required: 
            
 
-### install libname [version]
+### install libname[:version]
 
-Install the specified library and all it's dependencies; if no
-version was specified with the command then the most recent version
-will be installed, otherwise the specified version will be
-installed.
+Install the specified library and all it's dependencies; if no version
+was specified then the most recent version will be installed; otherwise
+the specified version will be installed.
 
 Example:
     
@@ -100,37 +101,49 @@ Example:
     unpacking: .....
 
 
-### uninstall libname [version|--all]
+### remove libname[:version|:all] ...
 
-Uninstall command works as following:
+For every specified libname (and possibly version) the 'remove' command
+works as follows:
+
+* if the specified library is not installed then command will do nothing
+  and return with error message;
 
 * if there are installed libraries that depend on the specified library
   (and it's version) then command will do nothing and return with error
   message;
 
-* if --all command switch was specified then command will uninstall all
-  versions of the specified library;
-
-* if version specified than only the specified version of the library
-  will be uninstalled;
+* if only library name was specified and more than one version of the
+  library is installed then command will do nothing and return with
+  error message;
 
 * if only library name was specified and only one version of the library
-  is installed then this library will be uninstalled;
+  is installed then library will be removed;
 
-* otherwise if more then one version of the library is installed then
-  command will do nothing and returns with error message.
+* if library was specified like this 'library:all' then all installed
+  versions will be removed;
+
+* otherwise only the specified version of the library will be
+  removed.
 
 Example:
 
-    $ uninstall icu
+    $ crew remove icu
     error: boost library depends on icu
 
-    $ uninstall boost
-    error: more than one version of boost is installed; please, specify version
+    $ crew remove boost
+    error: more than one version installed
 
-    $ uninstall boost 1.56.0
-    uninstalling boost-1.56.0...
+    $ crew remove boost:1.56.0
+    uninstalling boost-1.56.0 ...
 
+    $ crew remove boost:all
+    uninstalling boost-1.57.0 ...
+    uninstalling boost-1.58.0 ...
+    uninstalling boost-1.59.0 ...
+
+    $ crew remove icu
+    uninstalling icu-54.1 ...
 
 ### update
 

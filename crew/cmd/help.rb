@@ -1,18 +1,19 @@
 CREW_HELP = <<-EOS
-Usage: crew COMMAND [option]
+Usage: crew COMMAND [parameters]
 where COMMAND is one of the following:
-    version         output version information
-    help            show this help message
-    list            list all available libraries
-    info libname    show information about the specified library
-    install libname [version]
-                    install the specified library
-    uninstall libname [version|--all]
-                    uninstall the specified library
-    update          update crew repository information
-    upgrade         install most recent versions
-    cleanup [--dry-run]
-                    uninstall old versions
+  version         output version information
+  help            show this help message
+  list            list all available libraries
+  info libname ...
+                  show information about the specified libraries
+  install libname[:version] ...
+                  install the specified libraries
+  uninstall libname[:version|:all] ...
+                  uninstall the specified libraries
+  update          update crew repository information
+  upgrade         install most recent versions
+  cleanup [--dry-run]
+                  uninstall old versions
 EOS
 
 

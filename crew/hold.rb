@@ -35,13 +35,41 @@ class Hold
     answer = false
     @installed.each do |lib|
       if lib[:name] == name
-        if !version or version == lib[:version]
+        if !version or version == 'all' or version == lib[:version]
           answer = true
           break
         end
       end
     end
     answer
+  end
+
+  def installed_versions(name)
+    # todo: all
+    list = []
+    @installed.each do |lib|
+      if lib[:name] == name
+        list << lib[:version]
+      end
+    end
+    list
+  end
+
+  def remove_library(name, version)
+    FileUtils.cd(Global::HOLD_DIR) do
+      FileUtils.cd(name) do
+        Dir.foreach('.') do |dir|
+          if !(dir == '.' or dir == '..') and (dir == version or version == 'all')
+            puts "uninstalling #{name}-#{dir}"
+            FileUtils.remove_dir(dir)
+          end
+        end
+      end
+      # remove lib directory if it's empty
+      if Dir.entries(name).size == 2
+        Dir.rmdir(name)
+      end
+    end
   end
 
   private

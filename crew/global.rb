@@ -1,16 +1,17 @@
 module Global
 
-  # todo: initialize correctly
-  LIBRARY_DIR = '/Users/zuav/src/ndk/platform/ndk/sources'
-  HOLD_DIR = '/Users/zuav/src/ndk/platform/ndk/sources'
-  FORMULA_DIR = 'formula'
+  # :backtrace, :log
+  $CREW_DEBUG = [:backtrace]
 
+  # todo: initialize correctly
+  HOLD_DIR = '/Users/zuav/tmp/crew/sources'
+  FORMULA_DIR = 'formula'
 end
 
 
 def debug(msg)
   # todo: output if debug (or verbose?) mode set
-  if $DEBUG
+  if $CREW_DEBUG.include?(:log)
     puts "debug: #{msg}"
   end
 end
@@ -24,13 +25,13 @@ end
 
 def error(msg)
   puts "error: #{msg}"
-  # todo: print backtrace only in debug mode
-  puts e.backtrace
 end
 
 
 def exception(exc)
-  puts "error: #{exc}"
+  error(exc)
   # todo: print backtrace only in debug mode
-  puts exc.backtrace
+  if $CREW_DEBUG.include?(:backtrace)
+    puts exc.backtrace
+  end
 end
