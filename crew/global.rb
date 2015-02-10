@@ -1,17 +1,42 @@
 module Global
 
-  # :backtrace, :log
-  $CREW_DEBUG = [:backtrace]
+  CREW_VERSION = "0.0.4"
+
+  # :backtrace  -- output backgtrace with exception message
+  # :log        -- debug function will output it's message
+  # :curl       -- curl will be run with --verbose options
+  # :_7z        -- 7z will output files while unpacking
+  # :temps      -- do no 'clean' in case of exceptions
+  CREW_DEBUG = [:backtrace]
 
   # todo: initialize correctly
+  DOWNLOAD_BASE = 'http://ithilien:8000'
   HOLD_DIR = '/Users/zuav/tmp/crew/sources'
   FORMULA_DIR = 'formula'
+  CACHE_DIR = 'cache'
+
+  # todo: use progs included with NDK
+  CREW_CURL_PROG = '/usr/bin/curl'
+  CREW_7Z_PROG = '/usr/local/bin/7z'
+
+  if RUBY_PLATFORM =~ /darwin/
+    MACOS_FULL_VERSION = `/usr/bin/sw_vers -productVersion`.chomp
+    MACOS_VERSION = MACOS_FULL_VERSION[/10\.\d+/]
+    OS_VERSION = "Mac OS X #{MACOS_FULL_VERSION}"
+  else
+    MACOS_FULL_VERSION = MACOS_VERSION = "0"
+    OS_VERSION = RUBY_PLATFORM
+  end
+
+  # todo:
+  #USER_AGENT = "Crew #{CREW_VERSION} (Ruby #{RUBY_VERSION}-#{RUBY_PATCHLEVEL}; #{OS_VERSION})"
+  USER_AGENT = "Crew #{CREW_VERSION}"
 end
 
 
 def debug(msg)
   # todo: output if debug (or verbose?) mode set
-  if $CREW_DEBUG.include?(:log)
+  if Global::CREW_DEBUG.include?(:log)
     puts "debug: #{msg}"
   end
 end
@@ -31,7 +56,7 @@ end
 def exception(exc)
   error(exc)
   # todo: print backtrace only in debug mode
-  if $CREW_DEBUG.include?(:backtrace)
+  if Global::CREW_DEBUG.include?(:backtrace)
     puts exc.backtrace
   end
 end

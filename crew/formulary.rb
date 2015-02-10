@@ -165,18 +165,18 @@ class Formulary
     end
   end
 
-  def dependants_of(libname)
-    debug "searching dependants of #{libname}"
+  def dependants_of(name)
+    debug "searching dependants of #{name}"
     list = []
     @formulary.each do |f|
       f.dependencies.each do |d|
-        if d.libname == libname
+        if d.name == name
           list << f
           break
         end
       end
     end
-    debug "dependants of #{libname} are: #{list}"
+    debug "dependants of #{name} are: #{list}"
     list
   end
 end

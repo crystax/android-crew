@@ -1,12 +1,9 @@
 require 'fileutils'
 require_relative 'global.rb'
+require_relative 'utils.rb'
 
 
 class Hold
-
-  def self.standard_dir?(name)
-    STANDARD_DIRS.include?(name)
-  end
 
   def initialize
     @installed = []
@@ -55,7 +52,7 @@ class Hold
     list
   end
 
-  def remove_library(name, version)
+  def remove(name, version)
     FileUtils.cd(Global::HOLD_DIR) do
       FileUtils.cd(name) do
         Dir.foreach('.') do |dir|
@@ -69,6 +66,22 @@ class Hold
       if Dir.entries(name).size == 2
         Dir.rmdir(name)
       end
+    end
+  end
+
+  def self.standard_dir?(name)
+    STANDARD_DIRS.include?(name)
+  end
+
+  def self.install_release(name, version, path)
+    dir = File.join(Global::HOLD_DIR, name, version)
+    begin
+      FileUtils.mkdir_p(dir)
+      puts "unpacking archive"
+      unpack_archive(path, dir)
+    rescue
+      FileUtils.rmdir(dir) unless Global::CREW_DEBUG.include?(:temps)
+      raise
     end
   end
 

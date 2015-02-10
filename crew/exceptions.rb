@@ -30,3 +30,10 @@ class FormulaUnavailableError < RuntimeError
     "No available formula for #{name} #{dependent_s}"
   end
 end
+
+class ErrorDuringExecution < RuntimeError
+  def initialize(cmd, err)
+    msg = err.size > 0 ? "#{cmd}; error output: #{err}" : "#{cmd}"
+    super "Failure while executing: #{msg}"
+  end
+end

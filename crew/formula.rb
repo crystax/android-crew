@@ -1,4 +1,6 @@
+require 'digest'
 require_relative 'extend/module.rb'
+require_relative 'utils.rb'
 
 class Formula
 
@@ -27,22 +29,66 @@ class Formula
     self.class.dependencies ? self.class.dependencies : []
   end
 
-  class Dependency
+  def full_dependencies(hold, version)
+    result = []
+    size = 0 # todo: set to the size of the required version
+    deps = dependencies
 
-    def initialize(libname, options)
-      #todo: check keys in options
-      @options = options
-      @options[:name] = libname
+    while deps.size > 0
+      n = deps.first.name
+      if hold.installed?(n)
+        deps = deps.slice(1, deps.size)
+        next
+      end
+      if !result.include?(n)
+        result << n
+        # todo: update size
+      end
+      f = Formulary.factory(n)
+      deps = f.dependencies + deps.slice(1, deps.size)
     end
 
-    def libname
+    [result, size]
+  end
+
+  def install(version = nil)
+    rel = version ? (releases.select { |r| r[:version] == version })[0] : releases.last
+    if !rel
+      raise "#{name} does not have release with version #{version}"
+    end
+
+    file = filename(rel)
+    url = "#{Global::DOWNLOAD_BASE}/#{file}"
+    cachepath = File.join(Global::CACHE_DIR, file)
+    puts "downloading #{url}"
+    curl(url, "-o", cachepath)
+
+    puts "checking integrity of the downloaded file #{cachepath}"
+    sha256 = Digest::SHA256.hexdigest(File.read(cachepath))
+    if Digest::SHA256.hexdigest(File.read(cachepath)) != rel[:sha256]
+      raise "bad SHA256 sum of the downloaded file #{cachepath}"
+    end
+
+    Hold.install_release(name, rel[:version], cachepath)
+    # todo: remove downloaded file in case of any exception; on not?
+  end
+
+  class Dependency
+
+    def initialize(name, options)
+      #todo: check keys in options
+      @options = options
+      @options[:name] = name
+    end
+
+    def name
       @options[:name]
     end
   end
 
   class << self
 
-    attr_rw :homepage
+    attr_rw :homepage, :space_reqired
 
     attr_reader :releases, :dependencies
 
@@ -53,9 +99,16 @@ class Formula
       # todo: sort by version
     end
 
-    def depends_on(libname, options = {})
+    def depends_on(name, options = {})
       @dependencies = [] if !@dependencies
-      @dependencies << Dependency.new(libname, options)
+      @dependencies << Dependency.new(name, options)
     end
+  end
+
+  private
+
+  def filename(release)
+    patch = release[:patch] ? "_#{release[:patch]}" : ""
+    "#{name}-#{release[:version]}#{patch}.7z"
   end
 end

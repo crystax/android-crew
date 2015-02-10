@@ -41,13 +41,13 @@ Example:
     version         output version information
     help            show this help message
     list            list all available libraries
-    info libname ...
+    info name ...
                     show information about the specified
-                    libraries
-    install libname[:version]
-                    install the specified library
-    remove libname[:version|:all] ...
-                    uninstall the specified libraries
+                    formulas
+    install name[:version]
+                    install the specified formula
+    remove name[:version|:all] ...
+                    uninstall the specified formula
     update          update crew repository information
     upgrade         install most recent versions
     cleanup [--dry-run]
@@ -55,7 +55,7 @@ Example:
 
 ### list
 
-List all available libraries, their versions and status (installed or
+List all available formulas, their versions and status (installed or
 not); future crew versions can also show if library freely available or
 must be payed for.
 
@@ -68,9 +68,9 @@ Example:
     freetype  2.5.5    installed
 
 
-### info libname1 [libname2...]
+### info name ...
 
-Show information about the specified library, including dependencies
+Show information about the specified formula(s), including dependencies
 required, which versions are present in the repository, and which
 versions (if any) are installed.
 
@@ -84,9 +84,9 @@ Example:
     space required: 
            
 
-### install libname[:version]
+### install name[:version] ...
 
-Install the specified library and all it's dependencies; if no version
+Install the specified formula(s) and all it's dependencies; if no version
 was specified then the most recent version will be installed; otherwise
 the specified version will be installed.
 
@@ -101,35 +101,33 @@ Example:
     unpacking: .....
 
 
-### remove libname[:version|:all] ...
+### remove name[:version|:all] ...
 
-For every specified libname (and possibly version) the 'remove' command
+For every specified formula (and possibly version) the 'remove' command
 works as follows:
 
-* if the specified library is not installed then command will do nothing
+* if the specified formula is not installed then command will do nothing
   and return with error message;
 
-* if there are installed libraries that depend on the specified library
+* if there are installed formulas that depend on the specified library
   (and it's version) then command will do nothing and return with error
   message;
 
-* if only library name was specified and more than one version of the
-  library is installed then command will do nothing and return with
-  error message;
+* if only formula name was specified and more than one version is
+  installed then command will do nothing and return with error message;
 
-* if only library name was specified and only one version of the library
-  is installed then library will be removed;
+* if only formula name was specified and only one version is installed
+  then formula will be removed;
 
-* if library was specified like this 'library:all' then all installed
+* if formula was specified like this 'name:all' then all installed
   versions will be removed;
 
-* otherwise only the specified version of the library will be
-  removed.
+* otherwise only the specified version will be removed.
 
 Example:
 
     $ crew remove icu
-    error: boost library depends on icu
+    error: boost depends on icu
 
     $ crew remove boost
     error: more than one version installed
@@ -148,17 +146,16 @@ Example:
 ### update
 
 Update crew repository information; this command never installs any
-library, just updates information about available libraries and
-their version.
+formula, just updates information about available formulas.
 
-Upon execution the command will show information about new libraries
-added to the Crystax NDK repository, and about new version of the
-existing libraries.
+Upon execution the command will show information about new formulas
+added to the Crystax NDK repository, and about new versions of the
+releases in the existing formulas if any.
 
 Example:
 
     $ crew update
-    new libraries:
+    new formulas:
             libjpeg: 8d
             ffmped:  2.5.3, 3.0.0
                    
@@ -169,7 +166,7 @@ Example:
 
 ### upgrade
 
-For every installed library if there is more recent version then
+For every installed formula if there is more recent version then
 install it.
 
 Example:
@@ -188,7 +185,7 @@ Example:
 
 ### cleanup [--dry-run]
 
-Remove all but most recent versions of the all installed libraries.
+Remove all but the most recent versions of the all installed formulas.
 
 If --dry-run option is specified then command just outputs
 information about what it will do but otherwise will do nothing.
@@ -199,23 +196,3 @@ Example:
     removing: icu 54.1
     removing: boost 1.56.0
     removing: boost 1.57.0
-
-
-4. Implementation
---------------------------------
-
-Data
-
-    .../crew/.git       -- git internal data
-
-    .../crew/.config    -- configuration information, f.e. path to NDK,
-                           path to dir into which unpack library sources, etc;
-
-    .../crew/libname.rb -- receipt for library with name 'libname'.
-
-
-List of installed libraries: this list is built after scanning 'sources'
-directory and subtracting standard directories like android, crystax,
-etc.
-
-

@@ -25,8 +25,6 @@ rescue CommandRequresNoArguments
   abort "This command requires no arguments"
 rescue FormulaUnspecifiedError
   abort "This command requires a formula argument"
-rescue FormulaUnspecifiedError
-  abort "This command requires a library name argument: libname[:version|:all]"
 rescue Exception => e
   exception(e)
   exit 1

@@ -3,13 +3,13 @@ Usage: crew COMMAND [parameters]
 where COMMAND is one of the following:
   version         output version information
   help            show this help message
-  list            list all available libraries
-  info libname ...
-                  show information about the specified libraries
-  install libname[:version] ...
-                  install the specified libraries
-  uninstall libname[:version|:all] ...
-                  uninstall the specified libraries
+  list            list all available formulas
+  info name ...
+                  show information about the specified formula(s)
+  install name[:version] ...
+                  install the specified formula(s)
+  uninstall name[:version|:all] ...
+                  uninstall the specified formulas
   update          update crew repository information
   upgrade         install most recent versions
   cleanup [--dry-run]
