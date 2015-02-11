@@ -1,19 +1,23 @@
 module Global
 
-  CREW_VERSION = "0.0.4"
+  CREW_VERSION = "0.0.5"
 
   # :backtrace  -- output backgtrace with exception message
   # :log        -- debug function will output it's message
   # :curl       -- curl will be run with --verbose options
   # :_7z        -- 7z will output files while unpacking
-  # :temps      -- do no 'clean' in case of exceptions
+  # :temps      -- do not 'clean' in case of exceptions
+  # :stdout     -- show output of the external commands executed
   CREW_DEBUG = [:backtrace]
 
   # todo: initialize correctly
   DOWNLOAD_BASE = 'http://ithilien:8000'
+
+  # todo: initialize correctly
   HOLD_DIR = '/Users/zuav/tmp/crew/sources'
   FORMULA_DIR = 'formula'
   CACHE_DIR = 'cache'
+  CREW_REPOSITORY_DIR = Pathname.new('.').realpath
 
   # todo: use progs included with NDK
   CREW_CURL_PROG = '/usr/bin/curl'

@@ -61,7 +61,7 @@ class Formula
     url = "#{Global::DOWNLOAD_BASE}/#{file}"
     cachepath = File.join(Global::CACHE_DIR, file)
     puts "downloading #{url}"
-    curl(url, "-o", cachepath)
+    Utils.download(url, cachepath)
 
     puts "checking integrity of the downloaded file #{cachepath}"
     sha256 = Digest::SHA256.hexdigest(File.read(cachepath))

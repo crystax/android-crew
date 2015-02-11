@@ -73,14 +73,14 @@ class Hold
     STANDARD_DIRS.include?(name)
   end
 
-  def self.install_release(name, version, path)
-    dir = File.join(Global::HOLD_DIR, name, version)
+  def self.install_release(name, version, archive)
+    outdir = File.join(Global::HOLD_DIR, name, version)
     begin
-      FileUtils.mkdir_p(dir)
+      FileUtils.mkdir_p(outdir)
       puts "unpacking archive"
-      unpack_archive(path, dir)
+      Utils.unpack(archive, outdir)
     rescue
-      FileUtils.rmdir(dir) unless Global::CREW_DEBUG.include?(:temps)
+      FileUtils.rmdir(outdir) unless Global::CREW_DEBUG.include?(:temps)
       raise
     end
   end
