@@ -1,3 +1,5 @@
+require 'pathname'
+
 module Global
 
   CREW_VERSION = "0.0.5"
