@@ -131,7 +131,7 @@ module Crew
       unless formula.empty?
         # todo: ohai
         puts "==> #{title}"
-        puts_columns formula
+        puts formula
       end
     end
   end
