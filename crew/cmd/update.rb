@@ -75,8 +75,8 @@ module Crew
           when "A", "M", "D"
             map[status.to_sym] << repository.join(src)
           when /^R\d{0,3}/
-            map[:D] << repository.join(src) if File.dirname(src) == formula_directory
-            map[:A] << repository.join(dst) if File.dirname(dst) == formula_directory
+            map[:D] << repository.join(src) if File.dirname(src) == Global::FORMULA_DIR
+            map[:A] << repository.join(dst) if File.dirname(dst) == Global::FORMULA_DIR
           end
         end
       end
