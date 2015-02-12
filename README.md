@@ -41,8 +41,7 @@ Example:
     version         output version information
     help            show this help message
     list            list all available libraries
-    info name ...
-                    show information about the specified
+    info name ...   show information about the specified
                     formulas
     install name[:version]
                     install the specified formula
@@ -50,8 +49,7 @@ Example:
                     uninstall the specified formula
     update          update crew repository information
     upgrade         install most recent versions
-    cleanup [--dry-run]
-                    uninstall old versions
+    cleanup [-n]    uninstall old versions
 
 ### list
 
@@ -164,10 +162,11 @@ Example:
             icu:   54.2, 55.0
 
 
-### upgrade
+### upgrade [name...]
 
-For every installed formula if there is more recent version then
-install it.
+For every specified formula name or for all installed formulas (if no
+names were specified) do the following: if there is more recent version
+then install it.
 
 Example:
 
@@ -182,13 +181,20 @@ Example:
     downloading: .....
     unpacking: .....
 
+    $ upgrade boost icu
+    Error: boost 2.0.0 already installed
+    Error: icu 55.0a already installed
 
-### cleanup [--dry-run]
+
+### cleanup [-n] [name...]
+
+For all installed or specific formulas, remove any older versions from
+the hold.
 
 Remove all but the most recent versions of the all installed formulas.
 
-If --dry-run option is specified then command just outputs
-information about what it will do but otherwise will do nothing.
+If -n option is specified then command just outputs information about
+what it will do but otherwise will do nothing.
 
 Example:
 
