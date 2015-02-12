@@ -73,6 +73,20 @@ class Formula
     # todo: remove downloaded file in case of any exception; on not?
   end
 
+  def latest_version(versions)
+    lver = nil
+    lind = -1
+    versions.each do |v|
+      ind = find_release_index_by_version(v)
+      if ind > lind
+        lind = ind
+        lver = v
+      end
+    end
+    versions.delete(lver)
+    [lver, versions]
+  end
+
   class Dependency
 
     def initialize(name, options)
@@ -110,5 +124,14 @@ class Formula
   def filename(release)
     patch = release[:patch] ? "_#{release[:patch]}" : ""
     "#{name}-#{release[:version]}#{patch}.7z"
+  end
+
+  def find_release_index_by_version(version)
+    releases.each.with_index do |rel, ind|
+      if rel[:version] == version
+        return ind
+      end
+    end
+    raise "formula @{name} has no release with version #{version}"
   end
 end

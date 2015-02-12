@@ -6,33 +6,33 @@ require_relative 'utils.rb'
 class Hold
 
   def initialize
-    @installed = []
-    FileUtils.cd(Global::HOLD_DIR) {
+    @installed = Hash.new {|h, k| h[k] = [] }
+    FileUtils.cd(Global::HOLD_DIR) do
       Dir.foreach('.') do |name|
-        if name == '.' or name == '..' or !File.directory?(name) or self.class.standard_dir?(name)
+        if name == '.' or name == '..' or !File.directory?(name) or Hold.standard_dir?(name)
           next
         end
-        FileUtils.cd(name) {
+        FileUtils.cd(name) do
           Dir.foreach('.') do |ver|
             if ver == '.' or ver == '..'
               next
             end
             if !File.directory?(ver)
-              warning "directory #{File.join(Global::HOLD_DIR, name)} contains foreign object #{ver}"
+              warning("directory #e{File.join(Global::HOLD_DIR, name)} contains foreign object #{ver}")
+            else
+              @installed[name] << ver
             end
-            # todo: create version object
-            @installed << {name: name, version: ver}
           end
-        }
+        end
       end
-    }
+    end
   end
 
   def installed?(name, version = nil)
     answer = false
-    @installed.each do |lib|
-      if lib[:name] == name
-        if !version or version == 'all' or version == lib[:version]
+    @installed.each_pair do |n, vers|
+      if n == name
+        if !version or version == 'all' or vers.include?(version)
           answer = true
           break
         end
@@ -42,17 +42,36 @@ class Hold
   end
 
   def installed_versions(name)
-    # todo: all
-    list = []
-    @installed.each do |lib|
-      if lib[:name] == name
-        list << lib[:version]
-      end
-    end
-    list
+    @installed[name]
   end
 
-  def remove(name, version)
+  def select(names)
+    if !names
+      @installed
+    else
+      names = names.select do |n|
+        if installed?(n)
+          true
+        else
+          warning("not installed #{n}")
+          false
+        end
+      end
+      @installed.select {|n, _| names.include?(n) }
+    end
+  end
+
+  def self.install_release(name, version, archive)
+    outdir = release_directory(name, version)
+    FileUtils.mkdir_p(outdir)
+    puts "unpacking archive"
+    Utils.unpack(archive, outdir)
+  rescue
+    FileUtils.rmdir(outdir) unless Global::CREW_DEBUG.include?(:temps)
+    raise
+  end
+
+  def self.remove(name, version)
     FileUtils.cd(Global::HOLD_DIR) do
       FileUtils.cd(name) do
         Dir.foreach('.') do |dir|
@@ -69,23 +88,15 @@ class Hold
     end
   end
 
-  def self.standard_dir?(name)
-    STANDARD_DIRS.include?(name)
-  end
-
-  def self.install_release(name, version, archive)
-    outdir = File.join(Global::HOLD_DIR, name, version)
-    begin
-      FileUtils.mkdir_p(outdir)
-      puts "unpacking archive"
-      Utils.unpack(archive, outdir)
-    rescue
-      FileUtils.rmdir(outdir) unless Global::CREW_DEBUG.include?(:temps)
-      raise
-    end
+  def self.release_directory(name, version)
+    File.join(Global::HOLD_DIR, name, version)
   end
 
   private
 
-    STANDARD_DIRS = ['android', 'cpufeatures', 'crystax', 'cxx-stl', 'host-tools', 'objc', 'third_party']
+  STANDARD_DIRS = ['android', 'cpufeatures', 'crystax', 'cxx-stl', 'host-tools', 'objc', 'third_party']
+
+  def self.standard_dir?(name)
+    STANDARD_DIRS.include?(name)
+  end
 end

@@ -28,14 +28,15 @@ module Crew
         raise "library #{outname} has installed dependants: #{ideps}"
       end
 
+      # NB: Hold.remove is clss method and does NOT updates hold internal data
       ivers = hold.installed_versions(name)
       # todo: assert(ivers.count > 0)
       if ivers.count == 1
-        hold.remove(name, ivers[0])
+        Hold.remove(name, ivers[0])
       elsif !version
         raise "more than one version of #{name} installed"
       else
-        hold.remove(name, version)
+        Hold.remove(name, version)
       end
     end
   end

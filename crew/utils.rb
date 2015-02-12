@@ -41,7 +41,7 @@ module Utils
     outstr
   end
 
-  def download(url, outpath)
+  def self.download(url, outpath)
     curl = Pathname.new(Global::CREW_CURL_PROG)
     check_program(curl)
 
@@ -52,15 +52,15 @@ module Utils
     args << "--verbose" if Global::CREW_DEBUG.include?(:curl)
     args << "--silent" unless $stdout.tty?
 
-    run_command(curl, args)
+    run_command(curl, *args)
   end
 
-  def unpack(archive, outdir)
+  def self.unpack(archive, outdir)
     _7z = Pathname.new(Global::CREW_7Z_PROG)
     raise "#{_7z} is not executable" unless _7z.exist? and _7z.executable?
 
     args = ["x", "-y", "-o#{outdir}", archive]
-    run_command(_7z, args)
+    run_command(_7z, *args)
   end
 
   private

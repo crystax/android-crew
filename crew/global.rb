@@ -2,7 +2,7 @@ require 'pathname'
 
 module Global
 
-  CREW_VERSION = "0.0.5"
+  CREW_VERSION = "0.0.6"
 
   # :backtrace  -- output backgtrace with exception message
   # :log        -- debug function will output it's message
