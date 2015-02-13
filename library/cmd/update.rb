@@ -30,7 +30,7 @@ module Crew
     attr_reader :initial_revision, :current_revision, :repository
 
     def initialize
-      @repository = Global::CREW_REPOSITORY_DIR
+      @repository = Global::REPOSITORY_DIR
     end
 
     def pull!
@@ -42,7 +42,7 @@ module Crew
       Utils.run_command("git", "config", "core.autocrlf", "false")
 
       args = ["pull"]
-      args << "-q" unless Global::CREW_DEBUG.include?(:git)
+      args << "-q" unless Global::DEBUG.include?(:git)
       args << "origin"
       # the refspec ensures that 'origin/master' gets updated
       args << "refs/heads/master:refs/remotes/origin/master"

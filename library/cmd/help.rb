@@ -17,7 +17,7 @@ EOS
 
 module Crew
   def self.help(args)
-    if args.length > 0
+    if args and args.length > 0
       raise CommandRequresNoArguments
     end
     puts CREW_HELP

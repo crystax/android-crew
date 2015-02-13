@@ -18,7 +18,7 @@ module Utils
     Open3.popen3(cmd) do |_, out, err, t|
       ot = Thread.start do
         while c = out.getc
-          $stdout.putc c if Global::CREW_DEBUG.include?(:stdout)
+          $stdout.putc c if Global::DEBUG.include?(:stdout)
           outstr += "#{c}"
         end
       end
@@ -49,7 +49,7 @@ module Utils
     # See https://github.com/Homebrew/homebrew/issues/6103
     # todo: MacOS or not MacOS?
     #args << "--insecure" if MacOS.version < "10.6"
-    args << "--verbose" if Global::CREW_DEBUG.include?(:curl)
+    args << "--verbose" if Global::DEBUG.include?(:curl)
     args << "--silent" unless $stdout.tty?
 
     run_command(curl, *args)

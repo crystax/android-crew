@@ -14,20 +14,22 @@ module Global
   # :_7z        -- 7z will output files while unpacking
   # :temps      -- do not 'clean' in case of exceptions
   # :stdout     -- show output of the external commands executed
-  CREW_DEBUG = [:backtrace]
+  DEBUG = [:backtrace]
 
   DOWNLOAD_BASE = ENV["CREW_DOWNLOAD_BASE"] or raise_env_var_not_set "CREW_DOWNLOAD_BASE"
+  BASE_DIR = ENV["CREW_BASE_DIR"] or raise_env_var_not_set "CREW_BASE_DIR"
+  NDK_DIR = ENV["CREW_NDK_DIR"] or raise_env_var_not_set "CREW_NDK_DIR"
 
-  # todo: initialize correctly
-  HOLD_DIR = '/Users/zuav/tmp/crew/sources'
-  FORMULA_DIR = 'formula'
-  CACHE_DIR = 'cache'
-  CREW_REPOSITORY_DIR = Pathname.new('.').realpath
+  HOLD_DIR = Pathname.new(File.join(NDK_DIR, 'sources')).realpath
+  FORMULA_DIR = Pathname.new(File.join(BASE_DIR, 'formula')).realpath
+  CACHE_DIR = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
+  REPOSITORY_DIR = Pathname.new(BASE_DIR).realpath
 
   # todo: use progs included with NDK
   CREW_CURL_PROG = '/usr/bin/curl'
   CREW_7Z_PROG = '/usr/local/bin/7z'
 
+  # todo:
   if RUBY_PLATFORM =~ /darwin/
     MACOS_FULL_VERSION = `/usr/bin/sw_vers -productVersion`.chomp
     MACOS_VERSION = MACOS_FULL_VERSION[/10\.\d+/]
@@ -37,15 +39,13 @@ module Global
     OS_VERSION = RUBY_PLATFORM
   end
 
-  # todo:
-  #USER_AGENT = "Crew #{CREW_VERSION} (Ruby #{RUBY_VERSION}-#{RUBY_PATCHLEVEL}; #{OS_VERSION})"
-  USER_AGENT = "Crew #{VERSION}"
+  USER_AGENT = "Crystax NDK Crew #{VERSION}"
 end
 
 
 def debug(msg)
   # todo: output if debug (or verbose?) mode set
-  if Global::CREW_DEBUG.include?(:log)
+  if Global::DEBUG.include?(:log)
     puts "debug: #{msg}"
   end
 end
@@ -65,7 +65,7 @@ end
 def exception(exc)
   error(exc)
   # todo: print backtrace only in debug mode
-  if Global::CREW_DEBUG.include?(:backtrace)
+  if Global::DEBUG.include?(:backtrace)
     puts exc.backtrace
   end
 end

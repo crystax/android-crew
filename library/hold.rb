@@ -53,7 +53,7 @@ class Hold
     puts "unpacking archive"
     Utils.unpack(archive, outdir)
   rescue
-    FileUtils.rmdir(outdir) unless Global::CREW_DEBUG.include?(:temps)
+    FileUtils.rmdir(outdir) unless Global::DEBUG.include?(:temps)
     raise
   end
 

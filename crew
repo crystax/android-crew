@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Users may have these set, pointing the system Ruby
+# at non-system gem paths
+unset GEM_HOME
+unset GEM_PATH
+
+CREW_FILE_DIR=$(dirname $0)
+
+if [ -z $CREW_BASE_DIR ]; then
+    CREW_BASE_DIR="$CREW_FILE_DIR"
+fi
+
+if [ -z $CREW_DOWNLOAD_BASE ]; then
+    CREW_DOWNLOAD_BASE="http://ithilien:8000"
+fi
+
+if [ -z $CREW_NDK_DIR ]; then
+    CREW_NDK_DIR=$(dirname $CREW_FILE_DIR)
+fi
+
+export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR
+
+# todo: check if we have ruby with NDK and if yes use it
+exec ruby -W0 "$CREW_FILE_DIR/crew.rb" "$@"
