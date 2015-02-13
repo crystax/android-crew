@@ -11,8 +11,7 @@ where COMMAND is one of the following:
                   uninstall the specified formulas
   update          update crew repository information
   upgrade         install most recent versions
-  cleanup [-n] [name...]
-                  uninstall old versions
+  cleanup [-n]    uninstall old versions
 EOS
 
 

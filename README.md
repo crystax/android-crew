@@ -162,10 +162,9 @@ Example:
             icu:   54.2, 55.0
 
 
-### upgrade [name...]
+### upgrade
 
-For every specified formula name or for all installed formulas (if no
-names were specified) do the following: if there is more recent version
+For all installed formulas do the following: if there is more recent version
 then install it.
 
 Example:
@@ -186,10 +185,7 @@ Example:
     Error: icu 55.0a already installed
 
 
-### cleanup [-n] [name...]
-
-For all installed or specific formulas, remove any older versions from
-the hold.
+### cleanup [-n]
 
 Remove all but the most recent versions of the all installed formulas.
 
@@ -198,7 +194,12 @@ what it will do but otherwise will do nothing.
 
 Example:
 
+    $ crew cleanup -n
+    Would remove: icu 54.1
+    Would remove: boost 1.56.0
+    Would remove: boost 1.57.0
+
     $ crew cleanup
-    removing: icu 54.1
-    removing: boost 1.56.0
-    removing: boost 1.57.0
+    Removing: icu 54.1
+    Removing: boost 1.56.0
+    Removing: boost 1.57.0

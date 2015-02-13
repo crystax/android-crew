@@ -5,6 +5,8 @@ require_relative 'utils.rb'
 
 class Hold
 
+  attr_reader :installed
+
   def initialize
     @installed = Hash.new {|h, k| h[k] = [] }
     FileUtils.cd(Global::HOLD_DIR) do
@@ -43,22 +45,6 @@ class Hold
 
   def installed_versions(name)
     @installed[name]
-  end
-
-  def select(names)
-    if !names
-      @installed
-    else
-      names = names.select do |n|
-        if installed?(n)
-          true
-        else
-          warning("not installed #{n}")
-          false
-        end
-      end
-      @installed.select {|n, _| names.include?(n) }
-    end
   end
 
   def self.install_release(name, version, archive)

@@ -73,7 +73,11 @@ class Formula
     # todo: remove downloaded file in case of any exception; on not?
   end
 
-  def latest_version(versions)
+  def latest_version
+    releases.last[:version]
+  end
+
+  def exclude_latest(versions)
     lver = nil
     lind = -1
     versions.each do |v|
@@ -84,7 +88,7 @@ class Formula
       end
     end
     versions.delete(lver)
-    [lver, versions]
+    versions
   end
 
   class Dependency
