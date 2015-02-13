@@ -2,7 +2,11 @@ require 'pathname'
 
 module Global
 
-  CREW_VERSION = "0.1.0"
+  def raise_env_var_not_set(var)
+    raise "#{var} environment varible is not set"
+  end
+
+  VERSION = "0.1.0"
 
   # :backtrace  -- output backgtrace with exception message
   # :log        -- debug function will output it's message
@@ -12,8 +16,7 @@ module Global
   # :stdout     -- show output of the external commands executed
   CREW_DEBUG = [:backtrace]
 
-  # todo: initialize correctly
-  DOWNLOAD_BASE = 'http://ithilien:8000'
+  DOWNLOAD_BASE = ENV["CREW_DOWNLOAD_BASE"] or raise_env_var_not_set "CREW_DOWNLOAD_BASE"
 
   # todo: initialize correctly
   HOLD_DIR = '/Users/zuav/tmp/crew/sources'
@@ -36,7 +39,7 @@ module Global
 
   # todo:
   #USER_AGENT = "Crew #{CREW_VERSION} (Ruby #{RUBY_VERSION}-#{RUBY_PATCHLEVEL}; #{OS_VERSION})"
-  USER_AGENT = "Crew #{CREW_VERSION}"
+  USER_AGENT = "Crew #{VERSION}"
 end
 
 
