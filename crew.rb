@@ -29,5 +29,5 @@ rescue Exception => e
 else
   #exit 1 if Crew.failed?
   # todo: 0 or 1 here?
-  exit 1
+  exit 0
 end

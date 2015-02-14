@@ -2,7 +2,7 @@ require 'pathname'
 
 module Global
 
-  def raise_env_var_not_set(var)
+  def self.raise_env_var_not_set(var)
     raise "#{var} environment varible is not set"
   end
 
