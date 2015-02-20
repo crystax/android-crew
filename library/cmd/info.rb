@@ -24,9 +24,8 @@ module Crew
 
       puts "dependencies:"
       formula.dependencies.each.with_index do |d, ind|
-        prefix = ind > 0 ? ", " : ""
         installed = hold.installed?(d.name) ? " (*)" : ""
-        puts "  #{prefix}#{d.name}#{installed}"
+        puts "  #{d.name}#{installed}"
       end
 
       puts "" if index + 1 < args.count

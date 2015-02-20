@@ -27,7 +27,7 @@ class FormulaUnavailableError < RuntimeError
   end
 
   def to_s
-    "No available formula for #{name} #{dependent_s}"
+    "No available formula for #{name} #{dependent_s}".chomp(' ')
   end
 end
 

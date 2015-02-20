@@ -47,6 +47,11 @@ module Spec
       run_cmd "rm -rf #{Global::FORMULA_DIR}/*"
     end
 
+    def clean
+      clean_hold
+      clean_formulary
+    end
+
     def copy_formulas(*names)
       names.each do |n|
         run_cmd "cp ./data/#{n} #{Global::FORMULA_DIR}/"
