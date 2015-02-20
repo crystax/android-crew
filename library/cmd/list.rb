@@ -30,16 +30,19 @@ module Crew
     formulas = Formulary.read_all
 
     list = []
+    maxname = 0
+    maxver = 0
     formulas.each do |f|
       f.releases.each do |r|
         ver = r[:version]
+        maxname = f.name.size if f.name.size > maxname
+        maxlen = ver if ver.size > maxver
         list << Library.new(f.name, ver, hold.installed?(f.name, ver))
       end
     end
 
-    # todo: output as a table, count columns width's
     list.each do |l|
-      puts "#{l.installed_sign}\t#{l.name}\t\t#{l.version}"
+      printf " %s %-#{maxname}s %-#{maxver}s\n", l.installed_sign, l.name, l.version
     end
   end
 end
