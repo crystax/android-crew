@@ -23,6 +23,8 @@ rescue CommandRequresNoArguments
   abort "This command requires no arguments"
 rescue FormulaUnspecifiedError
   abort "This command requires a formula argument"
+rescue FormulaUnavailableError => e
+  abort e.to_s
 rescue Exception => e
   exception(e)
   exit 1
