@@ -1,4 +1,6 @@
+require 'pathname'
 require 'open3'
+require_relative '../library/global.rb'
 
 module Spec
 
@@ -35,6 +37,33 @@ module Spec
 
         @exitstatus = waitthr && waitthr.value.exitstatus
       end
+    end
+
+    def clean_hold
+      run_cmd "rm -rf #{Global::HOLD_DIR}/*"
+    end
+
+    def clean_formulary
+      run_cmd "rm -rf #{Global::FORMULA_DIR}/*"
+    end
+
+    def copy_formulas(*names)
+      names.each do |n|
+        run_cmd "cp ./data/#{n} #{Global::FORMULA_DIR}/"
+      end
+    end
+
+    def install_release(name, version)
+      dir = "#{Global::HOLD_DIR}/#{name}/#{version}"
+      run_cmd "mkdir -p #{dir}"
+      run_cmd "mkdir -p #{dir}/include"
+      run_cmd "mkdir -p #{dir}/libs"
+      run_cmd "touch #{dir}/Android.mk"
+    end
+
+    def run_cmd(cmd)
+      `#{cmd}`
+      raise "command failed: #{cmd}" if $? != 0
     end
   end
 end

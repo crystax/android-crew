@@ -58,7 +58,7 @@ end
 
 
 def error(msg)
-  puts "error: #{msg}"
+  STDERR.puts "error: #{msg}"
 end
 
 
@@ -66,6 +66,6 @@ def exception(exc)
   error(exc)
   # todo: print backtrace only in debug mode
   if Global::DEBUG.include?(:backtrace)
-    puts exc.backtrace
+    STDERR.puts exc.backtrace
   end
 end
