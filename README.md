@@ -107,9 +107,9 @@ works as follows:
 * if the specified formula is not installed then command will do nothing
   and return with error message;
 
-* if there are installed formulas that depend on the specified library
-  (and it's version) then command will do nothing and return with error
-  message;
+* if there are installed formulas that depend on the specified release
+  and no more releases of the formula are installed then command will do
+  nothing and return with error message;
 
 * if only formula name was specified and more than one version is
   installed then command will do nothing and return with error message;

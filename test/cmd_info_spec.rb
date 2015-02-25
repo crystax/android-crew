@@ -6,7 +6,7 @@ describe "crew info" do
       clean
       crew 'info'
       expect(exitstatus).to_not be_zero
-      expect(err.chomp).to eq('This command requires a formula argument')
+      expect(err.chomp).to eq('error: this command requires a formula argument')
     end
   end
 
@@ -15,7 +15,7 @@ describe "crew info" do
       clean
       crew 'info', 'foo'
       expect(exitstatus).to_not be_zero
-      expect(err.chomp).to eq('No available formula for foo')
+      expect(err.chomp).to eq('error: no available formula for foo')
     end
   end
 

@@ -6,7 +6,7 @@ describe "crew list" do
       clean
       crew 'list', 'boost'
       expect(exitstatus).to_not be_zero
-      expect(err.chomp).to eq('This command requires no arguments')
+      expect(err.chomp).to eq('error: this command requires no arguments')
     end
   end
 

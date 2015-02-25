@@ -14,7 +14,7 @@ module Global
   # :_7z        -- 7z will output files while unpacking
   # :temps      -- do not 'clean' in case of exceptions
   # :stdout     -- show output of the external commands executed
-  DEBUG = [:backtrace]
+  DEBUG = []
 
   DOWNLOAD_BASE = ENV["CREW_DOWNLOAD_BASE"] or raise_env_var_not_set "CREW_DOWNLOAD_BASE"
   BASE_DIR = ENV["CREW_BASE_DIR"] or raise_env_var_not_set "CREW_BASE_DIR"

@@ -1,10 +1,18 @@
 require 'fileutils'
 require 'rspec'
+require 'webrick'
 
 
-download_base = 'http://ithilien:8000'
+PORT = 9999
+
+download_base = "http://ithilien:#{PORT}"
+docroot_dir = './docroot'
 base_dir = './crew'
 ndk_dir = './ndk'
+data_dir = './data'
+
+#server = WEBrick::HTTPServer.new :Port => PORT, :DocumentRoot => docroot_dir
+#Thread.start { server.start }
 
 FileUtils.remove_dir(base_dir, true)
 FileUtils.remove_dir(ndk_dir, true)

@@ -1,18 +1,22 @@
 class UsageError < RuntimeError; end
 
-class FormulaUnspecifiedError < UsageError; end
+class FormulaUnspecifiedError < UsageError
+  def to_s
+    "this command requires a formula argument"
+  end
+end
 
-class LibraryUnspecifiedError < UsageError; end
-
-class CommandRequresNoArguments < UsageError; end
-
+class CommandRequresNoArguments < UsageError
+  def to_s
+    "this command requires no arguments"
+  end
+end
 
 class UnknownCommand < UsageError
   def initialize(cmd)
     super "unknown command \'#{cmd}\'"
   end
 end
-
 
 class FormulaUnavailableError < RuntimeError
   attr_reader :name
@@ -27,7 +31,7 @@ class FormulaUnavailableError < RuntimeError
   end
 
   def to_s
-    "No available formula for #{name} #{dependent_s}".chomp(' ')
+    "no available formula for #{name} #{dependent_s}".chomp(' ')
   end
 end
 

@@ -7,7 +7,7 @@ module Crew
 
   def self.remove(args)
     if args.count < 1
-      raise LibraryUnspecifiedError
+      raise FormulaUnspecifiedError
     end
 
     formulary = Formulary.new
@@ -18,14 +18,14 @@ module Crew
 
       hold = Hold.new
       if !hold.installed?(name, version)
-        raise "library #{outname} not installed"
+        raise "#{outname} not installed"
       end
 
       # todo: currently we do not care for version, only library name
       ideps = []
       formulary.dependants_of(name).each {|d| if hold.installed?(d.name); ideps << d.name end }
       if ideps.count > 0
-        raise "library #{outname} has installed dependants: #{ideps}"
+        raise "#{outname} has installed dependants: #{ideps}"
       end
 
       # NB: Hold.remove is clss method and does NOT updates hold internal data
