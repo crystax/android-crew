@@ -23,13 +23,13 @@ module Crew
 
       # todo: currently we do not care for version, only library name
       ideps = []
+      ivers = hold.installed_versions(name)
       formulary.dependants_of(name).each {|d| if hold.installed?(d.name); ideps << d.name end }
-      if ideps.count > 0
+      if ideps.count > 0 and ivers.count == 1
         raise "#{outname} has installed dependants: #{ideps}"
       end
 
-      # NB: Hold.remove is clss method and does NOT updates hold internal data
-      ivers = hold.installed_versions(name)
+      # NB: Hold.remove is a class method and does NOT updates hold internal data
       # todo: assert(ivers.count > 0)
       if ivers.count == 1
         Hold.remove(name, ivers[0])
