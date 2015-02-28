@@ -63,7 +63,7 @@ class Formula
     puts "downloading #{url}"
     Utils.download(url, cachepath)
 
-    puts "checking integrity of the downloaded file #{cachepath}"
+    puts "checking integrity of the downloaded file #{file}"
     sha256 = Digest::SHA256.hexdigest(File.read(cachepath))
     if Digest::SHA256.hexdigest(File.read(cachepath)) != rel[:sha256]
       raise "bad SHA256 sum of the downloaded file #{cachepath}"

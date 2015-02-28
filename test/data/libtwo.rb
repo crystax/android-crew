@@ -1,8 +1,8 @@
 class Libtwo < Formula
   homepage "http://www.libtwo.org"
 
-  release version: '1.1.0', sha256: 'ed46fab16322b0367849797cf5dd31824f4db29e4ca016b25c8b4e4d6ac2eeee'
-  release version: '2.2.0', sha256: 'ed46fab16322b0367849797cf5dd31824f4db29e4ca016b25c8b4e4d6ac2eeee'
+  release version: '1.1.0', sha256: '3eb37fa09183a978b97fb81ad70387d852888804e1f15da9bdfc9e895bd2e137'
+  release version: '2.2.0', sha256: '3eb37fa09183a978b97fb81ad70387d852888804e1f15da9bdfc9e895bd2e137'
 
   depends_on 'libone'
 end
