@@ -1,3 +1,4 @@
+require 'fileutils'
 require_relative 'library/exceptions.rb'
 require_relative 'library/global.rb'
 require_relative 'library/formula.rb'
@@ -13,12 +14,13 @@ end
 
 
 begin
-  cmd = ARGV.size > 0 ? ARGV[0].to_s.gsub('-', '_').downcase : 'help'
-  args = ARGV.slice(1, ARGV.length)
+    FileUtils.cd(Global::REPOSITORY_DIR) do
+      cmd = ARGV.size > 0 ? ARGV[0].to_s.gsub('-', '_').downcase : 'help'
+      args = ARGV.slice(1, ARGV.length)
 
-  require_command(cmd)
-  Crew.send(cmd, args)
-
+      require_command(cmd)
+      Crew.send(cmd, args)
+    end
 rescue Exception => e
   exception(e)
   exit 1
