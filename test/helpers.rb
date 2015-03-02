@@ -38,9 +38,13 @@ module Spec
       end
     end
 
-    def clean
+    def clean_hold
       FileUtils.remove_dir(Global::HOLD_DIR, true)
       FileUtils.mkdir_p(Global::HOLD_DIR)
+    end
+
+    def clean
+      clean_hold
       FileUtils.remove_dir(Global::FORMULA_DIR, true)
       FileUtils.mkdir_p(Global::FORMULA_DIR)
     end
@@ -60,6 +64,7 @@ module Spec
     end
 
     def repository_init
+      clean_hold
       dir = origin_dir
       FileUtils.remove_dir(dir, true)
       FileUtils.mkdir(dir) unless Dir.exists?(dir)
