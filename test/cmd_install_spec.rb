@@ -38,11 +38,11 @@ describe "crew install" do
       url = "#{Global::DOWNLOAD_BASE}/#{file}"
       crew 'install', 'libone'
       expect(exitstatus).to be_zero
-      expect(out).to eq("calculating dependencies for libone: \n"             +
-                        "  dependencies to install: [] \n"                    +
-                        "  space required: 0\n"                               +
-                        "downloading #{url}\n"                                +
-                        "checking integrity of the downloaded file #{file}\n" +
+      expect(out).to eq("calculating dependencies for libone: \n"             \
+                        "  dependencies to install: [] \n"                    \
+                        "  space required: 0\n"                               \
+                        "downloading #{url}\n"                                \
+                        "checking integrity of the downloaded file #{file}\n" \
                         "unpacking archive\n")
     end
   end
@@ -58,16 +58,16 @@ describe "crew install" do
       crew 'install', 'libtwo'
       expect(err).to eq('')
       expect(exitstatus).to be_zero
-      expect(out).to eq("calculating dependencies for libtwo: \n"                +
-                        "  dependencies to install: [libone] \n"                 +
-                        "  space required: 0\n"                                  +
-                        "installing dependencies for libtwo:\n"                  +
-                        "downloading #{depurl}\n"                                +
-                        "checking integrity of the downloaded file #{depfile}\n" +
-                        "unpacking archive\n"                                    +
-                        "\n"                                                     +
-                        "downloading #{resurl}\n"                                +
-                        "checking integrity of the downloaded file #{resfile}\n" +
+      expect(out).to eq("calculating dependencies for libtwo: \n"                \
+                        "  dependencies to install: [libone] \n"                 \
+                        "  space required: 0\n"                                  \
+                        "installing dependencies for libtwo:\n"                  \
+                        "downloading #{depurl}\n"                                \
+                        "checking integrity of the downloaded file #{depfile}\n" \
+                        "unpacking archive\n"                                    \
+                        "\n"                                                     \
+                        "downloading #{resurl}\n"                                \
+                        "checking integrity of the downloaded file #{resfile}\n" \
                         "unpacking archive\n")
     end
   end
@@ -85,19 +85,19 @@ describe "crew install" do
       crew 'install', 'libthree:2.2.2'
       expect(err).to eq('')
       expect(exitstatus).to be_zero
-      expect(out).to eq("calculating dependencies for libthree: \n"                     +
-                        "  dependencies to install: [libone, libtwo] \n"                +
-                        "  space required: 0\n"                                         +
-                        "installing dependencies for libthree:\n"                       +
-                        "downloading #{depurl1}\n"                                      +
-                        "checking integrity of the downloaded file #{depfile1}\n"       +
-                        "unpacking archive\n"                                           +
-                        "downloading #{depurl2}\n"                                      +
-                        "checking integrity of the downloaded file #{depfile2}\n"       +
-                        "unpacking archive\n"                                           +
-                        "\n"                                                            +
-                        "downloading #{resurl}\n"                                       +
-                        "checking integrity of the downloaded file #{resfile}\n"        +
+      expect(out).to eq("calculating dependencies for libthree: \n"               \
+                        "  dependencies to install: [libone, libtwo] \n"          \
+                        "  space required: 0\n"                                   \
+                        "installing dependencies for libthree:\n"                 \
+                        "downloading #{depurl1}\n"                                \
+                        "checking integrity of the downloaded file #{depfile1}\n" \
+                        "unpacking archive\n"                                     \
+                        "downloading #{depurl2}\n"                                \
+                        "checking integrity of the downloaded file #{depfile2}\n" \
+                        "unpacking archive\n"                                     \
+                        "\n"                                                      \
+                        "downloading #{resurl}\n"                                 \
+                        "checking integrity of the downloaded file #{resfile}\n"  \
                         "unpacking archive\n")
     end
   end
