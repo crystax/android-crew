@@ -62,21 +62,22 @@ module Crew
 
     def report
       map = Hash.new {|h,k| h[k] = [] }
+      formuladir = Global::FORMULA_DIR.basename.to_s
 
-      if initial_revision && initial_revision != current_revision
+      if initial_revision and initial_revision != current_revision
         diff.each_line do |line|
           status, *paths = line.split
           src, dst = paths.first, paths.last
 
           next unless File.extname(dst) == ".rb"
-          next unless paths.any? { |p| File.dirname(p) == Global::FORMULA_DIR }
+          next unless paths.any? { |p| File.dirname(p) == formuladir }
 
           case status
           when "A", "M", "D"
             map[status.to_sym] << repository.join(src)
           when /^R\d{0,3}/
-            map[:D] << repository.join(src) if File.dirname(src) == Global::FORMULA_DIR
-            map[:A] << repository.join(dst) if File.dirname(dst) == Global::FORMULA_DIR
+            map[:D] << repository.join(src) if File.dirname(src) == formuladir
+            map[:A] << repository.join(dst) if File.dirname(dst) == formuladir
           end
         end
       end
