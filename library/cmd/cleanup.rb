@@ -7,19 +7,21 @@ require_relative '../formula.rb'
 module Crew
 
   def self.cleanup(args)
-    if args and args == '-n'
-      dryrun = true
-    else
-      raise "this command accepts only one optional argument: -n"
+    if args.length > 0
+      if args[0] == '-n'
+        dryrun = true
+      else
+        raise "this command accepts only one optional argument: -n"
+      end
     end
 
     Hold.new.installed.each_pair do |n, vers|
       Formulary.factory(n).exclude_latest(vers).each do |v|
         dir = Hold.release_directory(n, v)
         if (dryrun)
-          puts "Would remove: #{dir}"
+          puts "would remove: #{dir}"
         else
-          puts "Removing: #{dir}"
+          puts "removing: #{dir}"
           FileUtils.remove_dir(dir)
         end
       end
