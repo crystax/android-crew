@@ -54,7 +54,7 @@ describe "crew cleanup" do
       install_release 'libtwo', '2.2.0'
       crew 'cleanup'
       expect(err).to eq('')
-      expect(out).to eq("removing: /Volumes/Source-HD/src/crew/test/ndk/sources/libtwo/1.1.0\n")
+      expect(out).to eq("removing: #{Global::HOLD_DIR}/libtwo/1.1.0\n")
       expect(exitstatus).to be_zero
     end
   end
@@ -68,7 +68,7 @@ describe "crew cleanup" do
       install_release 'libtwo', '2.2.0'
       crew 'cleanup', '-n'
       expect(err).to eq('')
-      expect(out).to eq("would remove: /Volumes/Source-HD/src/crew/test/ndk/sources/libtwo/1.1.0\n")
+      expect(out).to eq("would remove: #{Global::HOLD_DIR}/libtwo/1.1.0\n")
       expect(exitstatus).to be_zero
     end
   end
@@ -85,9 +85,9 @@ describe "crew cleanup" do
       install_release 'libthree', '3.3.3'
       crew 'cleanup'
       expect(err).to eq('')
-      expect(out).to eq("removing: /Volumes/Source-HD/src/crew/test/ndk/sources/libthree/1.1.1\n" \
-                        "removing: /Volumes/Source-HD/src/crew/test/ndk/sources/libthree/2.2.2\n" \
-                        "removing: /Volumes/Source-HD/src/crew/test/ndk/sources/libtwo/1.1.0\n")
+      expect(out).to eq("removing: #{Global::HOLD_DIR}/libthree/1.1.1\n" \
+                        "removing: #{Global::HOLD_DIR}/libthree/2.2.2\n" \
+                        "removing: #{Global::HOLD_DIR}/libtwo/1.1.0\n")
       expect(exitstatus).to be_zero
     end
   end
