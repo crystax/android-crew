@@ -1,6 +1,5 @@
 require 'pathname'
 require 'open3'
-require_relative '../library/global.rb'
 
 module Spec
 
@@ -39,17 +38,11 @@ module Spec
       end
     end
 
-    def clean_hold
-      run_cmd "rm -rf #{Global::HOLD_DIR}/*"
-    end
-
-    def clean_formulary
-      run_cmd "rm -rf #{Global::FORMULA_DIR}/*"
-    end
-
     def clean
-      clean_hold
-      clean_formulary
+      FileUtils.remove_dir(Global::HOLD_DIR, true)
+      FileUtils.mkdir_p(Global::HOLD_DIR)
+      FileUtils.remove_dir(Global::FORMULA_DIR, true)
+      FileUtils.mkdir_p(Global::FORMULA_DIR)
     end
 
     def copy_formulas(*names)
@@ -64,6 +57,60 @@ module Spec
       run_cmd "mkdir -p #{dir}/include"
       run_cmd "mkdir -p #{dir}/libs"
       run_cmd "touch #{dir}/Android.mk"
+    end
+
+    def repository_init
+      dir = origin_dir
+      FileUtils.remove_dir(dir, true)
+      FileUtils.mkdir(dir) unless Dir.exists?(dir)
+      FileUtils.cd(dir) do
+        # todo: use git included with NDK
+        run_cmd "git init"
+        run_cmd "mkdir cache"
+        run_cmd "mkdir formula"
+        run_cmd "touch cache/.placeholder"
+        run_cmd "touch formula/.placeholder"
+        run_cmd "git add cache formula"
+        run_cmd "git commit -m initial"
+      end
+    end
+
+    def repository_clone
+      FileUtils.remove_dir(Global::BASE_DIR)
+      run_cmd "git clone -q #{origin_dir} #{Global::BASE_DIR}"
+    end
+
+    def repository_add_formula(*names)
+      dir = origin_dir
+      names.each do |n|
+        a = n.split(':')
+        if 1.size == 1
+          dst = src = a[0]
+        else
+          src = a[0]
+          dst = a[1]
+        end
+        run_cmd "cp ./data/#{src} #{dir}/formula/#{dst}"
+      end
+      FileUtils.cd(dir) do
+        run_cmd "git add ."
+        run_cmd "git commit -q -m add_#{names.join('_')}"
+      end
+    end
+
+    def repository_del_formula(*names)
+      dir = origin_dir
+      names.each do |n|
+        run_cmd "rm #{dir}/formula/#{n}"
+      end
+      FileUtils.cd(dir) do
+        run_cmd "git add ."
+        run_cmd "git commit -q -m del_#{names.join('_')}"
+      end
+    end
+
+    def origin_dir
+      Global::BASE_DIR + '.git'
     end
 
     def run_cmd(cmd)

@@ -2,5 +2,6 @@
 cache
 *~
 test/crew
+test/crew.git
 test/ndk
 test/www/log
