@@ -6,7 +6,7 @@ module Global
     raise "#{var} environment varible is not set"
   end
 
-  VERSION = "0.1.0"
+  VERSION = "0.2.0"
 
   # :backtrace  -- output backgtrace with exception message
   # :log        -- debug function will output it's message
