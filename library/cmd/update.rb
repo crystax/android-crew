@@ -130,7 +130,6 @@ module Crew
     def dump_formula_report(key, title)
       formula = select_formula(key)
       unless formula.empty?
-        # todo: ohai
         puts "==> #{title}"
         puts formula
       end

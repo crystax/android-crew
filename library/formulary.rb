@@ -148,8 +148,11 @@ class Formulary
       if name == '.' or name == '..'
         next
       end
-      # todo: check for .rb extension
-      list << factory(File.join(Global::FORMULA_DIR, name));
+      if formula_file?(name)
+        list << factory(File.join(Global::FORMULA_DIR, name))
+      else
+        warning("not a formula file in formula dir: #{name}")
+      end
     end
     list
   end
@@ -160,8 +163,11 @@ class Formulary
       if name == '.' or name == '..'
         next
       end
-      # todo: check for .rb extension
-      @formulary << self.class.factory(File.join(Global::FORMULA_DIR, name));
+      if self.class.formula_file?(name)
+        @formulary << self.class.factory(File.join(Global::FORMULA_DIR, name))
+      else
+        warning("not a formula file in formula dir: #{name}")
+      end
     end
   end
 
@@ -178,5 +184,11 @@ class Formulary
     end
     debug "dependants of #{name} are: #{list}"
     list
+  end
+
+  private
+
+  def self.formula_file?(name)
+    File.extname(name) == '.rb'
   end
 end

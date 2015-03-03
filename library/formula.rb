@@ -94,7 +94,6 @@ class Formula
   class Dependency
 
     def initialize(name, options)
-      #todo: check keys in options
       @options = options
       @options[:name] = name
     end

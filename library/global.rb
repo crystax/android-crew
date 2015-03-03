@@ -53,7 +53,7 @@ end
 
 def warning(msg)
   # todo: output if debug (or verbose?) mode set
-  puts "warning: #{msg}"
+  STDERR.puts "warning: #{msg}"
 end
 
 

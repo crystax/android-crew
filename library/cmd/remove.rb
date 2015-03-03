@@ -21,7 +21,7 @@ module Crew
         raise "#{outname} not installed"
       end
 
-      # todo: currently we do not care for version, only library name
+      # currently we do not care for version, only formula name
       ideps = []
       ivers = hold.installed_versions(name)
       formulary.dependants_of(name).each {|d| if hold.installed?(d.name); ideps << d.name end }

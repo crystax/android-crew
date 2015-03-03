@@ -7,6 +7,7 @@ describe "crew list" do
       crew 'list', 'boost'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: this command requires no arguments')
+      expect(out).to eq('')
     end
   end
 
@@ -14,6 +15,7 @@ describe "crew list" do
     it "outputs nothing" do
       clean
       crew 'list'
+      expect(err).to eq('')
       expect(out).to eq('')
       expect(exitstatus).to be_zero
     end
@@ -24,6 +26,7 @@ describe "crew list" do
       clean
       copy_formulas 'libone.rb'
       crew 'list'
+      expect(err).to eq('')
       expect(out).to eq("   libone 1.0.0\n")
       expect(exitstatus).to be_zero
     end
@@ -34,6 +37,7 @@ describe "crew list" do
       clean
       copy_formulas 'libthree.rb'
       crew 'list'
+      expect(err).to eq('')
       expect(out).to eq("   libthree 1.1.1\n" \
                         "   libthree 2.2.2\n" \
                         "   libthree 3.3.3\n")
@@ -46,6 +50,7 @@ describe "crew list" do
       clean
       copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
       crew 'list'
+      expect(err).to eq('')
       expect(out).to eq("   libone   1.0.0\n" \
                         "   libthree 1.1.1\n" \
                         "   libthree 2.2.2\n" \
@@ -62,6 +67,7 @@ describe "crew list" do
       copy_formulas 'libone.rb'
       install_release 'libone', '1.0.0'
       crew 'list'
+      expect(err).to eq('')
       expect(out).to eq(" * libone 1.0.0\n")
       expect(exitstatus).to be_zero
     end
@@ -73,6 +79,7 @@ describe "crew list" do
       copy_formulas 'libtwo.rb'
       install_release 'libtwo', '2.2.0'
       crew 'list'
+      expect(err).to eq('')
       expect(out).to eq("   libtwo 1.1.0\n" \
                         " * libtwo 2.2.0\n")
       expect(exitstatus).to be_zero
@@ -86,6 +93,7 @@ describe "crew list" do
       install_release 'libthree', '1.1.1'
       install_release 'libthree', '3.3.3'
       crew 'list'
+      expect(err).to eq('')
       expect(out).to eq(" * libthree 1.1.1\n" \
                         "   libthree 2.2.2\n" \
                         " * libthree 3.3.3\n")
@@ -101,6 +109,7 @@ describe "crew list" do
       install_release 'libtwo', '1.1.0'
       install_release 'libthree', '1.1.1'
       crew 'list'
+      expect(err).to eq('')
       expect(out).to eq(" * libone   1.0.0\n" \
                         " * libthree 1.1.1\n" \
                         "   libthree 2.2.2\n" \
