@@ -6,9 +6,23 @@ module Global
     raise "#{var} environment varible is not set"
   end
 
+  def self.set_options(opts)
+    opts.each do |o|
+      case o
+      when '--backtrace', '-b'
+        @@options[:backtrace] = true
+      else
+        raise "unknown global option: #{o}"
+      end
+    end
+  end
+
+  def self.backtrace?
+    @@options[:backtrace]
+  end
+
   VERSION = "0.2.0"
 
-  # :backtrace  -- output backgtrace with exception message
   # :log        -- debug function will output it's message
   # :curl       -- curl will be run with --verbose options
   # :_7z        -- 7z will output files while unpacking
@@ -40,6 +54,10 @@ module Global
   end
 
   USER_AGENT = "Crystax NDK Crew #{VERSION}"
+
+  private
+
+  @@options = { backtrace: false }
 end
 
 
@@ -64,8 +82,5 @@ end
 
 def exception(exc)
   error(exc)
-  # todo: print backtrace only in debug mode
-  if Global::DEBUG.include?(:backtrace)
-    STDERR.puts exc.backtrace
-  end
+  STDERR.puts exc.backtrace if Global.backtrace?
 end

@@ -4,28 +4,46 @@ require_relative 'library/global.rb'
 require_relative 'library/formula.rb'
 
 
+def split_arguments(arguments)
+  goptions = []
+  cmd = 'help'
+  args = []
+  # get global options
+  arguments.each.with_index do |arg, index|
+    if arg =~ /^-.*/
+      goptions << arg
+    else
+      cmd = arg.to_s.gsub('-', '_').downcase
+      args = arguments.slice(index + 1, arguments.length)
+      break
+    end
+  end
+  [goptions, cmd, args]
+end
+
 def require_command(cmd)
-  require_relative File.join("library", "cmd", cmd + '.rb')
+  path = File.join("library", "cmd", cmd + '.rb')
+  require_relative path
 rescue LoadError => e
-  # todo: raise unknown command only if file not found
-  #raise UnknownCommand, cmd, e.backtrace
-  raise
+  raise UnknownCommand, cmd, e.backtrace
 end
 
 
-begin
-    FileUtils.cd(Global::REPOSITORY_DIR) do
-      cmd = ARGV.size > 0 ? ARGV[0].to_s.gsub('-', '_').downcase : 'help'
-      args = ARGV.slice(1, ARGV.length)
+if __FILE__ == $0
+  begin
+    goptions, cmd, args = split_arguments(ARGV)
+    Global.set_options(goptions)
 
+    FileUtils.cd(Global::REPOSITORY_DIR) do
       require_command(cmd)
       Crew.send(cmd, args)
     end
-rescue Exception => e
-  exception(e)
-  exit 1
-else
-  #exit 1 if Crew.failed?
-  # todo: 0 or 1 here?
-  exit 0
+  rescue Exception => e
+    exception(e)
+    exit 1
+  else
+    #exit 1 if Crew.failed?
+    # todo: 0 or 1 here?
+    exit 0
+  end
 end

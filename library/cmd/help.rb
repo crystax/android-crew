@@ -1,6 +1,13 @@
 CREW_HELP = <<-EOS
-Usage: crew COMMAND [parameters]
-where COMMAND is one of the following:
+Usage: crew [OPTIONS] COMMAND [parameters]
+
+where
+
+OPTIONS are:
+  --backtrace, -b output backtrace with exception message;
+                  debug option
+
+COMMAND is one of the following:
   version         output version information
   help            show this help message
   list            list all available formulas
