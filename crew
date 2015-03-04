@@ -11,6 +11,7 @@ if [ -z $CREW_BASE_DIR ]; then
     CREW_BASE_DIR="$CREW_FILE_DIR"
 fi
 
+# todo: fix default value
 if [ -z $CREW_DOWNLOAD_BASE ]; then
     CREW_DOWNLOAD_BASE="http://ithilien:8000"
 fi

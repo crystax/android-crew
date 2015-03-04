@@ -96,7 +96,6 @@ class Formulary
     private
 
     def load_file
-      debug("(#{self.class.name}): loading #{path}")
       raise FormulaUnavailableError.new(name) unless path.file?
       Formulae.module_eval(path.read, path.to_s)
     end
@@ -172,7 +171,6 @@ class Formulary
   end
 
   def dependants_of(name)
-    debug "searching dependants of #{name}"
     list = []
     @formulary.each do |f|
       f.dependencies.each do |d|
@@ -182,7 +180,6 @@ class Formulary
         end
       end
     end
-    debug "dependants of #{name} are: #{list}"
     list
   end
 

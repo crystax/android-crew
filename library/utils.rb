@@ -12,7 +12,6 @@ module Utils
     #todo: check prog, may be substitute our's version (included with NDK)
     #      for the known prog like git, curl, 7z, etc
     cmd = to_cmd_s(prog, *args)
-    debug("cmd: #{cmd}")
 
     outstr = ""
     Open3.popen3(cmd) do |_, out, err, t|
@@ -33,8 +32,6 @@ module Utils
       ot.join
       et.join
 
-      debug("t.value: #{t.value}")
-      debug("errstr:  #{errstr}")
       raise ErrorDuringExecution.new(cmd, errstr) unless t.value.success?
     end
 

@@ -40,7 +40,6 @@ describe "crew install" do
       expect(exitstatus).to be_zero
       expect(out).to eq("calculating dependencies for libone: \n"             \
                         "  dependencies to install: [] \n"                    \
-                        "  space required: 0\n"                               \
                         "downloading #{url}\n"                                \
                         "checking integrity of the downloaded file #{file}\n" \
                         "unpacking archive\n")
@@ -60,7 +59,6 @@ describe "crew install" do
       expect(exitstatus).to be_zero
       expect(out).to eq("calculating dependencies for libtwo: \n"                \
                         "  dependencies to install: [libone] \n"                 \
-                        "  space required: 0\n"                                  \
                         "installing dependencies for libtwo:\n"                  \
                         "downloading #{depurl}\n"                                \
                         "checking integrity of the downloaded file #{depfile}\n" \
@@ -87,7 +85,6 @@ describe "crew install" do
       expect(exitstatus).to be_zero
       expect(out).to eq("calculating dependencies for libthree: \n"               \
                         "  dependencies to install: [libone, libtwo] \n"          \
-                        "  space required: 0\n"                                   \
                         "installing dependencies for libthree:\n"                 \
                         "downloading #{depurl1}\n"                                \
                         "checking integrity of the downloaded file #{depfile1}\n" \

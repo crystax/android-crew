@@ -24,7 +24,8 @@ module Crew
       puts "calculating dependencies for #{name}: "
       deps, spacereq = formula.full_dependencies(hold, version)
       puts "  dependencies to install: #{deps.to_s.gsub('"', '')} "
-      puts "  space required: #{spacereq}"
+      # todo: implement support
+      # puts "  space required: #{spacereq}"
 
       if available_disk_space < spacereq
         raise "not enough disk space to install #{name} and it's dependencies"
