@@ -11,6 +11,8 @@ module Global
       case o
       when '--backtrace', '-b'
         @@options[:backtrace] = true
+      when '--warnings', '-W'
+        @@options[:warnings] = true
       else
         raise "unknown global option: #{o}"
       end
@@ -21,9 +23,12 @@ module Global
     @@options[:backtrace]
   end
 
-  VERSION = "0.2.0"
+  def self.warnings?
+    @@options[:warnings]
+  end
 
-  # :log        -- debug function will output it's message
+  VERSION = "0.3.0"
+
   # :curl       -- curl will be run with --verbose options
   # :_7z        -- 7z will output files while unpacking
   # :temps      -- do not 'clean' in case of exceptions
@@ -57,21 +62,12 @@ module Global
 
   private
 
-  @@options = { backtrace: false }
-end
-
-
-def debug(msg)
-  # todo: output if debug (or verbose?) mode set
-  if Global::DEBUG.include?(:log)
-    puts "debug: #{msg}"
-  end
+  @@options = { backtrace: false, warnings: false }
 end
 
 
 def warning(msg)
-  # todo: output if debug (or verbose?) mode set
-  STDERR.puts "warning: #{msg}"
+  STDERR.puts "warning: #{msg}" if Global.warnings?
 end
 
 
