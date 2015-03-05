@@ -1,9 +1,12 @@
 require_relative 'spec_helper.rb'
 
 describe "crew install" do
+  before(:each) do
+      clean
+  end
+
   context "without argument" do
     it "outputs error message" do
-      clean
       crew 'install'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: this command requires a formula argument')
@@ -12,7 +15,6 @@ describe "crew install" do
 
   context "non existing name" do
     it "outputs error message" do
-      clean
       crew 'install', 'foo'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: no available formula for foo')
@@ -21,7 +23,6 @@ describe "crew install" do
 
   context "existing formula with one release and bad sha256 sum of the downloaded file" do
     it "outputs info about installing existing release" do
-      clean
       copy_formulas 'libbad.rb'
       file = "#{Global::CACHE_DIR}/libbad-1.0.0.7z"
       crew 'install', 'libbad'
@@ -32,7 +33,6 @@ describe "crew install" do
 
   context "existing formula with one release" do
     it "outputs info about installing existing release" do
-      clean
       copy_formulas 'libone.rb'
       file = 'libone-1.0.0.7z'
       url = "#{Global::DOWNLOAD_BASE}/#{file}"
@@ -48,7 +48,6 @@ describe "crew install" do
 
   context "existing formula with two releases and one dependency" do
     it "outputs info about installing dependency and the latest release" do
-      clean
       copy_formulas 'libone.rb', 'libtwo.rb'
       depfile = 'libone-1.0.0.7z'
       depurl = "#{Global::DOWNLOAD_BASE}/#{depfile}"
@@ -72,7 +71,6 @@ describe "crew install" do
 
   context "specific release of the existing formula with three releases and two dependencies" do
     it "outputs info about installing dependencies and the specified release" do
-      clean
       copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
       depfile1 = 'libone-1.0.0.7z'
       depurl1 = "#{Global::DOWNLOAD_BASE}/#{depfile1}"
@@ -95,6 +93,23 @@ describe "crew install" do
                         "\n"                                                      \
                         "downloading #{resurl}\n"                                 \
                         "checking integrity of the downloaded file #{resfile}\n"  \
+                        "unpacking archive\n")
+    end
+  end
+
+  context "existing formula with one release from the cache" do
+    it "outputs info about using cached file" do
+      copy_formulas 'libone.rb'
+      file = 'libone-1.0.0.7z'
+      url = "#{Global::DOWNLOAD_BASE}/#{file}"
+      crew 'install', 'libone'
+      crew 'remove', 'libone'
+      crew 'install', 'libone'
+      expect(exitstatus).to be_zero
+      expect(out).to eq("calculating dependencies for libone: \n"             \
+                        "  dependencies to install: [] \n"                    \
+                        "using cached file #{file}\n"                         \
+                        "checking integrity of the downloaded file #{file}\n" \
                         "unpacking archive\n")
     end
   end
