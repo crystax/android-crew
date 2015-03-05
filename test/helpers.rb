@@ -5,17 +5,36 @@ module Spec
 
   module Helpers
 
-    attr_reader :out, :err, :exitstatus
+    class CrewFailed < RuntimeError
+      def initialize(cmd, exitcode, err)
+        @cmd = cmd
+        @exitcode = exitcode
+        @err = err
+      end
+
+      def to_s
+        "failed crew command: #{@cmd}\n"
+        "  exit code: #{@exitcode}\n"
+        "  error output: #{@err}\n"
+      end
+    end
+
+    attr_reader :command, :out, :err, :exitstatus
 
     def crew(*params)
       crewbin = Pathname.new(File.dirname(__FILE__)).parent.join('crew')
-      cmd = "#{crewbin} #{params.join(' ')}"
-      run_command(cmd)
+      run_command("#{crewbin} #{params.join(' ')}")
+    end
+
+    def crew_checked(*params)
+      crew(*params)
+      raise CrewFailed.new(command, exitstatus, err) if exitstatus != 0 or err != ''
     end
 
     def run_command(cmd)
-      @out = ""
-      @err = ""
+      @command = cmd
+      @out = ''
+      @err = ''
       @exitstatus = nil
 
       Open3.popen3(cmd) do |_, stdout, stderr, waitthr|
@@ -36,6 +55,10 @@ module Spec
 
         @exitstatus = waitthr && waitthr.value.exitstatus
       end
+    end
+
+    def in_cache?(name, version)
+      File.exists?(File.join(Global::CACHE_DIR, "#{name}-#{version}.7z"))
     end
 
     def clean_cache
