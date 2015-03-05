@@ -6,7 +6,6 @@ where
 OPTIONS are:
   --backtrace, -b output backtrace with exception message;
                   debug option
-  --warnings, -W  output warning messages; debug option
 
 COMMAND is one of the following:
   version         output version information

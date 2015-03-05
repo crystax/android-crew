@@ -11,8 +11,6 @@ module Global
       case o
       when '--backtrace', '-b'
         @@options[:backtrace] = true
-      when '--warnings', '-W'
-        @@options[:warnings] = true
       else
         raise "unknown global option: #{o}"
       end
@@ -21,10 +19,6 @@ module Global
 
   def self.backtrace?
     @@options[:backtrace]
-  end
-
-  def self.warnings?
-    @@options[:warnings]
   end
 
   VERSION = "0.3.0"
@@ -62,12 +56,12 @@ module Global
 
   private
 
-  @@options = { backtrace: false, warnings: false }
+  @@options = { backtrace: false }
 end
 
 
 def warning(msg)
-  STDERR.puts "warning: #{msg}" if Global.warnings?
+  STDERR.puts "warning: #{msg}"
 end
 
 
