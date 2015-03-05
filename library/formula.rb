@@ -60,8 +60,12 @@ class Formula
     file = filename(rel)
     url = "#{Global::DOWNLOAD_BASE}/#{file}"
     cachepath = File.join(Global::CACHE_DIR, file)
-    puts "downloading #{url}"
-    Utils.download(url, cachepath)
+    if File.exists? cachepath
+      puts "using cached file #{file}"
+    else
+      puts "downloading #{url}"
+      Utils.download(url, cachepath)
+    end
 
     puts "checking integrity of the downloaded file #{file}"
     sha256 = Digest::SHA256.hexdigest(File.read(cachepath))
@@ -111,14 +115,22 @@ class Formula
 
     def release(r)
       @releases = [] if !@releases
-      # todo: check release keys in r
+      check_required_keys(r)
+      # NB: release are sorted in the order they're included into formula
       @releases << r
-      # todo: sort by version
     end
 
     def depends_on(name, options = {})
       @dependencies = [] if !@dependencies
       @dependencies << Dependency.new(name, options)
+    end
+
+    private
+
+    def check_required_keys(r)
+      # todo: add filename?
+      raise ":version key not present in the release" unless r.has_key?(:version)
+      raise ":sha256 key not present in the release" unless r.has_key?(:sha256)
     end
   end
 
