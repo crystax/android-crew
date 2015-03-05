@@ -30,7 +30,6 @@ module Crew
       end
 
       # NB: Hold.remove is a class method and does NOT updates hold internal data
-      # todo: assert(ivers.count > 0)
       if ivers.count == 1
         Hold.remove(name, ivers[0])
       elsif !version
