@@ -38,12 +38,18 @@ module Spec
       end
     end
 
+    def clean_cache
+      FileUtils.remove_dir(Global::CACHE_DIR, true)
+      FileUtils.mkdir_p(Global::CACHE_DIR)
+    end
+
     def clean_hold
       FileUtils.remove_dir(Global::HOLD_DIR, true)
       FileUtils.mkdir_p(Global::HOLD_DIR)
     end
 
     def clean
+      clean_cache
       clean_hold
       FileUtils.remove_dir(Global::FORMULA_DIR, true)
       FileUtils.mkdir_p(Global::FORMULA_DIR)
