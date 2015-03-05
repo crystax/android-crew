@@ -16,6 +16,7 @@ CREW_NDK_DIR       = ndk
 export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR
 
 
+all: test
 test: unit-tests rspec-tests
 
 unit-tests:
