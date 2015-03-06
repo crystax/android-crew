@@ -143,6 +143,10 @@ module Spec
       end
     end
 
+    def add_garbage_into_hold name
+      FileUtils.cp 'data/garbage',  File.join(Global::HOLD_DIR, name, 'garbage')
+    end
+
     def origin_dir
       Global::BASE_DIR + '.git'
     end

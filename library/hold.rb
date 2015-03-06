@@ -20,7 +20,7 @@ class Hold
               next
             end
             if !File.directory?(ver)
-              warning("directory #e{File.join(Global::HOLD_DIR, name)} contains foreign object #{ver}")
+              warning("directory #{File.join(Global::HOLD_DIR, name)} contains foreign object: #{ver}")
             else
               @installed[name] << ver
             end

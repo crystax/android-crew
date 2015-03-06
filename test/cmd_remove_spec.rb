@@ -21,6 +21,16 @@ describe "crew remove" do
     end
   end
 
+  context "non existing name and garbage in the formulary" do
+    it "outputs warning about garbage and error message" do
+      copy_formulas 'garbage'
+      crew 'remove', 'foo'
+      expect(exitstatus).to_not be_zero
+      expect(err).to eq("warning: not a formula file in formula dir: garbage\n" \
+                        "error: foo not installed\n")
+    end
+  end
+
   context "one installed release with dependants" do
     it "outputs error message" do
       copy_formulas 'libone.rb', 'libtwo.rb'
