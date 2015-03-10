@@ -19,7 +19,10 @@ if [ -z $CREW_NDK_DIR ]; then
     CREW_NDK_DIR=$(dirname $CREW_FILE_DIR)
 fi
 
-export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR
+if [ -z $CREW_RUBY_BIN_DIR ]; then
+    $CREW_RUBY_BIN_DIR="$CREW_NDK_DIR/tools/ruby/bin"
+fi
 
-# todo: check if we have ruby with NDK and if yes use it
-exec ruby -W0 "$CREW_FILE_DIR/crew.rb" "$@"
+export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_RUBY_BIN_DIR
+
+exec $CREW_RUBY_BIN_DIR/ruby -W0 "$CREW_FILE_DIR/crew.rb" "$@"
