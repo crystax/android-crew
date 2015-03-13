@@ -4,7 +4,6 @@ rspec_files = cmd_nocmd_spec.rb cmd_version_spec.rb cmd_help_spec.rb cmd_list_sp
               cmd_cleanup_spec.rb cmd_install_spec.rb cmd_remove_spec.rb cmd_update_spec.rb            \
               cmd_upgrade_spec.rb
 
-
 #
 # What we do to find ruby:
 #  1. try environment varible
@@ -12,27 +11,33 @@ rspec_files = cmd_nocmd_spec.rb cmd_version_spec.rb cmd_help_spec.rb cmd_list_sp
 #     and try ruby from tools dir
 #  3. fallback to system ruby
 #
-ifdef CREW_RUBY_BIN_DIR
-RUBY  = $(CREW_RUBY_BIN_DIR)/ruby
-RSPEC = $(CREW_RUBY_BIN_DIR)/rspec
-$(info Using path to ruby from environment: $(CREW_RUBY_BIN_DIR))
-else ifneq ($(wildcard ../../../tools/bin/ruby),)
-CREW_RUBY_BIN_DIR = $(realpath $(../../../tools/bin))
-RUBY  = $(CREW_RUBY_BIN_DIR)/ruby
-RSPEC = $(CREW_RUBY_BIN_DIR)/rspec
-$(info Using ruby form NDK: $(CREW_RUBY_BIN_DIR))
+ifdef CREW_RUBY_DIR
+RUBY  = $(CREW_RUBY_DIR)/bin/ruby
+RSPEC = $(CREW_RUBY_DIR)/bin/ruby $(CREW_RUBY_DIR)/bin/rspec
+$(info Using path to ruby from environment: $(CREW_RUBY_DIR))
+else ifneq ($(wildcard ../../tools/ruby),)
+CREW_RUBY_DIR = $(realpath ../../tools/ruby)
+RUBY  = $(CREW_RUBY_DIR)/bin/ruby
+RSPEC = $(CREW_RUBY_DIR)/bin/ruby $(CREW_RUBY_DIR)/bin/rspec
+$(info Using ruby form NDK: $(CREW_RUBY_DIR))
 else
 RUBY  = ruby
 RSPEC = rspec
-CREW_RUBY_BIN_DIR = $(dir $(shell which ruby))
-$(info Using system ruby: $(CREW_RUBY_BIN_DIR))
+CREW_RUBY_DIR = $(dir $(dir $(shell which ruby)))
+$(info Using system ruby: $(CREW_RUBY_DIR))
 endif
 
 CREW_BASE_DIR      = crew
-CREW_DOWNLOAD_BASE = http://127.0.0.1:9999
+CREW_DOWNLOAD_BASE = http://$(shell hostname -s):9999
 CREW_NDK_DIR       = ndk
 
-export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_RUBY_BIN_DIR
+CREW_RUBY_VERSION = 2.2.0
+
+#GEM_PATH = $(CREW_RUBY_DIR)/lib/ruby/gems/$(CREW_RUBY_VERSION)
+#RUBYLIB  = $(CREW_RUBY_DIR)/lib/ruby/$(CREW_RUBY_VERSION)
+
+export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_RUBY_DIR
+#export GEM_PATH RUBYLIB
 
 
 all: test

@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# Users may have these set, pointing the system Ruby
-# at non-system gem paths
 unset GEM_HOME
 unset GEM_PATH
 
 CREW_FILE_DIR=$(dirname $0)
+CREW_RUBY_VERSION="2.2.0"
 
 if [ -z $CREW_BASE_DIR ]; then
     CREW_BASE_DIR="$CREW_FILE_DIR"
@@ -19,10 +18,10 @@ if [ -z $CREW_NDK_DIR ]; then
     CREW_NDK_DIR=$(dirname $CREW_FILE_DIR)
 fi
 
-if [ -z $CREW_RUBY_BIN_DIR ]; then
-    $CREW_RUBY_BIN_DIR="$CREW_NDK_DIR/tools/ruby/bin"
+if [ -z $CREW_RUBY_DIR ]; then
+    CREW_RUBY_DIR="$CREW_NDK_DIR/tools/ruby"
 fi
 
-export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_RUBY_BIN_DIR
+export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_RUBY_DIR
 
-exec $CREW_RUBY_BIN_DIR/ruby -W0 "$CREW_FILE_DIR/crew.rb" "$@"
+exec $CREW_RUBY_DIR/bin/ruby -W0 "$CREW_FILE_DIR/crew.rb" "$@"

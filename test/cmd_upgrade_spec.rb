@@ -35,7 +35,7 @@ describe "crew upgrade" do
       crew 'upgrade'
       expect(err).to eq('')
       expect(out).to eq("Will install: libtwo-2.2.0\n"                                \
-                        "downloading http://ithilien.local:9999/libtwo-2.2.0.7z\n"    \
+                        "downloading http://#{hostname}:9999/libtwo-2.2.0.7z\n"       \
                         "checking integrity of the downloaded file libtwo-2.2.0.7z\n" \
                         "unpacking archive\n")
       expect(exitstatus).to be_zero
@@ -55,10 +55,10 @@ describe "crew upgrade" do
       crew 'upgrade'
       expect(err).to eq('')
       expect(out).to eq("Will install: libthree-3.3.3 libtwo-2.2.0\n"                   \
-                        "downloading http://ithilien.local:9999/libthree-3.3.3.7z\n"    \
+                        "downloading http://#{hostname}:9999/libthree-3.3.3.7z\n"       \
                         "checking integrity of the downloaded file libthree-3.3.3.7z\n" \
                         "unpacking archive\n"                                           \
-                        "downloading http://ithilien.local:9999/libtwo-2.2.0.7z\n"      \
+                        "downloading http://#{hostname}:9999/libtwo-2.2.0.7z\n"         \
                         "checking integrity of the downloaded file libtwo-2.2.0.7z\n"   \
                         "unpacking archive\n")
       expect(exitstatus).to be_zero

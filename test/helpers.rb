@@ -1,5 +1,6 @@
 require 'pathname'
 require 'open3'
+require 'socket'
 
 module Spec
 
@@ -55,6 +56,10 @@ module Spec
 
         @exitstatus = waitthr && waitthr.value.exitstatus
       end
+    end
+
+    def hostname
+      Socket.gethostbyname(Socket.gethostname).first
     end
 
     def in_cache?(name, version)
