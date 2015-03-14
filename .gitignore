@@ -1,5 +1,5 @@
 .DS_Store
-cache
+cache/*.7z
 *~
 test/crew
 test/crew.git
