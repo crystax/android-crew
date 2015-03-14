@@ -53,8 +53,9 @@ module Utils
   end
 
   def self.unpack(archive, outdir)
+    # todo: use this checks when ndk's 7z will be ready
     _7z = Pathname.new(Global::CREW_7Z_PROG)
-    raise "#{_7z} is not executable" unless _7z.exist? and _7z.executable?
+    #raise "#{_7z} is not executable" unless _7z.exist? and _7z.executable?
 
     args = ["x", "-y", "-o#{outdir}", archive]
     run_command(_7z, *args)

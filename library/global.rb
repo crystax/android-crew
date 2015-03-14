@@ -40,7 +40,7 @@ module Global
 
   # todo: use progs included with NDK
   CREW_CURL_PROG = '/usr/bin/curl'
-  CREW_7Z_PROG = '/usr/local/bin/7z'
+  CREW_7Z_PROG = '7z'
 
   # todo:
   if RUBY_PLATFORM =~ /darwin/
