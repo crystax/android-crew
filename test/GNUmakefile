@@ -33,18 +33,24 @@ CREW_NDK_DIR       = ndk
 
 CREW_RUBY_VERSION = 2.2.0
 
-#GEM_PATH = $(CREW_RUBY_DIR)/lib/ruby/gems/$(CREW_RUBY_VERSION)
-#RUBYLIB  = $(CREW_RUBY_DIR)/lib/ruby/$(CREW_RUBY_VERSION)
-
 export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_RUBY_DIR
-#export GEM_PATH RUBYLIB
 
 
-all: test
+.PHONY: all test clean dirs unit-tests rspec-tests
+
+all: test clean dirs
+
 test: unit-tests rspec-tests
 
-unit-tests:
+clean:
+	$(RM) -rf crew crew.git ndk
+
+unit-tests: dirs
 	$(RUBY) -I ../library test_crew.rb
 
-rspec-tests:
+rspec-tests: dirs
 	$(RSPEC) $(rspec_files)
+
+dirs:
+	-mkdir -p ndk/sources
+	-mkdir -p crew/cache crew/formula
