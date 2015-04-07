@@ -66,8 +66,12 @@ module Spec
       File.exists?(File.join(Global::CACHE_DIR, "#{name}-#{version}.7z"))
     end
 
+    def cache_empty?
+      Dir["#{Global::CACHE_DIR}/*"].empty?
+    end
+
     def clean_cache
-      FileUtils.remove_dir(Global::CACHE_DIR, true)
+      FileUtils.remove_dir(Global::CACHE_DIR)
       FileUtils.mkdir_p(Global::CACHE_DIR)
     end
 

@@ -10,6 +10,7 @@ describe "crew install" do
       crew 'install'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: this command requires a formula argument')
+      expect(cache_empty?).to eq(true)
     end
   end
 
@@ -18,6 +19,7 @@ describe "crew install" do
       crew 'install', 'foo'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: no available formula for foo')
+      expect(cache_empty?).to eq(true)
     end
   end
 
@@ -28,6 +30,7 @@ describe "crew install" do
       crew 'install', 'libbad'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq("error: bad SHA256 sum of the downloaded file #{file}")
+      expect(in_cache?('libbad', '1.0.0')).to eq(true)
     end
   end
 
@@ -43,6 +46,7 @@ describe "crew install" do
                         "downloading #{url}\n"                                \
                         "checking integrity of the downloaded file #{file}\n" \
                         "unpacking archive\n")
+      expect(in_cache?('libone', '1.0.0')).to eq(true)
     end
   end
 
@@ -66,6 +70,8 @@ describe "crew install" do
                         "downloading #{resurl}\n"                                \
                         "checking integrity of the downloaded file #{resfile}\n" \
                         "unpacking archive\n")
+      expect(in_cache?('libone', '1.0.0')).to eq(true)
+      expect(in_cache?('libtwo', '2.2.0')).to eq(true)
     end
   end
 
@@ -94,6 +100,9 @@ describe "crew install" do
                         "downloading #{resurl}\n"                                 \
                         "checking integrity of the downloaded file #{resfile}\n"  \
                         "unpacking archive\n")
+      expect(in_cache?('libone', '1.0.0')).to eq(true)
+      expect(in_cache?('libtwo', '2.2.0')).to eq(true)
+      expect(in_cache?('libthree', '2.2.2')).to eq(true)
     end
   end
 
@@ -111,6 +120,7 @@ describe "crew install" do
                         "using cached file #{file}\n"                         \
                         "checking integrity of the downloaded file #{file}\n" \
                         "unpacking archive\n")
+      expect(in_cache?('libone', '1.0.0')).to eq(true)
     end
   end
 end
