@@ -119,7 +119,7 @@ class Formulary
     end
   end
 
-  # Return a Formula instance for the given formua name.
+  # Return a Formula instance for the given formula name.
   # `ref` is string containing:
   # * a formula name
   # * a formula pathname
