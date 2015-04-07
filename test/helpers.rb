@@ -58,12 +58,20 @@ module Spec
       end
     end
 
+    def result
+      exitstatus == 0 and err == '' ? :ok : [exitstatus, err]
+    end
+
     def hostname
       Socket.gethostbyname(Socket.gethostname).first
     end
 
+    def archive_name(name, version)
+      "#{name}-#{version}.7z"
+    end
+
     def in_cache?(name, version)
-      File.exists?(File.join(Global::CACHE_DIR, "#{name}-#{version}.7z"))
+      File.exists?(File.join(Global::CACHE_DIR, archive_name(name, version)))
     end
 
     def cache_empty?

@@ -51,18 +51,19 @@ class Formula
     [result, size]
   end
 
-  def install(version = nil)
-    rel = version ? (releases.select { |r| r[:version] == version })[0] : releases.last
-    if !rel
-      raise "#{name} does not have release with version #{version}"
-    end
+  def cache_file(version)
+    File.join(Global::CACHE_DIR, filename(find_release(version)))
+  end
 
-    file = filename(rel)
-    url = "#{Global::DOWNLOAD_BASE}/#{file}"
+  def install(version = nil)
+    rel = find_release version
+    file = filename rel
     cachepath = File.join(Global::CACHE_DIR, file)
+
     if File.exists? cachepath
       puts "using cached file #{file}"
     else
+      url = "#{Global::DOWNLOAD_BASE}/#{file}"
       puts "downloading #{url}"
       Utils.download(url, cachepath)
     end
@@ -135,6 +136,14 @@ class Formula
   end
 
   private
+
+  def find_release(version = nil)
+    rel = version ? (releases.select { |r| r[:version] == version })[0] : releases.last
+    if !rel
+      raise "#{name} does not have release with version #{version}"
+    end
+    rel
+  end
 
   def filename(release)
     patch = release[:patch] ? "_#{release[:patch]}" : ""
