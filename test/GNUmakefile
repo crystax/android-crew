@@ -4,6 +4,8 @@ rspec_files = cmd_nocmd_spec.rb cmd_version_spec.rb cmd_help_spec.rb cmd_list_sp
               cmd_cleanup_spec.rb cmd_install_spec.rb cmd_remove_spec.rb cmd_update_spec.rb            \
               cmd_upgrade_spec.rb
 
+rspec_cmd_tests = $(patubst cmd_%_spec,test-%,$(basename $(rspec_files)))
+
 #
 # What we do to find ruby:
 #  1. try environment varible
@@ -36,7 +38,7 @@ CREW_RUBY_VERSION = 2.2.0
 export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_RUBY_DIR
 
 
-.PHONY: all test clean dirs unit-tests rspec-tests
+.PHONY: all test clean dirs unit-tests rspec-tests $(rspec_cmd_tests)
 
 all: test clean dirs
 
@@ -50,6 +52,9 @@ unit-tests: dirs
 
 rspec-tests: dirs
 	$(RSPEC) $(rspec_files)
+
+test-%: dirs
+	$(RSPEC) cmd_$*_spec.rb
 
 dirs:
 	-mkdir -p ndk/sources
