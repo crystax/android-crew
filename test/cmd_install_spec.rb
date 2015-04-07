@@ -22,7 +22,7 @@ describe "crew install" do
   end
 
   context "existing formula with one release and bad sha256 sum of the downloaded file" do
-    it "outputs info about installing existing release" do
+    it "outputs error message" do
       copy_formulas 'libbad.rb'
       file = "#{Global::CACHE_DIR}/libbad-1.0.0.7z"
       crew 'install', 'libbad'
