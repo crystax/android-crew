@@ -15,13 +15,20 @@ if [ -z $CREW_DOWNLOAD_BASE ]; then
 fi
 
 if [ -z $CREW_NDK_DIR ]; then
-    CREW_NDK_DIR=$(dirname $CREW_FILE_DIR)
+    CREW_NDK_DIR="../$CREW_FILE_DIR"
+fi
+
+if [ -z $CREW_TOOLS_DIR ]; then
+    CREW_TOOLS_DIR="$CREW_NDK_DIR/tools"
 fi
 
 if [ -z $CREW_RUBY_DIR ]; then
-    CREW_RUBY_DIR="$CREW_NDK_DIR/tools/ruby"
+    CREW_RUBY_DIR="$CREW_TOOLS_DIR/ruby"
 fi
 
-export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_RUBY_DIR
+GIT_EXEC_PATH="$CREW_TOOLS_DIR/git/libexec/git-core"
+
+export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_TOOLS_DIR CREW_RUBY_DIR
+export GIT_EXEC_PATH
 
 exec $CREW_RUBY_DIR/bin/ruby -W0 "$CREW_FILE_DIR/crew.rb" "$@"

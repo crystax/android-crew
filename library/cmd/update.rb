@@ -34,12 +34,12 @@ module Crew
     end
 
     def pull!
-      Utils.run_command("git", "checkout", "-q", "master")
+      Utils.git "checkout", "-q", "master"
 
       @initial_revision = read_current_revision
 
       # ensure we don't munge line endings on checkout
-      Utils.run_command("git", "config", "core.autocrlf", "false")
+      Utils.git "config", "core.autocrlf", "false"
 
       args = ["pull"]
       args << "-q" unless Global::DEBUG.include?(:git)
@@ -47,7 +47,7 @@ module Crew
       # the refspec ensures that 'origin/master' gets updated
       args << "refs/heads/master:refs/remotes/origin/master"
 
-      reset_on_interrupt { Utils.run_command("git", *args) }
+      reset_on_interrupt { Utils.git *args }
 
       @current_revision = read_current_revision
     end
@@ -56,7 +56,7 @@ module Crew
       Utils.ignore_interrupts { yield }
     ensure
       if $?.signaled? && $?.termsig == 2 # SIGINT
-        Utils.run_command("git", "reset", "--hard", @initial_revision)
+        Utils.git "reset", "--hard", @initial_revision
       end
     end
 
@@ -88,11 +88,11 @@ module Crew
     private
 
     def read_current_revision
-      Utils.run_command("git", "rev-parse", "-q", "--verify", "HEAD").chomp
+      Utils.git("rev-parse", "-q", "--verify", "HEAD").chomp
     end
 
     def diff
-      Utils.run_command("git", "diff-tree", "-r", "--name-status", "--diff-filter=AMDR", "-M85%", initial_revision, current_revision)
+      Utils.git "diff-tree", "-r", "--name-status", "--diff-filter=AMDR", "-M85%", initial_revision, current_revision
     end
   end
 

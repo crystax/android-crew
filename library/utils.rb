@@ -2,9 +2,6 @@ require 'open3'
 require_relative 'global.rb'
 require_relative 'exceptions.rb'
 
-# todo: describe how crew works with external programs, what are "known"
-#       programs like git, ruby, curl, etc
-
 module Utils
 
   # todo: add hash with options like this { stdout: drop|string, stdin: ignore }
@@ -39,9 +36,6 @@ module Utils
   end
 
   def self.download(url, outpath)
-    curl = Pathname.new(Global::CREW_CURL_PROG)
-    check_program(curl)
-
     args = ['-f#LA', Global::USER_AGENT, url, "-o", outpath]
     # See https://github.com/Homebrew/homebrew/issues/6103
     # todo: MacOS or not MacOS?
@@ -49,23 +43,19 @@ module Utils
     args << "--verbose" if Global::DEBUG.include?(:curl)
     args << "--silent" unless $stdout.tty?
 
-    run_command(curl, *args)
+    run_command(Global::CREW_CURL_PROG, *args)
   end
 
   def self.unpack(archive, outdir)
-    # todo: use this checks when ndk's 7z will be ready
-    _7z = Pathname.new(Global::CREW_7Z_PROG)
-    #raise "#{_7z} is not executable" unless _7z.exist? and _7z.executable?
-
     args = ["x", "-y", "-o#{outdir}", archive]
-    run_command(_7z, *args)
+    run_command(Global::CREW_7Z_PROG, *args)
+  end
+
+  def self.git(*args)
+    run_command(Global::CREW_GIT_PROG, *args)
   end
 
   private
-
-  def self.check_program(prog)
-    raise "#{prog} is not executable" unless prog.exist? and prog.executable?
-  end
 
   def self.to_cmd_s(*args)
     # todo: escape ( and ) too

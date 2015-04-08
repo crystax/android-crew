@@ -2,6 +2,14 @@ require 'pathname'
 
 module Global
 
+  private
+
+  def self.check_program(prog)
+    raise "#{prog} is not executable" unless prog.exist? and prog.executable?
+  end
+
+  public
+
   def self.raise_env_var_not_set(var)
     raise "#{var} environment varible is not set"
   end
@@ -29,18 +37,23 @@ module Global
   # :stdout     -- show output of the external commands executed
   DEBUG = []
 
-  DOWNLOAD_BASE = ENV["CREW_DOWNLOAD_BASE"] or raise_env_var_not_set "CREW_DOWNLOAD_BASE"
-  BASE_DIR = ENV["CREW_BASE_DIR"] or raise_env_var_not_set "CREW_BASE_DIR"
-  NDK_DIR = ENV["CREW_NDK_DIR"] or raise_env_var_not_set "CREW_NDK_DIR"
+  DOWNLOAD_BASE = ENV['CREW_DOWNLOAD_BASE'] or raise_env_var_not_set "CREW_DOWNLOAD_BASE"
+  BASE_DIR      = ENV['CREW_BASE_DIR']      or raise_env_var_not_set "CREW_BASE_DIR"
+  NDK_DIR       = ENV['CREW_NDK_DIR']       or raise_env_var_not_set "CREW_NDK_DIR"
+  TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     or raise_env_var_not_set "CREW_TOOLS_DIR"
 
-  HOLD_DIR = Pathname.new(File.join(NDK_DIR, 'sources')).realpath
-  FORMULA_DIR = Pathname.new(File.join(BASE_DIR, 'formula')).realpath
-  CACHE_DIR = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
+  HOLD_DIR       = Pathname.new(File.join(NDK_DIR, 'sources')).realpath
+  FORMULA_DIR    = Pathname.new(File.join(BASE_DIR, 'formula')).realpath
+  CACHE_DIR      = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
   REPOSITORY_DIR = Pathname.new(BASE_DIR).realpath
 
-  # todo: use progs included with NDK
-  CREW_CURL_PROG = '/usr/bin/curl'
-  CREW_7Z_PROG = '7z'
+  CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'curl', 'bin', 'curl')).realpath
+  CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'p7zip', '7za')).realpath
+  CREW_GIT_PROG  = Pathname.new(File.join(TOOLS_DIR, 'git', 'bin', 'git')).realpath
+
+  check_program(CREW_CURL_PROG)
+  check_program(CREW_7Z_PROG)
+  check_program(CREW_GIT_PROG)
 
   # todo:
   if RUBY_PLATFORM =~ /darwin/
@@ -57,6 +70,8 @@ module Global
   private
 
   @@options = { backtrace: false }
+
+
 end
 
 
