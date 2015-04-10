@@ -15,7 +15,7 @@ if [ -z $CREW_DOWNLOAD_BASE ]; then
 fi
 
 if [ -z $CREW_NDK_DIR ]; then
-    CREW_NDK_DIR="../$CREW_FILE_DIR"
+    CREW_NDK_DIR="../../$CREW_FILE_DIR"
 fi
 
 if [ -z $CREW_TOOLS_DIR ]; then
@@ -23,7 +23,7 @@ if [ -z $CREW_TOOLS_DIR ]; then
 fi
 
 if [ -z $CREW_RUBY_DIR ]; then
-    CREW_RUBY_DIR="$CREW_TOOLS_DIR/ruby"
+    CREW_RUBY_DIR="$CREW_TOOLS_DIR/ruby/bin"
 fi
 
 GIT_EXEC_PATH="$CREW_TOOLS_DIR/git/libexec/git-core"

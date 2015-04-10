@@ -32,7 +32,7 @@ endif
 CREW_BASE_DIR      = crew
 CREW_DOWNLOAD_BASE = http://$(shell hostname -s):9999
 CREW_NDK_DIR       = ndk
-CREW_TOOLS_DIR     = $(realpath ../../tools)
+CREW_TOOLS_DIR     = $(realpath ../../../tools)
 GIT_EXEC_PATH      = $(CREW_TOOLS_DIR)/git/libexec/git-core
 
 CREW_RUBY_VERSION = 2.2.0
