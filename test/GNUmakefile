@@ -14,13 +14,13 @@ rspec_cmd_tests = $(patubst cmd_%_spec,test-%,$(basename $(rspec_files)))
 #  3. fallback to system ruby
 #
 ifdef CREW_RUBY_DIR
-RUBY  = $(CREW_RUBY_DIR)/bin/ruby
-RSPEC = $(CREW_RUBY_DIR)/bin/ruby $(CREW_RUBY_DIR)/bin/rspec
+RUBY  = $(CREW_RUBY_DIR)/ruby
+RSPEC = $(CREW_RUBY_DIR)/ruby $(CREW_RUBY_DIR)/rspec
 $(info Using path to ruby from environment: $(CREW_RUBY_DIR))
 else ifneq ($(wildcard ../../tools/ruby),)
-CREW_RUBY_DIR = $(realpath ../../tools/ruby)
-RUBY  = $(CREW_RUBY_DIR)/bin/ruby
-RSPEC = $(CREW_RUBY_DIR)/bin/ruby $(CREW_RUBY_DIR)/bin/rspec
+CREW_RUBY_DIR = $(realpath ../../tools/ruby/bin)
+RUBY  = $(CREW_RUBY_DIR)/ruby
+RSPEC = $(CREW_RUBY_DIR)/ruby $(CREW_RUBY_DIR)/rspec
 $(info Using ruby form NDK: $(CREW_RUBY_DIR))
 else
 RUBY  = ruby

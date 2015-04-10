@@ -31,4 +31,4 @@ GIT_EXEC_PATH="$CREW_TOOLS_DIR/git/libexec/git-core"
 export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_TOOLS_DIR CREW_RUBY_DIR
 export GIT_EXEC_PATH
 
-exec $CREW_RUBY_DIR/bin/ruby -W0 "$CREW_FILE_DIR/crew.rb" "$@"
+exec $CREW_RUBY_DIR/ruby -W0 "$CREW_FILE_DIR/crew.rb" "$@"
