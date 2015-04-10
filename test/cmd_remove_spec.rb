@@ -65,7 +65,7 @@ describe "crew remove" do
       crew_checked 'install', 'libtwo:2.2.0'
       crew_checked 'install', 'libthree:2.2.2'
       crew 'remove', 'libtwo:1.1.0'
-      expect(exitstatus).to be_zero
+      expect(result).to eq(:ok)
       expect(out.chomp).to eq('uninstalling libtwo-1.1.0')
       expect(in_cache?('libone', '1.0.0')).to eq(true)
       expect(in_cache?('libtwo', '2.2.0')).to eq(true)
@@ -78,7 +78,7 @@ describe "crew remove" do
       copy_formulas 'libone.rb'
       crew_checked 'install', 'libone:1.0.0'
       crew 'remove', 'libone'
-      expect(exitstatus).to be_zero
+      expect(result).to eq(:ok)
       expect(out).to eq("uninstalling libone-1.0.0\n")
       expect(in_cache?('libone', '1.0.0')).to eq(true)
     end
@@ -91,8 +91,9 @@ describe "crew remove" do
       crew_checked 'install', 'libtwo:1.1.0'
       crew_checked 'install', 'libtwo:2.2.0'
       crew 'remove', 'libtwo:all'
-      expect(exitstatus).to be_zero
-      expect(out).to eq("uninstalling libtwo-1.1.0\nuninstalling libtwo-2.2.0\n")
+      expect(result).to eq(:ok)
+      expect(out.split("\n").sort).to eq(["uninstalling libtwo-1.1.0",
+                                          "uninstalling libtwo-2.2.0"])
       expect(in_cache?('libtwo', '1.1.0')).to eq(true)
       expect(in_cache?('libtwo', '2.2.0')).to eq(true)
     end

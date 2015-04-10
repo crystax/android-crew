@@ -17,9 +17,8 @@ describe "crew list" do
   context "no formulas and empty hold" do
     it "outputs nothing" do
       crew 'list'
-      expect(err).to eq('')
+      expect(result).to eq(:ok)
       expect(out).to eq('')
-      expect(exitstatus).to be_zero
     end
   end
 
@@ -27,9 +26,8 @@ describe "crew list" do
     it "outputs info about one not installed releases" do
       copy_formulas 'libone.rb'
       crew 'list'
-      expect(err).to eq('')
+      expect(result).to eq(:ok)
       expect(out).to eq("   libone 1.0.0\n")
-      expect(exitstatus).to be_zero
     end
   end
 
@@ -47,11 +45,10 @@ describe "crew list" do
     it "outputs info about three not installed releases" do
       copy_formulas 'libthree.rb'
       crew 'list'
-      expect(err).to eq('')
+      expect(result).to eq(:ok)
       expect(out).to eq("   libthree 1.1.1\n" \
                         "   libthree 2.2.2\n" \
                         "   libthree 3.3.3\n")
-      expect(exitstatus).to be_zero
     end
   end
 
@@ -59,14 +56,13 @@ describe "crew list" do
     it "outputs info about all available releases" do
       copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
       crew 'list'
-      expect(err).to eq('')
-      expect(out).to eq("   libone   1.0.0\n" \
-                        "   libthree 1.1.1\n" \
-                        "   libthree 2.2.2\n" \
-                        "   libthree 3.3.3\n" \
-                        "   libtwo   1.1.0\n" \
-                        "   libtwo   2.2.0\n")
-      expect(exitstatus).to be_zero
+      expect(result).to eq(:ok)
+      expect(out.split("\n").sort).to eq(["   libone   1.0.0",
+                                          "   libthree 1.1.1",
+                                          "   libthree 2.2.2",
+                                          "   libthree 3.3.3",
+                                          "   libtwo   1.1.0",
+                                          "   libtwo   2.2.0"])
     end
   end
 
@@ -75,9 +71,8 @@ describe "crew list" do
       copy_formulas 'libone.rb'
       install_release 'libone', '1.0.0'
       crew 'list'
-      expect(err).to eq('')
+      expect(result).to eq(:ok)
       expect(out).to eq(" * libone 1.0.0\n")
-      expect(exitstatus).to be_zero
     end
   end
 
@@ -86,10 +81,9 @@ describe "crew list" do
       copy_formulas 'libtwo.rb'
       install_release 'libtwo', '2.2.0'
       crew 'list'
-      expect(err).to eq('')
+      expect(result).to eq(:ok)
       expect(out).to eq("   libtwo 1.1.0\n" \
                         " * libtwo 2.2.0\n")
-      expect(exitstatus).to be_zero
     end
   end
 
@@ -99,11 +93,10 @@ describe "crew list" do
       install_release 'libthree', '1.1.1'
       install_release 'libthree', '3.3.3'
       crew 'list'
-      expect(err).to eq('')
+      expect(result).to eq(:ok)
       expect(out).to eq(" * libthree 1.1.1\n" \
                         "   libthree 2.2.2\n" \
                         " * libthree 3.3.3\n")
-      expect(exitstatus).to be_zero
     end
   end
 
@@ -114,14 +107,13 @@ describe "crew list" do
       install_release 'libtwo', '1.1.0'
       install_release 'libthree', '1.1.1'
       crew 'list'
-      expect(err).to eq('')
-      expect(out).to eq(" * libone   1.0.0\n" \
-                        " * libthree 1.1.1\n" \
-                        "   libthree 2.2.2\n" \
-                        "   libthree 3.3.3\n" \
-                        " * libtwo   1.1.0\n" \
-                        "   libtwo   2.2.0\n")
-      expect(exitstatus).to be_zero
+      expect(result).to eq(:ok)
+      expect(out.split("\n").sort).to eq(["   libthree 2.2.2",
+                                          "   libthree 3.3.3",
+                                          "   libtwo   2.2.0",
+                                          " * libone   1.0.0",
+                                          " * libthree 1.1.1",
+                                          " * libtwo   1.1.0"])
     end
   end
 
@@ -134,12 +126,12 @@ describe "crew list" do
       add_garbage_into_hold 'libone'
       crew 'list'
       expect(err).to eq("warning: directory #{File.join(Global::HOLD_DIR, 'libone')} contains foreign object: garbage\n")
-      expect(out).to eq(" * libone   1.0.0\n" \
-                        " * libthree 1.1.1\n" \
-                        "   libthree 2.2.2\n" \
-                        "   libthree 3.3.3\n" \
-                        " * libtwo   1.1.0\n" \
-                        "   libtwo   2.2.0\n")
+      expect(out.split("\n").sort).to eq(["   libthree 2.2.2",
+                                          "   libthree 3.3.3",
+                                          "   libtwo   2.2.0",
+                                          " * libone   1.0.0",
+                                          " * libthree 1.1.1",
+                                          " * libtwo   1.1.0"])
       expect(exitstatus).to be_zero
     end
   end
