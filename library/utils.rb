@@ -61,13 +61,4 @@ module Utils
     # todo: escape ( and ) too
     args.map { |a| a.to_s.gsub " ", "\\ " }.join(" ")
   end
-
-  def self.ignore_interrupts(opt = nil)
-    std_trap = trap("INT") do
-      puts "One sec, just cleaning up" unless opt == :quietly
-    end
-    yield
-  ensure
-    trap("INT", std_trap)
-  end
 end

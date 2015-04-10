@@ -38,30 +38,26 @@ module Crew
 
       @initial_revision = read_current_revision
 
-      # ensure we don't munge line endings on checkout
-      Utils.git "config", "core.autocrlf", "false"
+      begin
+        # ensure we don't munge line endings on checkout
+        Utils.git "config", "core.autocrlf", "false"
 
-      args = ["pull"]
-      args << "-q" unless Global::DEBUG.include?(:git)
-      args << "origin"
-      # the refspec ensures that 'origin/master' gets updated
-      args << "refs/heads/master:refs/remotes/origin/master"
-
-      reset_on_interrupt { Utils.git *args }
+        args = ["pull"]
+        args << "-q" unless Global::DEBUG.include?(:git)
+        args << "origin"
+        # the refspec ensures that 'origin/master' gets updated
+        args << "refs/heads/master:refs/remotes/origin/master"
+        Utils.git *args
+      rescue
+        Utils.git "reset", "--hard", @initial_revision
+        raise
+      end
 
       @current_revision = read_current_revision
     end
 
-    def reset_on_interrupt
-      Utils.ignore_interrupts { yield }
-    ensure
-      if $?.signaled? && $?.termsig == 2 # SIGINT
-        Utils.git "reset", "--hard", @initial_revision
-      end
-    end
-
     def report
-      map = Hash.new {|h,k| h[k] = [] }
+      map = Hash.new { |h,k| h[k] = [] }
       formuladir = Global::FORMULA_DIR.basename.to_s
 
       if initial_revision and initial_revision != current_revision
