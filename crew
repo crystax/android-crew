@@ -15,7 +15,7 @@ if [ -z $CREW_DOWNLOAD_BASE ]; then
 fi
 
 if [ -z $CREW_NDK_DIR ]; then
-    CREW_NDK_DIR="../../$CREW_FILE_DIR"
+    CREW_NDK_DIR="$CREW_FILE_DIR/../.."
 fi
 
 if [ -z $CREW_TOOLS_DIR ]; then
