@@ -75,7 +75,7 @@ module Spec
     end
 
     def cache_empty?
-      Dir["#{Global::CACHE_DIR}/*"].empty?
+      Dir[File.join(Global::CACHE_DIR, '*')].empty?
     end
 
     def clean_cache
