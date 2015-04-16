@@ -97,16 +97,16 @@ module Spec
 
     def copy_formulas(*names)
       names.each do |n|
-        run_cmd "cp ./data/#{n} #{Global::FORMULA_DIR}/"
+        FileUtils.cp File.join('data', n), Global::FORMULA_DIR
       end
     end
 
     def install_release(name, version)
-      dir = "#{Global::HOLD_DIR}/#{name}/#{version}"
-      run_cmd "mkdir -p #{dir}"
-      run_cmd "mkdir -p #{dir}/include"
-      run_cmd "mkdir -p #{dir}/libs"
-      run_cmd "touch #{dir}/Android.mk"
+      dir = File.join(Global::HOLD_DIR, name, version)
+      FileUtils.mkdir_p dir
+      FileUtils.mkdir_p File.join(dir, 'include')
+      FileUtils.mkdir_p File.join(dir, 'libs')
+      FileUtils.touch File.join(dir, 'Android.mk')
     end
 
     def repository_init
@@ -115,62 +115,62 @@ module Spec
       FileUtils.remove_dir(dir, true)
       FileUtils.mkdir(dir) unless Dir.exists?(dir)
       FileUtils.cd(dir) do
-        # todo: use git included with NDK
-        run_cmd "git init"
-        run_cmd "mkdir cache"
-        run_cmd "mkdir formula"
-        run_cmd "touch cache/.placeholder"
-        run_cmd "touch formula/.placeholder"
-        run_cmd "git add cache formula"
-        run_cmd "git commit -m initial"
+        git 'init'
+        FileUtils.mkdir 'cache'
+        FileUtils.mkdir 'formula'
+        FileUtils.touch File.join('cache', '.placeholder')
+        FileUtils.touch File.join('formula', '.placeholder')
+        git 'add cache formula'
+        git 'commit -m initial'
       end
     end
 
     def repository_clone
       FileUtils.remove_dir(Global::BASE_DIR)
-      run_cmd "git clone -q #{origin_dir} #{Global::BASE_DIR}"
+      git "clone -q #{origin_dir} #{Global::BASE_DIR}"
     end
 
     def repository_add_formula(*names)
       dir = origin_dir
       names.each do |n|
         a = n.split(':')
-        if 1.size == 1
+        if a.size == 1
           dst = src = a[0]
         else
           src = a[0]
           dst = a[1]
         end
-        run_cmd "cp ./data/#{src} #{dir}/formula/#{dst}"
+        FileUtils.cp File.join('data', src), File.join(dir, 'formula', dst)
       end
       FileUtils.cd(dir) do
-        run_cmd "git add ."
-        run_cmd "git commit -q -m add_#{names.join('_')}"
+        git "add ."
+        git "commit -q -m add_#{names.join('_')}"
       end
     end
 
     def repository_del_formula(*names)
       dir = origin_dir
       names.each do |n|
-        run_cmd "rm #{dir}/formula/#{n}"
+        File.delete File.join(dir, 'formula', n)
       end
       FileUtils.cd(dir) do
-        run_cmd "git add ."
-        run_cmd "git commit -q -m del_#{names.join('_')}"
+        git "add ."
+        git "commit -q -m del_#{names.join('_')}"
       end
     end
 
     def add_garbage_into_hold name
-      FileUtils.cp 'data/garbage',  File.join(Global::HOLD_DIR, name, 'garbage')
+      FileUtils.cp File.join('data', 'garbage'),  File.join(Global::HOLD_DIR, name, 'garbage')
     end
 
     def origin_dir
       Global::BASE_DIR + '.git'
     end
 
-    def run_cmd(cmd)
+    def git(args)
+      cmd = "#{Global::CREW_GIT_PROG} #{args}"
       `#{cmd}`
-      raise "command failed: #{cmd}" if $? != 0
+      raise "git command failed: #{cmd}" if $? != 0
     end
   end
 end

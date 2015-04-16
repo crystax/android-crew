@@ -34,11 +34,12 @@ CREW_DOWNLOAD_BASE = http://$(shell hostname -s):9999
 CREW_NDK_DIR       = ndk
 CREW_TOOLS_DIR     = $(realpath ../../../tools)
 GIT_EXEC_PATH      = $(CREW_TOOLS_DIR)/git/libexec/git-core
+GIT_TEMPLATE_DIR   = $(CREW_TOOLS_DIR)/git/share/git-core/templates
 
 CREW_RUBY_VERSION = 2.2.0
 
 export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_TOOLS_DIR CREW_RUBY_DIR
-export GIT_EXEC_PATH
+export GIT_EXEC_PATH GIT_TEMPLATE_DIR
 
 
 .PHONY: all test clean dirs unit-tests rspec-tests $(rspec_cmd_tests)
