@@ -6,6 +6,13 @@ rspec_files = cmd_nocmd_spec.rb cmd_version_spec.rb cmd_help_spec.rb cmd_list_sp
 
 rspec_cmd_tests = $(patubst cmd_%_spec,test-%,$(basename $(rspec_files)))
 
+host_os  = $(shell uname -s | tr '[:upper:]' '[:lower:]')
+host_cpu = $(shell uname -m)
+
+$(info dir: ../../../prebuilt/$(host_os)-$(host_cpu))
+CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-$(host_cpu))
+$(info CREW_TOOLS_DIR: $(CREW_TOOLS_DIR))
+
 #
 # What we do to find ruby:
 #  1. try environment varible
@@ -17,8 +24,8 @@ ifdef CREW_RUBY_DIR
 RUBY  = $(CREW_RUBY_DIR)/ruby
 RSPEC = $(CREW_RUBY_DIR)/ruby $(CREW_RUBY_DIR)/rspec
 $(info Using path to ruby from environment: $(CREW_RUBY_DIR))
-else ifneq ($(wildcard ../../tools/ruby),)
-CREW_RUBY_DIR = $(realpath ../../tools/ruby/bin)
+else ifneq ($(wildcard $(CREW_TOOLS_DIR)/bin/ruby),)
+CREW_RUBY_DIR = $(realpath $(CREW_TOOLS_DIR)/bin)
 RUBY  = $(CREW_RUBY_DIR)/ruby
 RSPEC = $(CREW_RUBY_DIR)/ruby $(CREW_RUBY_DIR)/rspec
 $(info Using ruby form NDK: $(CREW_RUBY_DIR))
@@ -32,9 +39,8 @@ endif
 CREW_BASE_DIR      = crew
 CREW_DOWNLOAD_BASE = http://$(shell hostname -s):9999
 CREW_NDK_DIR       = ndk
-CREW_TOOLS_DIR     = $(realpath ../../../tools)
-GIT_EXEC_PATH      = $(CREW_TOOLS_DIR)/git/libexec/git-core
-GIT_TEMPLATE_DIR   = $(CREW_TOOLS_DIR)/git/share/git-core/templates
+GIT_EXEC_PATH      = $(CREW_TOOLS_DIR)/libexec/git-core
+GIT_TEMPLATE_DIR   = $(CREW_TOOLS_DIR)/share/git-core/templates
 
 CREW_RUBY_VERSION = 2.2.0
 

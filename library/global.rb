@@ -47,9 +47,9 @@ module Global
   CACHE_DIR      = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
   REPOSITORY_DIR = Pathname.new(BASE_DIR).realpath
 
-  CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'curl', 'bin', 'curl')).realpath
-  CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'p7zip', '7za')).realpath
-  CREW_GIT_PROG  = Pathname.new(File.join(TOOLS_DIR, 'git', 'bin', 'git')).realpath
+  CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'bin', 'curl')).realpath
+  CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'bin', '7za')).realpath
+  CREW_GIT_PROG  = Pathname.new(File.join(TOOLS_DIR, 'bin', 'git')).realpath
 
   check_program(CREW_CURL_PROG)
   check_program(CREW_7Z_PROG)
