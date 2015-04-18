@@ -9,9 +9,7 @@ rspec_cmd_tests = $(patubst cmd_%_spec,test-%,$(basename $(rspec_files)))
 host_os  = $(shell uname -s | tr '[:upper:]' '[:lower:]')
 host_cpu = $(shell uname -m)
 
-$(info dir: ../../../prebuilt/$(host_os)-$(host_cpu))
 CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-$(host_cpu))
-$(info CREW_TOOLS_DIR: $(CREW_TOOLS_DIR))
 
 #
 # What we do to find ruby:
