@@ -5,8 +5,9 @@ unset GEM_PATH
 
 CREW_FILE_DIR=$(dirname $0)
 CREW_RUBY_VERSION="2.2.0"
-HOST_OS=`uname -s | tr '[:upper:]' '[:lower:]'`
-HOST_CPU=`uname -m`
+CREW_HOST_OS=`uname -s | tr '[:upper:]' '[:lower:]'`
+CREW_HOST_CPU=`uname -m`
+CREW_32BIT_HOST_CPU=${CREW_HOST_CPU%_64}
 
 if [ -z $CREW_BASE_DIR ]; then
     CREW_BASE_DIR="$CREW_FILE_DIR"
@@ -21,7 +22,11 @@ if [ -z $CREW_NDK_DIR ]; then
 fi
 
 if [ -z $CREW_TOOLS_DIR ]; then
-    CREW_TOOLS_DIR="$CREW_NDK_DIR/prebuilt/$HOST_OS-$HOST_CPU"
+    if [ -d "$CREW_NDK_DIR/prebuilt/$CREW_HOST_OS-$CREW_HOST_CPU" ]; then
+        CREW_TOOLS_DIR="$CREW_NDK_DIR/prebuilt/$CREW_HOST_OS-$CREW_HOST_CPU"
+    else
+        CREW_TOOLS_DIR="$CREW_NDK_DIR/prebuilt/$CREW_HOST_OS-$CREW_32BIT_HOST_CPU"
+    fi
 fi
 
 if [ -z $CREW_RUBY_DIR ]; then
