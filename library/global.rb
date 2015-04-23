@@ -31,6 +31,7 @@ module Global
 
   VERSION = "0.3.0"
 
+
   # :curl       -- curl will be run with --verbose options
   # :_7z        -- 7z will output files while unpacking
   # :temps      -- do not 'clean' in case of exceptions
@@ -47,9 +48,11 @@ module Global
   CACHE_DIR      = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
   REPOSITORY_DIR = Pathname.new(BASE_DIR).realpath
 
-  CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'bin', 'curl')).realpath
-  CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'bin', '7za')).realpath
-  CREW_GIT_PROG  = Pathname.new(File.join(TOOLS_DIR, 'bin', 'git')).realpath
+  EXE_EXT = RUBY_PLATFORM =~ /windows/ ? '.exe' : ''
+
+  CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'bin', "curl#{EXE_EXT}")).realpath
+  CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'bin', "7za#{EXE_EXT}")).realpath
+  CREW_GIT_PROG  = Pathname.new(File.join(TOOLS_DIR, 'bin', "git#{EXE_EXT}")).realpath
 
   check_program(CREW_CURL_PROG)
   check_program(CREW_7Z_PROG)
