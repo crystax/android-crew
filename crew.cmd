@@ -1,6 +1,6 @@
 @echo off
 
-setlocal
+set retcode=0
 
 set GEM_HOME=
 set GEM_PATH=
@@ -40,3 +40,5 @@ rem set GIT
 %CREW_RUBY_DIR%ruby -W0 %CREW_FILE_DIR%crew.rb %*
 
 endlocal
+
+exit %errorlevel%
