@@ -48,7 +48,7 @@ module Global
   CACHE_DIR      = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
   REPOSITORY_DIR = Pathname.new(BASE_DIR).realpath
 
-  EXE_EXT = RUBY_PLATFORM =~ /windows/ ? '.exe' : ''
+  EXE_EXT = RUBY_PLATFORM =~ /mingw/ ? '.exe' : ''
 
   CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'bin', "curl#{EXE_EXT}")).realpath
   CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'bin', "7za#{EXE_EXT}")).realpath
