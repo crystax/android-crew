@@ -12,10 +12,16 @@ else
   host_os = $(shell uname -s | tr '[:upper:]' '[:lower:]')
 endif
 
+ifeq ($(host_os),windows)
+  ruby_prog = ruby.exe
+else
+  ruby_prog = ruby
+endif
+
 ifneq ($(wildcard ../../../prebuilt/$(host_os)-x86_64),)
   CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-x86_64)
 else ifeq ($(host_os),windows)
-  CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os))
+  CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os))/
 else
   CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-x86)
 endif
@@ -28,20 +34,21 @@ endif
 #  3. fallback to system ruby
 #
 ifdef CREW_RUBY_DIR
-RUBY  = $(CREW_RUBY_DIR)/ruby
-RSPEC = $(CREW_RUBY_DIR)/ruby $(CREW_RUBY_DIR)/rspec
+RUBY  = $(CREW_RUBY_DIR)/$(ruby_prog)
+RSPEC = $(CREW_RUBY_DIR)/$(ruby_prog) $(CREW_RUBY_DIR)/rspec
 $(info Using path to ruby from environment: $(CREW_RUBY_DIR))
-else ifneq ($(wildcard $(CREW_TOOLS_DIR)/bin/ruby),)
-CREW_RUBY_DIR = $(realpath $(CREW_TOOLS_DIR)/bin)
-RUBY  = $(CREW_RUBY_DIR)/ruby
-RSPEC = $(CREW_RUBY_DIR)/ruby $(CREW_RUBY_DIR)/rspec
+else ifneq ($(wildcard $(CREW_TOOLS_DIR)/bin/$(ruby_prog)),)
+CREW_RUBY_DIR = $(CREW_TOOLS_DIR)/bin/
+RUBY  = $(CREW_RUBY_DIR)/$(ruby_prog)
+RSPEC = $(CREW_RUBY_DIR)/$(ruby_prog) $(CREW_RUBY_DIR)/rspec
 $(info Using ruby form NDK: $(CREW_RUBY_DIR))
 else
-RUBY  = ruby
-RSPEC = rspec
+RUBY  = $(ruby_prog)
+RSPEC = $(ruby_prog)
 CREW_RUBY_DIR = $(dir $(dir $(shell which ruby)))
 $(info Using system ruby: $(CREW_RUBY_DIR))
 endif
+
 
 CREW_BASE_DIR      = crew
 CREW_DOWNLOAD_BASE = http://localhost:9999
@@ -49,7 +56,6 @@ CREW_NDK_DIR       = ndk
 GIT_EXEC_PATH      = $(CREW_TOOLS_DIR)/libexec/git-core
 GIT_TEMPLATE_DIR   = $(CREW_TOOLS_DIR)/share/git-core/templates
 
-#CREW_RUBY_VERSION = 2.2.0
 
 export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_TOOLS_DIR CREW_RUBY_DIR
 export GIT_EXEC_PATH GIT_TEMPLATE_DIR
