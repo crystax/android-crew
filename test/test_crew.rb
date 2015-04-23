@@ -95,7 +95,12 @@ class TestCrewRequireCommand < MiniTest::Test
     FileUtils.cp src, dst
     FileUtils.chmod "a-r", dst
 
-    assert_raises(UnknownCommand) { require_command('syntax_error') }
+    # on windows chmod does not work
+    if RUBY_PLATFORM =~ /mingw/
+      assert_raises(SyntaxError) { require_command('syntax_error') }
+    else
+      assert_raises(UnknownCommand) { require_command('syntax_error') }
+    end
 
     FileUtils.remove(dst)
   end
