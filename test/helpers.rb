@@ -62,10 +62,6 @@ module Spec
       exitstatus == 0 and err == '' ? :ok : [exitstatus, err]
     end
 
-    def hostname
-      Socket.gethostbyname(Socket.gethostname).first
-    end
-
     def archive_name(name, version)
       "#{name}-#{version}.7z"
     end
