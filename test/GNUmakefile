@@ -6,14 +6,18 @@ rspec_files = cmd_nocmd_spec.rb cmd_version_spec.rb cmd_help_spec.rb cmd_list_sp
 
 rspec_cmd_tests = $(patubst cmd_%_spec,test-%,$(basename $(rspec_files)))
 
-host_os        = $(shell uname -s | tr '[:upper:]' '[:lower:]')
-host_cpu       = $(shell uname -m)
-host_32bit_cpu = $(subst _64,,$(host_cpu))
+ifeq ($(OS),Windows_NT)
+  host_os = windows
+else
+  host_os = $(shell uname -s | tr '[:upper:]' '[:lower:]')
+endif
 
-ifneq ($(wildcard ../../../prebuilt/$(host_os)-$(host_cpu)),)
-CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-$(host_cpu))
-else ifneq ($(host_cpu),$(host_32bit_cpu))
-CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-$(host_32bit_cpu))
+ifneq ($(wildcard ../../../prebuilt/$(host_os)-x86_64),)
+  CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-x86_64)
+else ifeq ($(host_os),windows)
+  CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os))
+else
+  CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-x86)
 endif
 
 #
@@ -40,7 +44,7 @@ $(info Using system ruby: $(CREW_RUBY_DIR))
 endif
 
 CREW_BASE_DIR      = crew
-CREW_DOWNLOAD_BASE = http://$(shell hostname -s):9999
+CREW_DOWNLOAD_BASE = http://localhost:9999
 CREW_NDK_DIR       = ndk
 GIT_EXEC_PATH      = $(CREW_TOOLS_DIR)/libexec/git-core
 GIT_TEMPLATE_DIR   = $(CREW_TOOLS_DIR)/share/git-core/templates
