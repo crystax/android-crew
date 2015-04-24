@@ -15,10 +15,9 @@ describe "crew update" do
     it "outputs nothing" do
       repository_init
       repository_clone
-      crew '-b', 'update'
-      expect(err).to eq('')
+      crew 'update'
+      expect(result).to eq(:ok)
       expect(out).to eq("Already up-to-date.\n")
-      expect(exitstatus).to be_zero
     end
   end
 

@@ -59,7 +59,7 @@ module Spec
     end
 
     def result
-      exitstatus == 0 and err == '' ? :ok : [exitstatus, err]
+      (exitstatus == 0 and err == '') ? :ok : [exitstatus, err]
     end
 
     def archive_name(name, version)
@@ -164,9 +164,8 @@ module Spec
     end
 
     def git(args)
-      cmd = "#{Global::CREW_GIT_PROG} #{args}"
-      `#{cmd}`
-      raise "git command failed: #{cmd}" if $? != 0
+      run_command("#{Global::CREW_GIT_PROG} #{args}")
+      raise "git command failed: #{cmd}" if exitstatus != 0
     end
   end
 end
