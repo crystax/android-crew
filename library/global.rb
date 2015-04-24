@@ -68,8 +68,6 @@ module Global
     OS_VERSION = RUBY_PLATFORM
   end
 
-  USER_AGENT = "Crystax NDK Crew #{VERSION}"
-
   private
 
   @@options = { backtrace: false }

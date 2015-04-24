@@ -36,13 +36,7 @@ module Utils
   end
 
   def self.download(url, outpath)
-    args = ['-f#LA', Global::USER_AGENT, url, "-o", outpath]
-    # See https://github.com/Homebrew/homebrew/issues/6103
-    # todo: MacOS or not MacOS?
-    #args << "--insecure" if MacOS.version < "10.6"
-    args << "--verbose" if Global::DEBUG.include?(:curl)
-    args << "--silent" unless $stdout.tty?
-
+    args = [url, "-o", outpath]
     run_command(Global::CREW_CURL_PROG, *args)
   end
 
