@@ -4,7 +4,6 @@ unset GEM_HOME
 unset GEM_PATH
 
 CREW_FILE_DIR=$(dirname $0)
-CREW_RUBY_VERSION="2.2.0"
 CREW_HOST_OS=`uname -s | tr '[:upper:]' '[:lower:]'`
 CREW_HOST_CPU=`uname -m`
 CREW_32BIT_HOST_CPU=${CREW_HOST_CPU%_64}
