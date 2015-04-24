@@ -1,19 +1,15 @@
 @echo off
 
-set retcode=0
+setlocal
 
 set GEM_HOME=
 set GEM_PATH=
 
-set CREW_FILE_DIR=%~dp0
-set CREW_RUBY_VERSION=2.2.0
-
-set CREW_HOST_OS=windows
-set CREW_HOST_CPU=x86_64
-rem CREW_32BIT_HOST_CPU=${CREW_HOST_CPU%_64}
+set CREWFILEDIR=%~dp0
+set CREWHOSTOS=windows
 
 if not defined CREW_BASE_DIR (
-   set CREW_BASE_DIR=%CREW_FILE_DIR%
+   set CREW_BASE_DIR=%CREWFILEDIR%
 )
 
 if not defined CREW_DOWNLOAD_BASE (
@@ -21,11 +17,17 @@ if not defined CREW_DOWNLOAD_BASE (
 )
 
 if not defined CREW_NDK_DIR (
-   set CREW_NDK_DIR=%CREW_FILE_DIR%..\..\
+   set CREW_NDK_DIR=%CREWFILEDIR%..\..\
+)
+
+
+set CREWHOSTCPU=-x86_64
+if not exist %CREW_NDK_DIR%prebuilt\windows%CREWHOSTCPU% (
+   set CREW_CPU=
 )
 
 if not defined CREW_TOOLS_DIR (
-   set CREW_TOOLS_DIR=%CREW_NDK_DIR%prebuilt\%CREW_HOST_OS%-%CREW_HOST_CPU%\
+   set CREW_TOOLS_DIR=%CREW_NDK_DIR%prebuilt\windows%CREWHOSTCPU%\
 )
 
 if not defined CREW_RUBY_DIR (
@@ -37,7 +39,7 @@ set GIT_EXEC_PATH=%CREW_TOOLS_DIR%\libexec\git-core
 rem set CREW
 rem set GIT
 
-%CREW_RUBY_DIR%ruby -W0 %CREW_FILE_DIR%crew.rb %*
+%CREW_RUBY_DIR%ruby.exe -W0 %CREWFILEDIR%crew.rb %*
 
 endlocal
 
