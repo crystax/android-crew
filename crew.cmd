@@ -32,7 +32,7 @@ if not defined CREW_RUBY_DIR (
    set CREW_RUBY_DIR=%CREW_TOOLS_DIR%bin\
 )
 
-set GIT_EXEC_PATH=%CREW_TOOLS_DIR%libexec\git-core
+set GIT_EXEC_PATH=%CREW_TOOLS_DIR%\libexec\git-core
 
 rem set CREW
 rem set GIT
@@ -41,4 +41,4 @@ rem set GIT
 
 endlocal
 
-exit %errorlevel%
+exit /b %errorlevel%
