@@ -112,6 +112,8 @@ module Spec
       FileUtils.mkdir(dir) unless Dir.exists?(dir)
       FileUtils.cd(dir) do
         git 'init'
+        git 'config', 'user.email', 'crew-test@crystax.net'
+        git 'config', 'user.name', 'Crew Test'
         FileUtils.mkdir 'cache'
         FileUtils.mkdir 'formula'
         FileUtils.touch File.join('cache', '.placeholder')
@@ -163,9 +165,10 @@ module Spec
       Global::BASE_DIR + '.git'
     end
 
-    def git(args)
-      run_command("#{Global::CREW_GIT_PROG} #{args}")
-      raise "git command failed: #{cmd}" if exitstatus != 0
+    def git(*args)
+      cmd = "#{Global::CREW_GIT_PROG} #{args.join(' ')}"
+      run_command(cmd)
+      raise "git command failed: #{cmd}\nerror: #{err}" if exitstatus != 0
     end
   end
 end
