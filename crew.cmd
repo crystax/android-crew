@@ -23,7 +23,7 @@ if not defined CREW_NDK_DIR (
 
 set CREWHOSTCPU=-x86_64
 if not exist %CREW_NDK_DIR%prebuilt\windows%CREWHOSTCPU% (
-   set CREW_CPU=
+   set CREWHOSTCPU=
 )
 
 if not defined CREW_TOOLS_DIR (
