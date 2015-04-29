@@ -14,7 +14,7 @@ set bindir=%toolsbasedir%\windows%cpu%\bin
 
 echo %bindir%
 
-%bindir%\make
+%bindir%\make SHELL=cmd
 
 endlocal
 

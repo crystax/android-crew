@@ -54,6 +54,24 @@ CREW_BASE_DIR      = crew
 CREW_DOWNLOAD_BASE = http://localhost:9999
 CREW_NDK_DIR       = ndk
 
+ifeq ($(host_os),windows)
+  RM          = rd
+  RMFLAGS     = /s/q
+  MKDIR       = md
+  MKDIRFLAGS  =
+  NDKSRC_DIR  = ndk\sources
+  CACHE_DIR   = crew\cache
+  FORMULA_DIR = crew\formula
+else
+  RM          = rm
+  MKDIR       = mkdir
+  RMFLAGS     = -rf
+  MKDIRFLAGS  = -p
+  NDKSRC_DIR  = ndk/sources
+  CACHE_DIR   = crew/cache
+  FORMULA_DIR = crew/formula
+endif
+
 
 export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_TOOLS_DIR CREW_RUBY_DIR
 
@@ -65,7 +83,9 @@ all: test clean dirs
 test: unit-tests rspec-tests
 
 clean:
-	$(RM) -rf crew crew.git ndk
+	$(RM) $(RMFLAGS) crew
+	$(RM) $(RMFLAGS) crew.git
+	$(RM) $(RMFLAGS) ndk
 
 unit-tests: dirs
 	$(RUBY) -I ../library test_crew.rb
@@ -73,9 +93,10 @@ unit-tests: dirs
 rspec-tests: dirs
 	$(RSPEC) $(rspec_files)
 
-test-%: dirs
+test-%:
 	$(RSPEC) cmd_$*_spec.rb
 
 dirs:
-	-mkdir -p ndk/sources
-	-mkdir -p crew/cache crew/formula
+	-$(MKDIR) $(MKDIRFLAGS) $(NDKSRC_DIR)
+	-$(MKDIR) $(MKDIRFLAGS) $(CACHE_DIR)
+	-$(MKDIR) $(MKDIRFLAGS) $(FORMULA_DIR)
