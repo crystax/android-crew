@@ -52,11 +52,9 @@ module Global
 
   CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'bin', "curl#{EXE_EXT}")).realpath
   CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'bin', "7za#{EXE_EXT}")).realpath
-  CREW_GIT_PROG  = Pathname.new(File.join(TOOLS_DIR, 'bin', "git#{EXE_EXT}")).realpath
 
   check_program(CREW_CURL_PROG)
   check_program(CREW_7Z_PROG)
-  check_program(CREW_GIT_PROG)
 
   # todo:
   if RUBY_PLATFORM =~ /darwin/

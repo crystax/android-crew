@@ -1,3 +1,4 @@
+require 'rugged'
 require_relative '../exceptions.rb'
 require_relative '../global.rb'
 
@@ -7,9 +8,6 @@ module Crew
     if args.length > 0
       raise CommandRequresNoArguments
     end
-
-    # ensure GIT_CONFIG is unset as we need to operate on .git/config
-    ENV.delete('GIT_CONFIG')
 
     report = Report.new
     updater = Updater.new
@@ -34,26 +32,19 @@ module Crew
     end
 
     def pull!
-      Utils.git "checkout", "-q", "master"
-
-      @initial_revision = read_current_revision
+      repo = Rugged::Repository.new('.')
+      repo.checkout 'master'
+      @initial_revision = repo.rev_parse_oid('HEAD')
 
       begin
-        # ensure we don't munge line endings on checkout
-        Utils.git "config", "core.autocrlf", "false"
-
-        args = ["pull"]
-        args << "-q" unless Global::DEBUG.include?(:git)
-        args << "origin"
-        # the refspec ensures that 'origin/master' gets updated
-        args << "refs/heads/master:refs/remotes/origin/master"
-        Utils.git *args
+        repo.fetch 'origin'
+        repo.checkout 'refs/remotes/origin/master'
       rescue
-        Utils.git "reset", "--hard", @initial_revision
+        repo.reset @initial_revision, :hard
         raise
       end
 
-      @current_revision = read_current_revision
+      @current_revision = repo.rev_parse_oid('HEAD')
     end
 
     def report
@@ -82,10 +73,6 @@ module Crew
     end
 
     private
-
-    def read_current_revision
-      Utils.git("rev-parse", "-q", "--verify", "HEAD").chomp
-    end
 
     def diff
       Utils.git "diff-tree", "-r", "--name-status", "--diff-filter=AMDR", "-M85%", initial_revision, current_revision

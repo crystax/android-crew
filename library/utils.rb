@@ -7,7 +7,7 @@ module Utils
   # todo: add hash with options like this { stdout: drop|string, stdin: ignore }
   def self.run_command(prog, *args)
     #todo: check prog, may be substitute our's version (included with NDK)
-    #      for the known prog like git, curl, 7z, etc
+    #      for the known prog like curl, 7z, etc
     cmd = to_cmd_s(prog, *args)
 
     outstr = ""
@@ -43,10 +43,6 @@ module Utils
   def self.unpack(archive, outdir)
     args = ["x", "-y", "-o#{outdir}", archive]
     run_command(Global::CREW_7Z_PROG, *args)
-  end
-
-  def self.git(*args)
-    run_command(Global::CREW_GIT_PROG, *args)
   end
 
   private
