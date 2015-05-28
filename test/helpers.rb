@@ -1,6 +1,7 @@
 require 'pathname'
 require 'open3'
 require 'socket'
+require 'rugged'
 
 module Spec
 
@@ -19,6 +20,39 @@ module Spec
         "  error output: #{@err}\n"
       end
     end
+
+
+    class Repository
+      def self.init_at(dir)
+        repo = Rugged::Repository.init_at dir
+        repo.config['user.email'] = 'crew-test@crystax.net'
+        repo.config['user.name'] = 'Crew Test'
+        Repository.new dir
+      end
+
+      def initialize(dir)
+        @repo = Rugged::Repository.new dir
+        @repo.checkout 'refs/heads/master'
+        @index = @repo.index
+      end
+
+      def add(file)
+        @index.add path: file,
+                   oid: (Rugged::Blob.from_workdir @repo, file),
+                   mode: 0100644
+      end
+
+      def commit(message)
+        commit = @index.write_tree @repo
+        @index.write
+        Rugged::Commit.create @repo,
+                              message: message,
+                              parents: [@repo.head.target],
+                              tree: commit,
+                              update_ref: 'HEAD'
+      end
+    end
+
 
     attr_reader :command, :out, :err, :exitstatus
 
@@ -111,25 +145,23 @@ module Spec
       FileUtils.remove_dir(dir, true)
       FileUtils.mkdir(dir) unless Dir.exists?(dir)
       FileUtils.cd(dir) do
-        git 'init'
-        git 'config', 'user.email', 'crew-test@crystax.net'
-        git 'config', 'user.name', 'Crew Test'
-        FileUtils.mkdir 'cache'
-        FileUtils.mkdir 'formula'
-        FileUtils.touch File.join('cache', '.placeholder')
-        FileUtils.touch File.join('formula', '.placeholder')
-        git 'add cache formula'
-        git 'commit -m initial'
+        repo = Repository.init_at('.')
+        FileUtils.mkdir ['cache', 'formula']
+        [File.join('cache', '.placeholder'), File.join('formula', '.placeholder')].each do |file|
+          FileUtils.touch file
+          repo.add file
+        end
+        repo.commit 'initial'
       end
     end
 
     def repository_clone
       FileUtils.remove_dir(Global::BASE_DIR)
-      git "clone -q #{origin_dir} #{Global::BASE_DIR}"
+      Rugged::Repository.clone_at origin_dir, Global::BASE_DIR
     end
 
     def repository_add_formula(*names)
-      dir = origin_dir
+      repo = Repository.new origin_dir
       names.each do |n|
         a = n.split(':')
         if a.size == 1
@@ -138,23 +170,17 @@ module Spec
           src = a[0]
           dst = a[1]
         end
-        FileUtils.cp File.join('data', src), File.join(dir, 'formula', dst)
+        file = File.join(dir, 'formula', dst)
+        FileUtils.cp File.join('data', src), file
+        repo.add file
       end
-      FileUtils.cd(dir) do
-        git "add ."
-        git "commit -q -m add_#{names.join('_')}"
-      end
+      repo.commit "add_#{names.join('_')}"
     end
 
     def repository_del_formula(*names)
-      dir = origin_dir
-      names.each do |n|
-        File.delete File.join(dir, 'formula', n)
-      end
-      FileUtils.cd(dir) do
-        git "add ."
-        git "commit -q -m del_#{names.join('_')}"
-      end
+      repo = Repository.new origin_dir
+      names.each { |n| repo.remove File.join(dir, 'formula', n) }
+      repo.commit "del_#{names.join('_')}"
     end
 
     def add_garbage_into_hold name
@@ -163,12 +189,6 @@ module Spec
 
     def origin_dir
       Global::BASE_DIR + '.git'
-    end
-
-    def git(*args)
-      cmd = "#{Global::CREW_GIT_PROG} #{args.join(' ')}"
-      run_command(cmd)
-      raise "git command failed: #{cmd}\nerror: #{err}" if exitstatus != 0
     end
   end
 end
