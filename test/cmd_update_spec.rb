@@ -2,9 +2,13 @@ require_relative 'spec_helper.rb'
 require_relative '../library/global.rb'
 
 describe "crew update" do
+  before(:each) do
+      clean
+      repository_init
+  end
+
   context "with argument" do
     it "outputs error message" do
-      clean
       crew 'update', 'baz'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: this command requires no arguments')
@@ -13,7 +17,6 @@ describe "crew update" do
 
   context "when there are no formulas and no changes" do
     it "outputs nothing" do
-      repository_init
       repository_clone
       crew 'update'
       expect(result).to eq(:ok)
@@ -23,7 +26,6 @@ describe "crew update" do
 
   context "when there is one new formula" do
     it "says about one new formula" do
-      repository_init
       repository_clone
       repository_add_formula 'libone.rb'
       crew 'update'
@@ -37,7 +39,6 @@ describe "crew update" do
 
   context "when there is one modified formula and one new formula" do
     it "says about one modified and one new formula" do
-      repository_init
       repository_add_formula 'libtwo-1.rb:libtwo.rb'
       repository_clone
       repository_add_formula 'libone.rb', 'libtwo.rb'
@@ -54,7 +55,6 @@ describe "crew update" do
 
   context "when there is one modified formula, one new formula and one deleted formula" do
     it "says about one modified and one new formula" do
-      repository_init
       repository_add_formula 'libtwo-1.rb:libtwo.rb', 'libthree.rb'
       repository_clone
       repository_add_formula 'libone.rb', 'libtwo.rb'
