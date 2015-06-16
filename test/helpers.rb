@@ -32,7 +32,7 @@ module Spec
 
       def initialize(dir)
         @repo = Rugged::Repository.new dir
-        @repo.checkout 'refs/heads/master'
+        @repo.checkout 'refs/heads/master' unless @repo.head_unborn?
         @index = @repo.index
       end
 
@@ -42,12 +42,16 @@ module Spec
                    mode: 0100644
       end
 
+      def remove(file)
+        @index.remove file
+      end
+
       def commit(message)
         commit = @index.write_tree @repo
         @index.write
         Rugged::Commit.create @repo,
                               message: message,
-                              parents: [@repo.head.target],
+                              parents: @repo.head_unborn? ? [] : [@repo.head.target],
                               tree: commit,
                               update_ref: 'HEAD'
       end
@@ -142,11 +146,11 @@ module Spec
     def repository_init
       clean_hold
       dir = origin_dir
-      FileUtils.remove_dir(dir, true)
-      FileUtils.mkdir(dir) unless Dir.exists?(dir)
+      FileUtils.rm_rf dir
+      FileUtils.mkdir dir
       FileUtils.cd(dir) do
-        repo = Repository.init_at('.')
-        FileUtils.mkdir ['cache', 'formula']
+        repo = Repository.init_at '.'
+        FileUtils.mkdir [File.join('cache'), File.join('formula')]
         [File.join('cache', '.placeholder'), File.join('formula', '.placeholder')].each do |file|
           FileUtils.touch file
           repo.add file
@@ -170,8 +174,8 @@ module Spec
           src = a[0]
           dst = a[1]
         end
-        file = File.join(dir, 'formula', dst)
-        FileUtils.cp File.join('data', src), file
+        file = File.join('formula', dst)
+        FileUtils.cp File.join('data', src), File.join(origin_dir, file)
         repo.add file
       end
       repo.commit "add_#{names.join('_')}"
@@ -179,7 +183,7 @@ module Spec
 
     def repository_del_formula(*names)
       repo = Repository.new origin_dir
-      names.each { |n| repo.remove File.join(dir, 'formula', n) }
+      names.each { |n| repo.remove File.join('formula', n) }
       repo.commit "del_#{names.join('_')}"
     end
 
