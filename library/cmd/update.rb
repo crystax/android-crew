@@ -59,9 +59,10 @@ module Crew
           next unless File.extname(dst) == ".rb"
           next unless [src, dst].any? { |p| File.dirname(p) == formuladir }
 
-          case delta.status
+          status = delta.status_char.to_s
+          case status
           when "A", "M", "D"
-            map[delta.status.to_sym] << repository_path.join(src)
+            map[status.to_sym] << repository_path.join(src)
           when "R"
             map[:D] << repository_path.join(src) if File.dirname(src) == formuladir
             map[:A] << repository_path.join(dst) if File.dirname(dst) == formuladir
