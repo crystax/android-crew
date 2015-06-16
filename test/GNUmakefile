@@ -100,3 +100,6 @@ dirs:
 	-$(MKDIR) $(MKDIRFLAGS) $(NDKSRC_DIR)
 	-$(MKDIR) $(MKDIRFLAGS) $(CACHE_DIR)
 	-$(MKDIR) $(MKDIRFLAGS) $(FORMULA_DIR)
+
+shell:
+	@PS1="[$(PS1) crew test] " bash
