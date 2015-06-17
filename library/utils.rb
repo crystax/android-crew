@@ -36,7 +36,7 @@ module Utils
   end
 
   def self.download(url, outpath)
-    args = [url, "-o", outpath]
+    args = [url, "-o", outpath, "--silent"]
     run_command(Global::CREW_CURL_PROG, *args)
   end
 
