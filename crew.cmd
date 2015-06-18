@@ -12,6 +12,10 @@ if not defined CREW_BASE_DIR (
    set CREW_BASE_DIR=%CREWFILEDIR%
 )
 
+if not defined SSL_CERT_FILE (
+    set SSL_CERT_FILE=%CREW_BASE_DIR%\etc\ca-certificates.crt
+)
+
 if not defined CREW_DOWNLOAD_BASE (
    set CREW_DOWNLOAD_BASE=https://crew.crystax.net:9876
 )

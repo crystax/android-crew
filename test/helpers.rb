@@ -164,6 +164,11 @@ module Spec
       Rugged::Repository.clone_at origin_dir, Global::BASE_DIR
     end
 
+    def repository_network_clone
+      FileUtils.remove_dir(Global::BASE_DIR)
+      Rugged::Repository.clone_at 'https://github.com/crystaxnet/crew-test.git', Global::BASE_DIR
+    end
+
     def repository_add_formula(*names)
       repo = Repository.new origin_dir
       names.each do |n|

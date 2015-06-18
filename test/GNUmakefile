@@ -2,7 +2,7 @@ unit_test_files = test_crew.rb
 
 rspec_files = cmd_nocmd_spec.rb cmd_version_spec.rb cmd_help_spec.rb cmd_list_spec.rb cmd_info_spec.rb \
               cmd_cleanup_spec.rb cmd_install_spec.rb cmd_remove_spec.rb cmd_update_spec.rb            \
-              cmd_upgrade_spec.rb
+              cmd_upgrade_spec.rb cmd_network_spec.rb
 
 rspec_cmd_tests = $(patubst cmd_%_spec,test-%,$(basename $(rspec_files)))
 
@@ -54,6 +54,9 @@ CREW_BASE_DIR      = crew
 CREW_DOWNLOAD_BASE = http://localhost:9999
 CREW_NDK_DIR       = ndk
 
+SSL_CERT_FILE = $(abspath ../etc/ca-certificates.crt)
+
+
 ifeq ($(host_os),windows)
   RM          = rd
   RMFLAGS     = /s/q
@@ -74,6 +77,7 @@ endif
 
 
 export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_TOOLS_DIR CREW_RUBY_DIR
+export SSL_CERT_FILE
 
 
 .PHONY: all test clean dirs unit-tests rspec-tests $(rspec_cmd_tests)
