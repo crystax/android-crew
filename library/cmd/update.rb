@@ -37,7 +37,7 @@ module Crew
       @initial_revision = read_current_revision
 
       begin
-        repository.fetch 'origin'
+        repository.fetch 'origin', credentials: make_creds
         repository.checkout 'refs/remotes/origin/master'
       rescue
         repository.reset initial_revision, :hard
@@ -85,6 +85,16 @@ module Crew
       init = repository.lookup(initial_revision)
       curr = repository.lookup(current_revision)
       init.diff(curr).find_similar!({ :rename_threshold => 85, :renames => true })
+    end
+
+    def make_creds
+      if repository.remotes['origin'].url =~ /^git@/
+        Rugged::Credentials::SshKey.new(username: 'git',
+                                        publickey: File.expand_path("~/.ssh/id_rsa.pub"),
+                                        privatekey: File.expand_path("~/.ssh/id_rsa"))
+      else
+        nil
+      end
     end
   end
 
