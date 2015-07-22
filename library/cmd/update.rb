@@ -49,7 +49,7 @@ module Crew
 
     def report
       map = Hash.new { |h,k| h[k] = [] }
-      formuladir = Global::FORMULA_DIR.basename.to_s
+      formuladir = Global::LIBRARIES_DIR.basename.to_s
 
       if initial_revision and initial_revision != current_revision
         diff.each_delta do |delta|

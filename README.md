@@ -5,9 +5,10 @@ Crystax NDK's Crew
 1. How to start
 --------------------------------
 
-Crew is intended to maintain native libraries that are not integral part
-of the Crystax NDK, like Boost, LIBPNG, Freetype, etc, but instead can
-be easily installed or removed if necessary.
+Crew is intended to maintain NDK's toolchains, utilities required to run
+crew itself, and also native libraries that are not integral part of the
+Crystax NDK, like Boost, LIBPNG, Freetype, etc, but instead can be
+easily installed or removed if necessary.
 
 CREW is a part of the Crystax NDK installation.
 To begin with crew just install Crystax NDK.
@@ -40,7 +41,10 @@ Example:
     $ crew help
     version         output version information
     help            show this help message
-    list            list all available libraries
+    list [libs|utils|tools]
+                    list all available formulas for libraries, utilities
+                    or toolchains; whithout argument list formulas
+                    for libraries
     info name ...   show information about the specified
                     formulas
     install name[:version]

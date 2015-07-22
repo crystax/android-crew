@@ -44,7 +44,10 @@ module Global
   TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     or raise_env_var_not_set "CREW_TOOLS_DIR"
 
   HOLD_DIR       = Pathname.new(File.join(NDK_DIR, 'sources')).realpath
-  FORMULA_DIR    = Pathname.new(File.join(BASE_DIR, 'formula')).realpath
+  #FORMULA_DIR    = Pathname.new(File.join(BASE_DIR, 'formula')).realpath
+  LIBRARIES_DIR  = Pathname.new(File.join(BASE_DIR, 'formula', 'libraries')).realpath
+  UTILITIES_DIR  = Pathname.new(File.join(BASE_DIR, 'formula', 'utilities')).realpath
+  TOOLCHAINS_DIR = Pathname.new(File.join(BASE_DIR, 'formula', 'toolchains')).realpath
   CACHE_DIR      = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
   REPOSITORY_DIR = Pathname.new(BASE_DIR).realpath
 
