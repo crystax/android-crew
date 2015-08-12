@@ -128,9 +128,9 @@ class Formula
     private
 
     def check_required_keys(r)
-      # todo: add filename?
-      raise ":version key not present in the release" unless r.has_key?(:version)
-      raise ":sha256 key not present in the release" unless r.has_key?(:sha256)
+      raise ":version key not present in the release"      unless r.has_key?(:version)
+      raise ":build_number key not present in the release" unless r.has_key?(:build_number)
+      raise ":sha256 key not present in the release"       unless r.has_key?(:sha256)
     end
   end
 

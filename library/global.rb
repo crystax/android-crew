@@ -8,6 +8,28 @@ module Global
     raise "#{prog} is not executable" unless prog.exist? and prog.executable?
   end
 
+  def self.def_tools_dir(ndkdir)
+    h = RUBY_PLATFORM.split('-')
+    case h[1]
+    when /linux/
+      os64 = 'linux-x86_64'
+      os32 = 'linux-x86_64'
+    when /darwin/
+      os64 = 'darwin-x86_64'
+      os32 = 'darwin-x86'
+    when /mingw/
+      os64 = 'windows-x86_64'
+      os64 = 'windows'
+    else
+      raise "unsupported host OS: #{h[1]}"
+    end
+
+    dir64 = "#{ndkdir}/prebuilt/#{os64}"
+    dir32 = "#{ndkdir}/prebuilt/#{os32}"
+
+    Dir.exists?(dir64) ? dir64 : dir32
+  end
+
   public
 
   def self.raise_env_var_not_set(var)
@@ -38,16 +60,13 @@ module Global
   # :stdout     -- show output of the external commands executed
   DEBUG = []
 
-  DOWNLOAD_BASE = ENV['CREW_DOWNLOAD_BASE'] or raise_env_var_not_set "CREW_DOWNLOAD_BASE"
-  BASE_DIR      = ENV['CREW_BASE_DIR']      or raise_env_var_not_set "CREW_BASE_DIR"
-  NDK_DIR       = ENV['CREW_NDK_DIR']       or raise_env_var_not_set "CREW_NDK_DIR"
-  TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     or raise_env_var_not_set "CREW_TOOLS_DIR"
+  DOWNLOAD_BASE = ENV['CREW_DOWNLOAD_BASE'] ? ENV['CREW_DOWNLOAD_BASE'] : "https://crew.crystax.net:9876"
+  BASE_DIR      = ENV['CREW_BASE_DIR']      ? ENV['CREW_BASE_DIR']      : Pathname.new(__FILE__).realpath.dirname.dirname.to_s
+  NDK_DIR       = ENV['CREW_NDK_DIR']       ? ENV['CREW_NDK_DIR']       : Pathname.new(BASE_DIR).realpath.dirname.dirname.to_s
+  TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     ? ENV['CREW_TOOLS_DIR']     : def_tools_dir(NDK_DIR)
 
   HOLD_DIR       = Pathname.new(File.join(NDK_DIR, 'sources')).realpath
-  #FORMULA_DIR    = Pathname.new(File.join(BASE_DIR, 'formula')).realpath
-  LIBRARIES_DIR  = Pathname.new(File.join(BASE_DIR, 'formula', 'libraries')).realpath
-  UTILITIES_DIR  = Pathname.new(File.join(BASE_DIR, 'formula', 'utilities')).realpath
-  TOOLCHAINS_DIR = Pathname.new(File.join(BASE_DIR, 'formula', 'toolchains')).realpath
+  FORMULA_DIR    = Pathname.new(File.join(BASE_DIR, 'formula')).realpath
   CACHE_DIR      = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
   REPOSITORY_DIR = Pathname.new(BASE_DIR).realpath
 
@@ -59,20 +78,9 @@ module Global
   check_program(CREW_CURL_PROG)
   check_program(CREW_7Z_PROG)
 
-  # todo:
-  if RUBY_PLATFORM =~ /darwin/
-    MACOS_FULL_VERSION = `/usr/bin/sw_vers -productVersion`.chomp
-    MACOS_VERSION = MACOS_FULL_VERSION[/10\.\d+/]
-    OS_VERSION = "Mac OS X #{MACOS_FULL_VERSION}"
-  else
-    MACOS_FULL_VERSION = MACOS_VERSION = "0"
-    OS_VERSION = RUBY_PLATFORM
-  end
-
   private
 
   @@options = { backtrace: false }
-
 
 end
 

@@ -39,27 +39,42 @@ Output short information about available commands.
 Example:
 
     $ crew help
-    version         output version information
-    help            show this help message
-    list [libs|utils|tools]
-                    list all available formulas for libraries, utilities
-                    or toolchains; whithout argument list formulas
-                    for libraries
-    info name ...   show information about the specified
-                    formulas
-    install name[:version]
-                    install the specified formula
-    remove name[:version|:all] ...
-                    uninstall the specified formula
-    update          update crew repository information
-    upgrade         install most recent versions
-    cleanup [-n]    uninstall old versions
+    Usage: crew [OPTIONS] COMMAND [parameters]
 
-### list
+    where
+    
+    OPTIONS are:
+      --backtrace, -b output backtrace with exception message;
+                      debug option
+    
+    COMMAND is one of the following:
+      version         output version information
+      help            show this help message
+      list [libs|utils|tools]
+                      list all available formulas for libraries, utilities
+                      or toolchains; whithout an argument list all
+                      formulas
+      info name ...   show information about the specified formula(s)
+      install name[:version][:source] ...
+                      install the specified formula(s)
+      remove name[:version|:all] ...
+                      uninstall the specified formulas
+      build name:[version]
+                      rebuild formula from sources
+      update          update crew repository information
+      upgrade         install most recent versions
+      cleanup [-n]    uninstall old versions
+    
+    For every command where formula name is reuqired, name can be specified
+    in two forms. Short form: just formula name, f.e. zlib; full form that
+    includes formula type, f.e. utils/zlib. Full form is required only
+    to resolve ambiguity.
+
+### list [libs|utils|tools]
 
 List all available formulas, their versions and status (installed or
-not); future crew versions can also show if library freely available or
-must be payed for.
+not). If libs or utils or tools argument was specified the command will output information
+only about libraries, crew utilitites (and their components) and toolchains respectively.
 
 Example:
 
@@ -207,3 +222,27 @@ Example:
     Removing: icu 54.1
     Removing: boost 1.56.0
     Removing: boost 1.57.0
+
+
+3. Directory structure
+--------------------------------
+
+```
+platform/ndk/prebuilt/darwin-x86_64/bin/curl <--------------------|
+                                   /crew/curl/7.42.0_2/bin/curl --| 
+                                                       lib/
+                                                       share/
+             tools/crew/.git
+                        cache/
+                        etc/
+                        formula/
+                        library/
+             sources/android/
+                     libname/version-buildnum/.gitignore
+                                              Android.mk
+                                              include
+                                              libs
+                                              license.html
+                                              src/
+
+```

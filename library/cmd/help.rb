@@ -12,13 +12,15 @@ COMMAND is one of the following:
   help            show this help message
   list [libs|utils|tools]
                   list all available formulas for libraries, utilities
-                  or toolchains; whithout an argument list formulas
-                  for libraries
+                  or toolchains; whithout an argument list all
+                  formulas
   info name ...   show information about the specified formula(s)
   install name[:version][:source] ...
                   install the specified formula(s)
   remove name[:version|:all] ...
                   uninstall the specified formulas
+  build name:[version]
+                  rebuild formula from sources
   update          update crew repository information
   upgrade         install most recent versions
   cleanup [-n]    uninstall old versions

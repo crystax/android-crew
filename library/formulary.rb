@@ -132,7 +132,7 @@ class Formulary
       return FromPathLoader.new(ref)
     end
 
-    path = Pathname.new("#{Global::LIBRARIES_DIR}/#{ref.downcase}.rb")
+    path = Pathname.new("#{Global::FORMULA_DIR}/#{ref.downcase}.rb")
     if path.file?
       return FormulaLoader.new(ref, path)
     end
@@ -143,12 +143,12 @@ class Formulary
   # todo: write iterator
   def self.read_all
     list = []
-    Dir.foreach(Global::LIBRARIES_DIR) do |name|
+    Dir.foreach(Global::FORMULA_DIR) do |name|
       if name == '.' or name == '..'
         next
       end
       if formula_file?(name)
-        list << factory(File.join(Global::LIBRARIES_DIR, name))
+        list << factory(File.join(Global::FORMULA_DIR, name))
       else
         warning("not a formula file in formula dir: #{name}")
       end
@@ -158,12 +158,12 @@ class Formulary
 
   def initialize
     @formulary = []
-    Dir.foreach(Global::LIBRARIES_DIR) do |name|
+    Dir.foreach(Global::FORMULA_DIR) do |name|
       if name == '.' or name == '..'
         next
       end
       if self.class.formula_file?(name)
-        @formulary << self.class.factory(File.join(Global::LIBRARIES_DIR, name))
+        @formulary << self.class.factory(File.join(Global::FORMULA_DIR, name))
       else
         warning("not a formula file in formula dir: #{name}")
       end

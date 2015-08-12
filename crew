@@ -8,35 +8,18 @@ CREW_HOST_OS=`uname -s | tr '[:upper:]' '[:lower:]'`
 CREW_HOST_CPU=`uname -m`
 CREW_32BIT_HOST_CPU=${CREW_HOST_CPU%_64}
 
-if [ -z $CREW_BASE_DIR ]; then
-    CREW_BASE_DIR="$CREW_FILE_DIR"
-fi
-
 if [ -z $SSL_CERT_FILE ]; then
-    SSL_CERT_FILE="$CREW_BASE_DIR/etc/ca-certificates.crt"
-fi
-
-if [ -z $CREW_DOWNLOAD_BASE ]; then
-    CREW_DOWNLOAD_BASE="https://crew.crystax.net:9876"
-fi
-
-if [ -z $CREW_NDK_DIR ]; then
-    CREW_NDK_DIR="$CREW_FILE_DIR/../.."
-fi
-
-if [ -z $CREW_TOOLS_DIR ]; then
-    if [ -d "$CREW_NDK_DIR/prebuilt/$CREW_HOST_OS-$CREW_HOST_CPU" ]; then
-        CREW_TOOLS_DIR="$CREW_NDK_DIR/prebuilt/$CREW_HOST_OS-$CREW_HOST_CPU"
-    else
-        CREW_TOOLS_DIR="$CREW_NDK_DIR/prebuilt/$CREW_HOST_OS-$CREW_32BIT_HOST_CPU"
-    fi
+    SSL_CERT_FILE="$CREW_FILE_DIR/etc/ca-certificates.crt"
 fi
 
 if [ -z $CREW_RUBY_DIR ]; then
-    CREW_RUBY_DIR="$CREW_TOOLS_DIR/bin"
+    if [ -d "$CREW_FILE_DIR/../../prebuilt/$CREW_HOST_OS-$CREW_HOST_CPU" ]; then
+        CREW_RUBY_DIR="$CREW_FILE_DIR/../../prebuilt/$CREW_HOST_OS-$CREW_HOST_CPU/bin"
+    else
+        CREW_TOOLS_DIR="$CREW_FILE_DIR/../../prebuilt/$CREW_HOST_OS-$CREW_32BIT_HOST_CPU/bin"
+    fi
 fi
 
-export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_TOOLS_DIR CREW_RUBY_DIR
 export SSL_CERT_FILE
 
 exec $CREW_RUBY_DIR/ruby -W0 "$CREW_FILE_DIR/crew.rb" "$@"
