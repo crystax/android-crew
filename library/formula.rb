@@ -4,6 +4,10 @@ require_relative 'utils.rb'
 
 class Formula
 
+  def self.package_version(ver, bldnum)
+    "#{ver}_#{bldnum}"
+  end
+
   # The name of this {Formula}.
   # e.g. `this-formula`
   attr_reader :name
