@@ -72,11 +72,12 @@ module Global
 
   EXE_EXT = RUBY_PLATFORM =~ /mingw/ ? '.exe' : ''
 
-  CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'bin', "curl#{EXE_EXT}")).realpath
-  CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'bin', "7za#{EXE_EXT}")).realpath
+  CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'bin')).realpath + "curl#{EXE_EXT}"
+  CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'bin')).realpath + "7za#{EXE_EXT}"
 
-  check_program(CREW_CURL_PROG)
-  check_program(CREW_7Z_PROG)
+  # todo: move to some other place
+  # check_program(CREW_CURL_PROG)
+  # check_program(CREW_7Z_PROG)
 
   private
 
