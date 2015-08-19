@@ -40,7 +40,7 @@ RUBY  = $(CREW_RUBY_DIR)/$(ruby_prog)
 RSPEC = $(CREW_RUBY_DIR)/$(ruby_prog) $(CREW_RUBY_DIR)/rspec
 $(info Using path to ruby from environment: $(CREW_RUBY_DIR))
 else ifneq ($(wildcard $(CREW_TOOLS_DIR)/bin/$(ruby_prog)),)
-CREW_RUBY_DIR = $(CREW_TOOLS_DIR)/bin/
+CREW_RUBY_DIR = $(CREW_TOOLS_DIR)/bin
 RUBY  = $(CREW_RUBY_DIR)/$(ruby_prog)
 RSPEC = $(CREW_RUBY_DIR)/$(ruby_prog) $(CREW_RUBY_DIR)/rspec
 $(info Using ruby form NDK: $(CREW_RUBY_DIR))
