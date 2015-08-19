@@ -1,11 +1,11 @@
 module Utility
 
-  def src_bin_dir(ver, bldnum)
-    File.join('..', 'crew', name, Formula.package_version(ver, bldnum), 'bin')
+  def src_dir(ver, bldnum, dirname)
+    File.join('..', 'crew', name, Formula.package_version(ver, bldnum), dirname)
   end
 
-  def dest_bin_dir(ndk_dir, platform)
-    File.join(ndk_dir, 'prebuilt', platform, 'bin')
+  def dest_dir(ndk_dir, platform, dirname)
+    File.join(ndk_dir, 'prebuilt', platform, dirname)
   end
 
   def exec_name(platform, prog)
