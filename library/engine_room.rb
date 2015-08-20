@@ -10,9 +10,9 @@ class EngineRoom
     UTILS.each { |n| @data[n] = read_data(n) }
   end
 
-  def installed?(name, version, bldnum)
+  def installed?(name, version, cxver)
     v = @data[name]
-    (v[0] == version) and (v[1] == bldnum)
+    (v[0] == version) and (v[1] == cxver)
   end
 
   private

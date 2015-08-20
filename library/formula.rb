@@ -4,16 +4,16 @@ require_relative 'utils.rb'
 
 class Formula
 
-  def self.package_version(ver, bldnum)
-    "#{ver}_#{bldnum}"
+  def self.package_version(ver, cxver)
+    "#{ver}_#{cxver}"
   end
 
   def self.split_package_version(pkgver)
     r = pkgver.split('_')
     raise "bad package version string: #{pkgver}" if r.size < 2
-    bldnum = r.pop.to_i
+    cxver = r.pop.to_i
     ver = r.join('_')
-    [ver, bldnum]
+    [ver, cxver]
   end
 
   # The name of this {Formula}.
@@ -141,7 +141,7 @@ class Formula
 
     def check_required_keys(r)
       raise ":version key not present in the release"      unless r.has_key?(:version)
-      raise ":build_number key not present in the release" unless r.has_key?(:build_number)
+      raise ":crystax_version key not present in the release" unless r.has_key?(:crystax_version)
       raise ":sha256 key not present in the release"       unless r.has_key?(:sha256)
     end
   end

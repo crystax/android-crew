@@ -71,7 +71,7 @@ Example:
 
 ### list [libs|utils]
 
-List all available formulas, their versions, build numbers and status (installed or
+List all available formulas, their upstream versions, crysta versions and status (installed or
 not). If 'libs' or 'utils' argument was specified the command will output information
 only about libraries or crew utilitites respectively.
 

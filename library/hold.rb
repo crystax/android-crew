@@ -30,8 +30,8 @@ class Hold
     end
   end
 
-  # todo: handle build number
-  def installed?(name, version = nil, bldnum = nil)
+  # todo: handle crystax version
+  def installed?(name, version = nil, cxver = nil)
     answer = false
     @installed.each_pair do |n, vers|
       if n == name

@@ -6,12 +6,12 @@ require_relative '../engine_room.rb'
 
 class Element
 
-  attr_reader :name, :version, :build_number
+  attr_reader :name, :version, :crystax_version
 
-  def initialize(name, version, build_number, iflag)
+  def initialize(name, version, cversion, iflag)
     @name = name
     @version = version
-    @build_number = build_number
+    @crystax_version = cversion
     @installed = iflag
   end
 
@@ -50,20 +50,20 @@ module Crew
     list = []
     maxname = 0
     maxver = 0
-    maxnum = 0
+    maxcxver = 0
     formulas.each do |f|
       f.releases.each do |r|
         maxname = f.name.size if f.name.size > maxname
         ver = r[:version]
         maxver = ver.size if ver.size > maxver
-        bldnum = r[:build_number]
-        maxnum = bldnum.size if bldnum.size > maxnum
-        list << Element.new(f.name, ver, bldnum, room.installed?(f.name, ver, bldnum))
+        cxver = r[:crystax_version].to_s
+        maxcxver = cxver.size if cxver.size > maxcxver
+        list << Element.new(f.name, ver, cxver, room.installed?(f.name, ver, cxver))
       end
     end
 
     list.each do |l|
-      printf " %s %-#{maxname}s %-#{maxver}s %-#{maxnum}s\n", l.installed_sign, l.name, l.version, l.build_number
+      printf " %s %-#{maxname}s  %-#{maxver}s  %-#{maxcxver}s\n", l.installed_sign, l.name, l.version, l.crystax_version
     end
   end
 end

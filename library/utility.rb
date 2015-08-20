@@ -1,7 +1,7 @@
 module Utility
 
-  def src_dir(ver, bldnum, dirname)
-    File.join('..', 'crew', name, Formula.package_version(ver, bldnum), dirname)
+  def src_dir(ver, cxver, dirname)
+    File.join('..', 'crew', name, Formula.package_version(ver, cxver), dirname)
   end
 
   def dest_dir(ndk_dir, platform, dirname)
