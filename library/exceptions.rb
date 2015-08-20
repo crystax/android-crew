@@ -12,6 +12,12 @@ class CommandRequresNoArguments < UsageError
   end
 end
 
+class CommandRequresOneOrNoArguments < UsageError
+  def to_s
+    "this command requires either one or no arguments"
+  end
+end
+
 class UnknownCommand < UsageError
   def initialize(cmd)
     super "unknown command \'#{cmd}\'"

@@ -2,6 +2,7 @@ require 'fileutils'
 require_relative 'library/exceptions.rb'
 require_relative 'library/global.rb'
 require_relative 'library/formula.rb'
+require_relative 'library/utility.rb'
 
 
 def split_arguments(arguments)

@@ -8,6 +8,14 @@ class Formula
     "#{ver}_#{bldnum}"
   end
 
+  def self.split_package_version(pkgver)
+    r = pkgver.split('_')
+    raise "bad package version string: #{pkgver}" if r.size < 2
+    bldnum = r.pop.to_i
+    ver = r.join('_')
+    [ver, bldnum]
+  end
+
   # The name of this {Formula}.
   # e.g. `this-formula`
   attr_reader :name

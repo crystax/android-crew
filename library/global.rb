@@ -65,10 +65,11 @@ module Global
   NDK_DIR       = ENV['CREW_NDK_DIR']       ? ENV['CREW_NDK_DIR']       : Pathname.new(BASE_DIR).realpath.dirname.dirname.to_s
   TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     ? ENV['CREW_TOOLS_DIR']     : def_tools_dir(NDK_DIR)
 
-  HOLD_DIR       = Pathname.new(File.join(NDK_DIR, 'sources')).realpath
-  FORMULA_DIR    = Pathname.new(File.join(BASE_DIR, 'formula')).realpath
-  CACHE_DIR      = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
-  REPOSITORY_DIR = Pathname.new(BASE_DIR).realpath
+  HOLD_DIR        = Pathname.new(File.join(NDK_DIR, 'sources')).realpath
+  FORMULA_DIR     = Pathname.new(File.join(BASE_DIR, 'formula')).realpath
+  CACHE_DIR       = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
+  UTILITIES_DIR   = Pathname.new(File.join(FORMULA_DIR, 'utilities')).realpath
+  REPOSITORY_DIR  = Pathname.new(BASE_DIR).realpath
 
   EXE_EXT = RUBY_PLATFORM =~ /mingw/ ? '.exe' : ''
 

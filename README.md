@@ -50,10 +50,9 @@ Example:
     COMMAND is one of the following:
       version         output version information
       help            show this help message
-      list [libs|utils|tools]
-                      list all available formulas for libraries, utilities
-                      or toolchains; whithout an argument list all
-                      formulas
+      list [libs|utils]
+                      list all available formulas for libraries or utilities;
+                      whithout an argument list all formulas
       info name ...   show information about the specified formula(s)
       install name[:version][:source] ...
                       install the specified formula(s)
@@ -70,19 +69,28 @@ Example:
     includes formula type, f.e. utils/zlib. Full form is required only
     to resolve ambiguity.
 
-### list [libs|utils|tools]
+### list [libs|utils]
 
-List all available formulas, their versions and status (installed or
-not). If libs or utils or tools argument was specified the command will output information
-only about libraries, crew utilitites (and their components) and toolchains respectively.
+List all available formulas, their versions, build numbers and status (installed or
+not). If 'libs' or 'utils' argument was specified the command will output information
+only about libraries or crew utilitites respectively.
 
 Example:
 
     $ crew list
-    icu       54.1     installed
-    boost     1.57.0   installed
-    boost     1.58.0
-    freetype  2.5.5    installed
+    Utilities:
+     * p7zib     9.20.1  1
+     * curl      7.42.0  1
+     * ruby      2.2.2   1
+       ruby      2.2.2   2
+    Libraries:
+       icu       54.1    1
+       icu       54.1    2
+     * icu       54.1    3
+     * boost     1.57.0  1
+     * boost     1.58.0  1
+       boost     1.58.0  2
+     * freetype  2.5.5   1
 
 
 ### info name ...

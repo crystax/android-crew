@@ -1,15 +1,17 @@
 require_relative '../exceptions.rb'
 require_relative '../formulary.rb'
 require_relative '../hold.rb'
+require_relative '../engine_room.rb'
 
 
-class Library
+class Element
 
-  attr_reader :name, :version
+  attr_reader :name, :version, :build_number
 
-  def initialize(name, version, iflag)
+  def initialize(name, version, build_number, iflag)
     @name = name
     @version = version
+    @build_number = build_number
     @installed = iflag
   end
 
@@ -22,27 +24,46 @@ end
 module Crew
 
   def self.list(args)
-    if args.length > 0
-      raise CommandRequresNoArguments
+    case args.length
+    when 0
+      puts "Utilities:"
+      list_elements(EngineRoom.new, Formulary.read_utilities)
+      puts "Libraries:"
+      list_elements(Hold.new, Formulary.read_formulas)
+    when 1
+      case args[0]
+      when 'libs'
+        list_elements(Hold.new, Formulary.read_formulas)
+      when 'utils'
+        list_elements(EngineRoom.new, Formulary.read_utilities)
+      else
+        raise "argument must either 'libs' or 'utils'"
+      end
+    else
+      raise CommandRequresOneOrNoArguments
     end
+  end
 
-    hold = Hold.new
-    formulas = Formulary.read_all
+  private
 
+  def self.list_elements(room, formulas)
     list = []
     maxname = 0
     maxver = 0
+    maxnum = 0
     formulas.each do |f|
       f.releases.each do |r|
-        ver = r[:version]
         maxname = f.name.size if f.name.size > maxname
-        maxlen = ver if ver.size > maxver
-        list << Library.new(f.name, ver, hold.installed?(f.name, ver))
+        ver = r[:version]
+        maxver = ver.size if ver.size > maxver
+        bldnum = r[:build_number]
+        maxnum = bldnum.size if bldnum.size > maxnum
+        list << Element.new(f.name, ver, bldnum, room.installed?(f.name, ver, bldnum))
       end
     end
 
     list.each do |l|
-      printf " %s %-#{maxname}s %-#{maxver}s\n", l.installed_sign, l.name, l.version
+      printf " %s %-#{maxname}s %-#{maxver}s %-#{maxnum}s\n", l.installed_sign, l.name, l.version, l.build_number
     end
   end
 end

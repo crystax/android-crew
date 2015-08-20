@@ -1,7 +1,6 @@
 require 'fileutils'
 require_relative '../hold.rb'
 require_relative '../formulary.rb'
-require_relative '../formula.rb'
 
 
 module Crew

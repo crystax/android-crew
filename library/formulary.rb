@@ -141,19 +141,12 @@ class Formulary
   end
 
   # todo: write iterator
-  def self.read_all
-    list = []
-    Dir.foreach(Global::FORMULA_DIR) do |name|
-      if name == '.' or name == '..'
-        next
-      end
-      if formula_file?(name)
-        list << factory(File.join(Global::FORMULA_DIR, name))
-      else
-        warning("not a formula file in formula dir: #{name}")
-      end
-    end
-    list
+  def self.read_formulas
+    read_dir_with_formulas(Global::FORMULA_DIR, ['utilities'])
+  end
+
+  def self.read_utilities
+    read_dir_with_formulas(Global::UTILITIES_DIR, [])
   end
 
   def initialize
@@ -187,5 +180,20 @@ class Formulary
 
   def self.formula_file?(name)
     File.extname(name) == '.rb'
+  end
+
+  def self.read_dir_with_formulas(dir, exceptions)
+    list = []
+    Dir.foreach(dir) do |name|
+      if name == '.' or name == '..'
+        next
+      end
+      if formula_file?(name)
+        list << factory(File.join(dir, name))
+      elsif !exceptions.include?(name)
+        warning("garbage in a formula dir #{dir}: #{name}")
+      end
+    end
+    list
   end
 end

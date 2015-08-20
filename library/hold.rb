@@ -30,7 +30,8 @@ class Hold
     end
   end
 
-  def installed?(name, version = nil)
+  # todo: handle build number
+  def installed?(name, version = nil, bldnum = nil)
     answer = false
     @installed.each_pair do |n, vers|
       if n == name
