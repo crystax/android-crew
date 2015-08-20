@@ -56,8 +56,8 @@ module Crew
         maxname = f.name.size if f.name.size > maxname
         ver = r[:version]
         maxver = ver.size if ver.size > maxver
-        cxver = r[:crystax_version].to_s
-        maxcxver = cxver.size if cxver.size > maxcxver
+        cxver = r[:crystax_version]
+        maxcxver = cxver.to_s.size if cxver.to_s.size > maxcxver
         list << Element.new(f.name, ver, cxver, room.installed?(f.name, ver, cxver))
       end
     end

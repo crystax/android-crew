@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'json'
 require_relative 'global.rb'
 require_relative 'utils.rb'
 
@@ -22,7 +23,9 @@ class Hold
             if !File.directory?(ver)
               warning("directory #{File.join(Global::HOLD_DIR, name)} contains foreign object: #{ver}")
             else
-              @installed[name] << ver
+              props = get_properties(name, ver)
+              props['version'] = ver
+              @installed[name] << props
             end
           end
         end
@@ -30,22 +33,24 @@ class Hold
     end
   end
 
-  # todo: handle crystax version
-  def installed?(name, version = nil, cxver = nil)
+  def installed?(name)
+    @installed[name].size > 0
+  end
+
+  def installed?(name, version, cxver)
     answer = false
-    @installed.each_pair do |n, vers|
-      if n == name
-        if !version or version == 'all' or vers.include?(version)
-          answer = true
-          break
-        end
+    @installed[name].each do |props|
+      if (props[:version] == version) and (props[:crystax_version] == cxver)
+        answer = true
+        break
       end
     end
     answer
   end
 
   def installed_versions(name)
-    @installed[name]
+    # todo: check if we need crystax_version too
+    @installed[name].map { |props| props[:version] }
   end
 
   def self.install_release(name, version, archive)
@@ -82,8 +87,14 @@ class Hold
   private
 
   STANDARD_DIRS = ['android', 'cpufeatures', 'crystax', 'cxx-stl', 'host-tools', 'objc', 'third_party']
+  PROPERTIES_FILE = 'properties.json'
 
   def self.standard_dir?(name)
     STANDARD_DIRS.include?(name)
+  end
+
+  def get_properties(name, ver)
+    # use full path here to get better error message if case open fails
+    JSON.parse(IO.read(File.join(Global::HOLD_DIR, name, ver, PROPERTIES_FILE)))
   end
 end
