@@ -1,5 +1,9 @@
 module Utility
 
+  def type
+    :utility
+  end
+
   def src_dir(ver, cxver, dirname)
     File.join('..', 'crew', name, Formula.package_version(ver, cxver), dirname)
   end

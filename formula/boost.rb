@@ -1,4 +1,6 @@
 class Boost < Formula
+  include Library
+
   homepage "http://www.boost.org"
 
   release version: '1.57.0', crystax_version: 1, sha256: '79b0764ee640cbcd31a6f2b5edfd200ea30c1af5ff7bae765e10cef588035fcb'

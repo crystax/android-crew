@@ -95,9 +95,12 @@ Example:
 
 ### info name ...
 
-Show information about the specified formula(s), including dependencies
-required, which versions are present in the repository, and which
+Show information about the specified formula(s), including type,
+dependencies, which versions are present in the repository, and which
 versions (if any) are installed.
+
+If there is an utility and a library with the same name than the command
+will output info about both.
 
 Example:
 
