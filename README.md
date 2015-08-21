@@ -54,7 +54,7 @@ Example:
                       list all available formulas for libraries or utilities;
                       whithout an argument list all formulas
       info name ...   show information about the specified formula(s)
-      install name[:version][:source] ...
+      install name[:version][:crystax_version] ...
                       install the specified formula(s)
       remove name[:version|:all] ...
                       uninstall the specified formulas
@@ -104,27 +104,44 @@ will output info about both.
 
 Example:
 
-    $ info boost
-    Boost Project Libraries
-    depends: icu
-    versions available: 1.57.0 (503M), 1.58.0 (515M)
-    versions installed: 1.57.0
-    space required: 
+    $ crew info curl boost
+    curl: http://curl.haxx.se/
+    type: utility
+    releases:
+      7.42.0 1  installed
+    
+    boost: http://www.boost.org
+    type: library
+    releases:
+      1.57.0 1  installed
+      1.58.0 1  installed
+    dependencies:
+      icu (*)
            
 
-### install name[:version] ...
+### install name[[:version]:crystax_version] ...
 
-Install the specified formula(s) and all it's dependencies; if no version
-was specified then the most recent version will be installed; otherwise
-the specified version will be installed.
+Install the specified formula(s) and all it's dependencies; if no
+version was specified then the most recent version will be installed;
+otherwise the specified version will be installed; the same applies to
+crystax version.
+
+Install command works only with library formulas. You can not install utility.
+But you can upgrade utility (see below upgrade command description).
+
+You can install any number of avaliable versions of any library. For example,
+you can install boost 1.57.0, 1.58.0 and 1.59.0 at the same time. But you can
+have only one crystax_version of any library installed. That is if you have
+boost 1.58.0:1 installed and then install boost 1.58.0:2 the later will replace
+the former.
 
 Example:
     
-    $ crew install libpng
-    error: libpng is not available
+    $ crew install ruby
+    error: ruby is not available
 
-    $ crew install freetype
-    freetype 2.2.5 will be installed
+    $ crew install boost
+    boost 1.59.0 will be installed
     downloading: .....
     unpacking: .....
 

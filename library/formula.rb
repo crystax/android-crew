@@ -29,6 +29,10 @@ class Formula
     @path = path
   end
 
+  def desc
+    self.class.desc
+  end
+
   def homepage
     self.class.homepage
   end
@@ -121,7 +125,7 @@ class Formula
 
   class << self
 
-    attr_rw :homepage, :space_reqired
+    attr_rw :desc, :homepage, :space_reqired
 
     attr_reader :releases, :dependencies
 
@@ -144,6 +148,26 @@ class Formula
       raise ":crystax_version key not present in the release" unless r.has_key?(:crystax_version)
       raise ":sha256 key not present in the release"       unless r.has_key?(:sha256)
     end
+  end
+
+  def to_info(room)
+    info = "Name:        #{name}\n"     \
+           "Homepage:    #{homepage}\n" \
+           "Description: #{desc}\n"     \
+           "Type:        #{type}\n"     \
+           "Releases:\n"
+    releases.each do |r|
+      installed = room.installed?(name, r) ? "installed" : ""
+      info += "  #{r[:version]} #{r[:crystax_version]}  #{installed}\n"
+    end
+    if dependencies.size > 0
+      puts "Dependencies:"
+      dependencies.each.with_index do |d, ind|
+        installed = room.installed?(d.name) ? " (*)" : ""
+        info += "  #{d.name}#{installed}"
+      end
+    end
+    info
   end
 
   private

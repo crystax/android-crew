@@ -15,39 +15,22 @@ module Crew
     hold = Hold.new
 
     args.each.with_index do |name, index|
-      is_utility = false
+      found = false
       # look for name in utities
       begin
         formula = Formulary.factory(File.join(Global::UTILITIES_DIR, "#{name}.rb"))
-        is_utility = true
-        puts "#{formula.name}: #{formula.homepage}"
-        puts "type: #{formula.type}"
-        puts "releases:"
-        formula.releases.each do |r|
-          installed = engine_room.installed?(formula.name, r) ? "installed" : ""
-          puts "  #{r[:version]} #{r[:crystax_version]}  #{installed}"
-        end
+        found = true
+        puts formula.to_info(engine_room)
       rescue FormulaUnavailableError
-        # ignore error
+        # ignore error; try to look for name in libraries
       end
 
       # look for name in libraries
       begin
         formula = Formulary.factory(name)
-        puts "#{formula.name}: #{formula.homepage}"
-        puts "type: #{formula.type}"
-        puts "releases:"
-        formula.releases.each do |r|
-          installed = hold.installed?(formula.name, r) ? "installed" : ""
-          puts "  #{r[:version]} #{r[:crystax_version]}  #{installed}"
-        end
-        puts "dependencies:"
-        formula.dependencies.each.with_index do |d, ind|
-          installed = hold.installed?(d.name) ? " (*)" : ""
-          puts "  #{d.name}#{installed}"
-        end
+        puts formula.to_info(hold)
       rescue FormulaUnavailableError
-        raise unless is_utility
+        raise unless found
       end
       puts "" if index + 1 < args.count
     end
