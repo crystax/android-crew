@@ -13,11 +13,13 @@ module Crew
     formulary = Formulary.new
 
     args.each do |n|
-      name, version = n.split(':')
-      outname = name + ((version and version != 'all') ? ':' + version : "")
+      # todo: handle all possible cases: name, name:ver, name:ver:cxver
+      name, ver, cxver = n.split(':')
+      # todo: fix outname
+      outname = name + ((ver and ver != 'all') ? ':' + ver : "")
 
       hold = Hold.new
-      if !hold.installed?(name, version)
+      if !hold.installed?(name, version: ver, crystax_version: cxver)
         raise "#{outname} not installed"
       end
 

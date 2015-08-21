@@ -11,11 +11,12 @@ module Crew
     end
 
     args.each.with_index do |n, index|
-      name, version = n.split(':')
+      # todo: handle all possible cases: name, name:ver, name:ver:cxver
+      name, ver, cxver = n.split(':')
       hold = Hold.new
-      if hold.installed?(name, version)
-        ver = version ? " #{version}" : ""
-        puts "#{name}#{ver} already installed"
+      if hold.installed?(name, version: ver, crystax_version: cxver)
+        verstr = ver ? " #{ver}" : ""
+        puts "#{name}#{verstr} already installed"
         next
       end
 

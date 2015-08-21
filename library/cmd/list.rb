@@ -58,7 +58,7 @@ module Crew
         maxver = ver.size if ver.size > maxver
         cxver = r[:crystax_version]
         maxcxver = cxver.to_s.size if cxver.to_s.size > maxcxver
-        list << Element.new(f.name, ver, cxver, room.installed?(f.name, ver, cxver))
+        list << Element.new(f.name, ver, cxver, room.installed?(f.name, r))
       end
     end
 

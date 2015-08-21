@@ -10,9 +10,9 @@ class EngineRoom
     UTILS.each { |n| @data[n] = read_data(n) }
   end
 
-  def installed?(name, version, cxver)
+  def installed?(name, props)
     v = @data[name]
-    (v[0] == version) and (v[1] == cxver)
+    (v[0] == props[:version]) and (v[1] == props[:crystax_version])
   end
 
   private

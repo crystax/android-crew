@@ -18,7 +18,7 @@ module Crew
 
       puts "releases:"
       formula.releases.each do |r|
-        installed = hold.installed?(formula.name, r[:version]) ? "installed" : ""
+        installed = hold.installed?(formula.name, r) ? "installed" : ""
         puts "  #{r[:version]}  #{installed}"
       end
 

@@ -24,7 +24,7 @@ class Hold
               warning("directory #{File.join(Global::HOLD_DIR, name)} contains foreign object: #{ver}")
             else
               props = get_properties(name, ver)
-              props['version'] = ver
+              props[:version] = ver
               @installed[name] << props
             end
           end
@@ -33,19 +33,20 @@ class Hold
     end
   end
 
-  def installed?(name)
-    @installed[name].size > 0
-  end
-
-  def installed?(name, version, cxver)
-    answer = false
-    @installed[name].each do |props|
-      if (props[:version] == version) and (props[:crystax_version] == cxver)
-        answer = true
-        break
+  def installed?(name, h = nil)
+    # todo: handle all possible cases: name, name:ver, name:ver:cxver
+    if !h
+      @installed[name].size > 0
+    else
+      answer = false
+      @installed[name].each do |props|
+        if (props[:version] == h[:version]) and (props[:crystax_version] == h[:crystax_version])
+          answer = true
+          break
+        end
       end
+      answer
     end
-    answer
   end
 
   def installed_versions(name)
@@ -95,6 +96,7 @@ class Hold
 
   def get_properties(name, ver)
     # use full path here to get better error message if case open fails
-    JSON.parse(IO.read(File.join(Global::HOLD_DIR, name, ver, PROPERTIES_FILE)))
+    propfile = File.join(Global::HOLD_DIR, name, ver, PROPERTIES_FILE)
+    JSON.parse(IO.read(propfile), symbolize_names: true)
   end
 end
