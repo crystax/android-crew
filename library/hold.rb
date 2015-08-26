@@ -33,20 +33,28 @@ class Hold
     end
   end
 
-  def installed?(name, h = nil)
-    # todo: handle all possible cases: name, name:ver, name:ver:cxver
-    if !h
-      @installed[name].size > 0
+  def installed?(name, h = {})
+    answer = false
+    if (h[:version] == nil) and (h[:crystax_version] == nil)
+      answer = @installed[name].size > 0
+    elsif (h[:version] == nil) and (h[:crystax_version] != nil)
+      raise "internal error: crystax_version was set and version was not"
+    elsif (h[:version] != nil) and (h[:crystax_version] == nil)
+      @installed[name].each do |props|
+        if (props[:version] == h[:version])
+          answer = true
+          break
+        end
+      end
     else
-      answer = false
       @installed[name].each do |props|
         if (props[:version] == h[:version]) and (props[:crystax_version] == h[:crystax_version])
           answer = true
           break
         end
       end
-      answer
     end
+    answer
   end
 
   def installed_versions(name)
@@ -54,13 +62,14 @@ class Hold
     @installed[name].map { |props| props[:version] }
   end
 
-  def self.install_release(name, version, archive)
-    outdir = release_directory(name, version)
-    FileUtils.mkdir_p(outdir)
+  def self.install_release(name, release, archive)
+    outdir = release_directory(name, release[:version])
+    FileUtils.rm_rf outdir
+    FileUtils.mkdir_p outdir
     puts "unpacking archive"
     Utils.unpack(archive, outdir)
   rescue
-    FileUtils.rmdir(outdir) unless Global::DEBUG.include?(:temps)
+    FileUtils.rmdir outdir
     raise
   end
 

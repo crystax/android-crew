@@ -4,8 +4,8 @@ module Utility
     :utility
   end
 
-  def src_dir(ver, cxver, dirname)
-    File.join('..', 'crew', name, Formula.package_version(ver, cxver), dirname)
+  def src_dir(release, dirname)
+    File.join('..', 'crew', name, Formula.package_version(release), dirname)
   end
 
   def dest_dir(ndk_dir, platform, dirname)

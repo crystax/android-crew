@@ -11,19 +11,19 @@ module Crew
     end
 
     args.each.with_index do |n, index|
-      # todo: handle all possible cases: name, name:ver, name:ver:cxver
-      name, ver, cxver = n.split(':')
+      release = {}
+      name, release[:version], release[:crystax_version] = n.split(':')
+      formula = Formulary.factory(name)
+      release = formula.find_release release
+
       hold = Hold.new
-      if hold.installed?(name, version: ver, crystax_version: cxver)
-        verstr = ver ? " #{ver}" : ""
-        puts "#{name}#{verstr} already installed"
+      if hold.installed?(name, release)
+        puts "#{name}:#{release[:version]}:#{release[:crystax_version]} already installed"
         next
       end
 
-      formula = Formulary.factory(name)
-
       puts "calculating dependencies for #{name}: "
-      deps, spacereq = formula.full_dependencies(hold, version)
+      deps, spacereq = formula.full_dependencies(hold, release)
       puts "  dependencies to install: #{deps.to_s.gsub('"', '')} "
       # todo: implement support
       # puts "  space required: #{spacereq}"
@@ -41,7 +41,7 @@ module Crew
         puts""
       end
 
-      formula.install(version)
+      formula.install release
 
       puts "" if index + 1 < args.count
     end

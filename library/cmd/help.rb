@@ -15,20 +15,13 @@ COMMAND is one of the following:
                   or toolchains; whithout an argument list all
                   formulas
   info name ...   show information about the specified formula(s)
-  install name[:version][:source] ...
+  install name[[:version]:crystax_version] ...
                   install the specified formula(s)
   remove name[:version|:all] ...
                   uninstall the specified formulas
-  build name:[version]
-                  rebuild formula from sources
   update          update crew repository information
   upgrade         install most recent versions
   cleanup [-n]    uninstall old versions
-
-For every command where formula name is reuqired, name can be specified
-in two forms. Short form: just formula name, f.e. zlib; full form that
-includes formula type, f.e. utils/zlib. Full form is required only
-to resolve ambiguity.
 EOS
 
 

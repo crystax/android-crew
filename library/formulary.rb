@@ -140,9 +140,11 @@ class Formulary
     return NullLoader.new(ref)
   end
 
+  SPECIAL_NAMES = ['utilities']
+
   # todo: write iterator
   def self.read_formulas
-    read_dir_with_formulas(Global::FORMULA_DIR, ['utilities'])
+    read_dir_with_formulas(Global::FORMULA_DIR, SPECIAL_NAMES)
   end
 
   def self.read_utilities
@@ -157,7 +159,7 @@ class Formulary
       end
       if self.class.formula_file?(name)
         @formulary << self.class.factory(File.join(Global::FORMULA_DIR, name))
-      else
+      elsif !SPECIAL_NAMES.include?(name)
         warning("not a formula file in formula dir: #{name}")
       end
     end

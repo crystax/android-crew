@@ -141,7 +141,7 @@ Example:
     error: ruby is not available
 
     $ crew install boost
-    boost 1.59.0 will be installed
+    boost 1.59.0:1 will be installed
     downloading: .....
     unpacking: .....
 
@@ -171,8 +171,8 @@ works as follows:
 
 Example:
 
-    $ crew remove icu
-    error: boost depends on icu
+    $ crew remove icu4c
+    error: boost+icu4c depends on icu4c
 
     $ crew remove boost
     error: more than one version installed
@@ -187,6 +187,8 @@ Example:
 
     $ crew remove icu
     uninstalling icu-54.1 ...
+    error: boost+icu4c depends on icu4c
+
 
 ### update
 

@@ -4,8 +4,8 @@ require_relative 'utils.rb'
 
 class Formula
 
-  def self.package_version(ver, cxver)
-    "#{ver}_#{cxver}"
+  def self.package_version(release)
+    "#{release[:version]}_#{release[:crystax_version]}"
   end
 
   def self.split_package_version(pkgver)
@@ -13,7 +13,7 @@ class Formula
     raise "bad package version string: #{pkgver}" if r.size < 2
     cxver = r.pop.to_i
     ver = r.join('_')
-    [ver, cxver]
+    {version: ver, crystax_version: cxver}
   end
 
   # The name of this {Formula}.
@@ -45,9 +45,9 @@ class Formula
     self.class.dependencies ? self.class.dependencies : []
   end
 
-  def full_dependencies(hold, version)
+  def full_dependencies(hold, release)
     result = []
-    size = 0 # todo: set to the size of the required version
+    size = 0 # todo: set to the size of the required release: {version:, crystax_version:}
     deps = dependencies
 
     while deps.size > 0
@@ -67,13 +67,13 @@ class Formula
     [result, size]
   end
 
-  def cache_file(version)
-    File.join(Global::CACHE_DIR, filename(find_release(version)))
+  def cache_file(release)
+    File.join(Global::CACHE_DIR, filename(release))
   end
 
-  def install(version = nil)
-    rel = find_release version
-    file = filename rel
+  def install(r = {})
+    release = find_release r
+    file = filename release
     cachepath = File.join(Global::CACHE_DIR, file)
 
     if File.exists? cachepath
@@ -85,11 +85,11 @@ class Formula
     end
 
     puts "checking integrity of the downloaded file #{file}"
-    if Digest::SHA256.hexdigest(File.read(cachepath, mode: "rb")) != rel[:sha256]
+    if Digest::SHA256.hexdigest(File.read(cachepath, mode: "rb")) != release[:sha256]
       raise "bad SHA256 sum of the downloaded file #{cachepath}"
     end
 
-    Hold.install_release(name, rel[:version], cachepath)
+    Hold.install_release(name, release, cachepath)
     # todo: remove downloaded file in case of any exception; on not?
   end
 
@@ -144,9 +144,9 @@ class Formula
     private
 
     def check_required_keys(r)
-      raise ":version key not present in the release"      unless r.has_key?(:version)
+      raise ":version key not present in the release"         unless r.has_key?(:version)
       raise ":crystax_version key not present in the release" unless r.has_key?(:crystax_version)
-      raise ":sha256 key not present in the release"       unless r.has_key?(:sha256)
+      raise ":sha256 key not present in the release"          unless r.has_key?(:sha256)
     end
   end
 
@@ -170,19 +170,23 @@ class Formula
     info
   end
 
-  private
-
-  def find_release(version = nil)
-    rel = version ? (releases.select { |r| r[:version] == version })[0] : releases.last
-    if !rel
-      raise "#{name} does not have release with version #{version}"
+  def find_release(r = {})
+    if !r[:version]
+      rel = releases.last
+    elsif !r[:crystax_version]
+      rel = (releases.select {|e| e[:version] == r[:version]}).last
+      raise "#{name} has no release with version #{r[:version]}" unless rel
+    else
+      rel = (releases.select {|e| e[:version] == r[:version] and e[:crystax_version] == r[:crystax_version]}).last
+      raise "#{name} has no release #{r[:version]}:#{r[:crystax_version]}" unless rel
     end
     rel
   end
 
+  private
+
   def filename(release)
-    patch = release[:patch] ? "_#{release[:patch]}" : ""
-    "#{name}-#{release[:version]}#{patch}.7z"
+    "#{name}-#{Formula.package_version(release)}.7z"
   end
 
   def find_release_index_by_version(version)

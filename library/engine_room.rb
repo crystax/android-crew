@@ -6,13 +6,13 @@ class EngineRoom
   UTILS = ['curl', 'p7zip', 'ruby']
 
   def initialize
-    @data = Hash.new(['', ''])
+    @data = Hash.new({})
     UTILS.each { |n| @data[n] = read_data(n) }
   end
 
   def installed?(name, props)
     v = @data[name]
-    (v[0] == props[:version]) and (v[1] == props[:crystax_version])
+    (v[:version] == props[:version]) and (v[:crystax_version] == props[:crystax_version])
   end
 
   private
