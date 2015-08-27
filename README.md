@@ -50,6 +50,7 @@ Example:
     COMMAND is one of the following:
       version         output version information
       help            show this help message
+      env             show crew's command working environment
       list [libs|utils]
                       list all available formulas for libraries or utilities;
                       whithout an argument list all formulas
@@ -195,20 +196,25 @@ Example:
 Update crew repository information; this command never installs any
 formula, just updates information about available formulas.
 
-Upon execution the command will show information about new formulas
-added to the Crystax NDK repository, and about new versions of the
-releases in the existing formulas if any.
+Upon execution the command will show information about new versions of
+the crew utilitites if any, about new formulas added to the Crystax NDK
+repository, and about new versions of the releases in the existing
+formulas if any.
 
 Example:
 
     $ crew update
+    new utilities versions:
+      ruby: 2.2.2:2, 2.2.3:1
+      curl: 7.42.0:2
+            
     new formulas:
-            libjpeg: 8d
-            ffmped:  2.5.3, 3.0.0
+      libjpeg: 8d:1
+      ffmped:  2.5.3:3, 3.0.0:1
                    
     new versions:
-            boost: 2.0.0
-            icu:   54.2, 55.0
+      boost: 2.0.0:1
+      icu:   54.2:2, 55.0:1
 
 
 ### upgrade

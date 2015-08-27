@@ -10,6 +10,7 @@ OPTIONS are:
 COMMAND is one of the following:
   version         output version information
   help            show this help message
+  env             show crew's command working environment
   list [libs|utils|tools]
                   list all available formulas for libraries, utilities
                   or toolchains; whithout an argument list all
