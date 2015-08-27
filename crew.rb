@@ -33,6 +33,9 @@ end
 
 if __FILE__ == $0
   begin
+    Global.check_program(Global::CREW_CURL_PROG)
+    Global.check_program(Global::CREW_7Z_PROG)
+
     goptions, cmd, args = split_arguments(ARGV)
     Global.set_options(goptions)
 

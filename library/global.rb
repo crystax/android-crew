@@ -76,10 +76,6 @@ module Global
   CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'bin')).realpath + "curl#{EXE_EXT}"
   CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'bin')).realpath + "7za#{EXE_EXT}"
 
-  # todo: move to some other place
-  # check_program(CREW_CURL_PROG)
-  # check_program(CREW_7Z_PROG)
-
   private
 
   @@options = { backtrace: false }
