@@ -195,6 +195,6 @@ class Formula
         return ind
       end
     end
-    raise "formula @{name} has no release with version #{version}"
+    raise "formula #{name} has no release with version #{version}"
   end
 end
