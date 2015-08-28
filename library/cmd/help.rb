@@ -22,7 +22,7 @@ COMMAND is one of the following:
                   uninstall the specified formulas
   update          update crew repository information
   upgrade         install most recent versions
-  cleanup [-n]    uninstall old versions
+  cleanup [-n]    uninstall old versions and clean cache
 EOS
 
 

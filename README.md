@@ -63,7 +63,7 @@ Example:
                       rebuild formula from sources
       update          update crew repository information
       upgrade         install most recent versions
-      cleanup [-n]    uninstall old versions
+      cleanup [-n]    uninstall old versions and clean cache
     
     For every command where formula name is reuqired, name can be specified
     in two forms. Short form: just formula name, f.e. zlib; full form that
@@ -242,7 +242,11 @@ Example:
 
 ### cleanup [-n]
 
-Remove all but the most recent versions of the all installed formulas.
+For all but the most recent versions of the installed libraries this
+command does two things, removes uninstall library and removes archive from the cache.
+
+This command will do nothing with crew utilitites because for any given
+utility there is one and only one version installed.
 
 If -n option is specified then command just outputs information about
 what it will do but otherwise will do nothing.
@@ -265,7 +269,7 @@ Example:
 
 ```
 platform/ndk/prebuilt/darwin-x86_64/bin/curl <--------------------|
-                                   /crew/curl/7.42.0_2/bin/curl --| 
+                                   /crew/curl/7.42.0_1/bin/curl --| 
                                                        lib/
                                                        share/
              tools/crew/.git

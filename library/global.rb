@@ -66,6 +66,7 @@ module Global
   TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     ? ENV['CREW_TOOLS_DIR']     : def_tools_dir(NDK_DIR)
 
   HOLD_DIR        = Pathname.new(File.join(NDK_DIR, 'sources')).realpath
+  ENGINE_DIR      = Pathname.new(File.join(TOOLS_DIR, 'crew')).realpath
   FORMULA_DIR     = Pathname.new(File.join(BASE_DIR, 'formula')).realpath
   CACHE_DIR       = Pathname.new(File.join(BASE_DIR, 'cache')).realpath
   UTILITIES_DIR   = Pathname.new(File.join(FORMULA_DIR, 'utilities')).realpath

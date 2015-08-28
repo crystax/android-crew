@@ -6,17 +6,13 @@ require_relative '../engine_room.rb'
 
 class Element
 
-  attr_reader :name, :version, :crystax_version
+  attr_reader :name, :version, :crystax_version, :installed_sign
 
   def initialize(name, version, cversion, iflag)
     @name = name
     @version = version
     @crystax_version = cversion
-    @installed = iflag
-  end
-
-  def installed_sign
-    @installed ? '*' : ' '
+    @installed_sign = iflag ? '*' : ' '
   end
 end
 
@@ -27,15 +23,15 @@ module Crew
     case args.length
     when 0
       puts "Utilities:"
-      list_elements(EngineRoom.new, Formulary.read_utilities)
+      list_elements Formulary.utilities
       puts "Libraries:"
-      list_elements(Hold.new, Formulary.read_formulas)
+      list_elements Formulary.libraries
     when 1
       case args[0]
       when 'libs'
-        list_elements(Hold.new, Formulary.read_formulas)
+        list_elements Formulary.utilities
       when 'utils'
-        list_elements(EngineRoom.new, Formulary.read_utilities)
+        list_elements Formulary.libraries
       else
         raise "argument must either 'libs' or 'utils'"
       end
@@ -46,24 +42,22 @@ module Crew
 
   private
 
-  def self.list_elements(room, formulas)
+  def self.list_elements(formulary)
     list = []
-    maxname = 0
-    maxver = 0
-    maxcxver = 0
-    formulas.each do |f|
+    max_name_len = max_ver_len = max_cxver_len = 0
+    formulary.each do |f|
       f.releases.each do |r|
-        maxname = f.name.size if f.name.size > maxname
+        max_name_len = f.name.size if f.name.size > max_name_len
         ver = r[:version]
-        maxver = ver.size if ver.size > maxver
+        max_ver_len = ver.size if ver.size > max_ver_len
         cxver = r[:crystax_version]
-        maxcxver = cxver.to_s.size if cxver.to_s.size > maxcxver
-        list << Element.new(f.name, ver, cxver, room.installed?(f.name, r))
+        max_cxver_len = cxver.to_s.size if cxver.to_s.size > max_cxver_len
+        list << Element.new(f.name, ver, cxver, f.installed?(r))
       end
     end
 
     list.each do |l|
-      printf " %s %-#{maxname}s  %-#{maxver}s  %-#{maxcxver}s\n", l.installed_sign, l.name, l.version, l.crystax_version
+      printf " %s %-#{max_name_len}s  %-#{max_ver_len}s  %-#{max_cxver_len}s\n", l.installed_sign, l.name, l.version, l.crystax_version
     end
   end
 end

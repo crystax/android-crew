@@ -1,5 +1,9 @@
 module Utility
 
+  def install_dir
+    Global::ENGINE_DIR
+  end
+
   def type
     :utility
   end

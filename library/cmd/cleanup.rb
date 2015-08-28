@@ -15,17 +15,17 @@ module Crew
     end
 
     incache = []
-    Hold.new.installed.each_pair do |n, vers|
+    Hold.new.installed.each_pair do |n, props|
       formula = Formulary.factory(n)
-      formula.exclude_latest(vers).each do |v|
-        dir = Hold.release_directory(n, v)
+      formula.exclude_latest(props).each do |r|
+        dir = Hold.release_directory(n, r[:version])
         if (dryrun)
           puts "would remove: #{dir}"
         else
           puts "removing: #{dir}"
           FileUtils.remove_dir(dir)
         end
-        archive = formula.cache_file(v)
+        archive = formula.cache_file(r)
         if File.exists?(archive)
           incache << archive
         end
