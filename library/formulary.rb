@@ -29,6 +29,23 @@ class Formulary
     @formulary[name]
   end
 
+  def select(&block)
+    @formulary.select(&block)
+  end
+
+  def dependants_of(name)
+    list = []
+    @formulary.values.each do |f|
+      f.dependencies.each do |d|
+        if d.name == name
+          list << f
+          break
+        end
+      end
+    end
+    list
+  end
+
   private
 
   def self.factory(path)
@@ -62,19 +79,6 @@ class Formulary
   end
 end
 
-
-#   def dependants_of(name)
-#     list = []
-#     @formulary.each do |f|
-#       f.dependencies.each do |d|
-#         if d.name == name
-#           list << f
-#           break
-#         end
-#       end
-#     end
-#     list
-#   end
 
 
 #   def self.loader_for(ref)

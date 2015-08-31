@@ -1,7 +1,3 @@
-require 'digest'
-require_relative 'extend/module.rb'
-require_relative 'utils.rb'
-
 class Formula
 
   def self.package_version(release)
@@ -57,53 +53,68 @@ class Formula
     self.class.dependencies ? self.class.dependencies : []
   end
 
-  # def full_dependencies(hold, release)
-  #   result = []
-  #   size = 0 # todo: set to the size of the required release: {version:, crystax_version:}
-  #   deps = dependencies
+  def full_dependencies(formulary, release)
+    result = []
+    size = 0 # todo: set to the size of the required release: {version:, crystax_version:}
+    deps = dependencies
 
-  #   while deps.size > 0
-  #     n = deps.first.name
-  #     if hold.installed?(n)
-  #       deps = deps.slice(1, deps.size)
-  #       next
-  #     end
-  #     if !result.include?(n)
-  #       result << n
-  #       # todo: update size
-  #     end
-  #     f = Formulary.factory(n)
-  #     deps = f.dependencies + deps.slice(1, deps.size)
-  #   end
+    while deps.size > 0
+      n = deps.first.name
+      deps = deps.slice(1, deps.size)
+      f = formulary[n]
+      next if f.installed?
+      if !result.include?(f)
+        result << f
+        # todo: update size
+      end
+      deps += f.dependencies
+    end
 
-  #   [result, size]
-  # end
+    [result, size]
+  end
 
   # def cache_file(release)
   #   File.join(Global::CACHE_DIR, archive_filename(release))
   # end
 
-  # def install(r = {})
-  #   release = find_release r
-  #   file = archive_filename release
-  #   cachepath = File.join(Global::CACHE_DIR, file)
+  def install(r = {})
+    release = find_release r
+    file = archive_filename release
+    cachepath = File.join(Global::CACHE_DIR, file)
 
-  #   if File.exists? cachepath
-  #     puts "using cached file #{file}"
-  #   else
-  #     url = "#{Global::DOWNLOAD_BASE}/#{file}"
-  #     puts "downloading #{url}"
-  #     Utils.download(url, cachepath)
-  #   end
+    if File.exists? cachepath
+      puts "using cached file #{file}"
+    else
+      url = "#{Global::DOWNLOAD_BASE}/#{file}"
+      puts "downloading #{url}"
+      Utils.download(url, cachepath)
+    end
 
-  #   puts "checking integrity of the downloaded file #{file}"
-  #   if Digest::SHA256.hexdigest(File.read(cachepath, mode: "rb")) != release[:sha256]
-  #     raise "bad SHA256 sum of the downloaded file #{cachepath}"
-  #   end
+    puts "checking integrity of the downloaded file #{file}"
+    if Digest::SHA256.hexdigest(File.read(cachepath, mode: "rb")) != release[:sha256]
+      raise "bad SHA256 sum of the downloaded file #{cachepath}"
+    end
 
-  #   Hold.install_release(name, release, cachepath)
-  #   # todo: remove downloaded file in case of any exception; on not?
-  # end
+    outdir = release_directory(release[:version])
+    FileUtils.rm_rf outdir
+    FileUtils.mkdir_p outdir
+    puts "unpacking archive"
+    Utils.unpack(cachepath, outdir)
+    # todo: remove downloaded file in case of any exception; on not?
+  end
+
+  def uninstall(version)
+    puts "removing #{name}-#{version}"
+    dir = release_directory(version)
+    props = get_properties(dir)
+    FileUtils.rm_rf dir
+    releases.each do |r|
+      if r[:version] == version and r[:crystax_version] == props[:crystax_version]
+        r[:installed] = false
+        break
+      end
+    end
+  end
 
   def installed?(release = {})
     answer = false
@@ -192,18 +203,18 @@ class Formula
     info
   end
 
-  # def find_release(r = {})
-  #   if !r[:version]
-  #     rel = releases.last
-  #   elsif !r[:crystax_version]
-  #     rel = (releases.select {|e| e[:version] == r[:version]}).last
-  #     raise "#{name} has no release with version #{r[:version]}" unless rel
-  #   else
-  #     rel = (releases.select {|e| e[:version] == r[:version] and e[:crystax_version] == r[:crystax_version]}).last
-  #     raise "#{name} has no release #{r[:version]}:#{r[:crystax_version]}" unless rel
-  #   end
-  #   rel
-  # end
+  def find_release(r = {})
+    if !r[:version]
+      rel = releases.last
+    elsif !r[:crystax_version]
+      rel = (releases.select {|e| e[:version] == r[:version]}).last
+      raise "#{name} has no release with version #{r[:version]}" unless rel
+    else
+      rel = (releases.select {|e| e[:version] == r[:version] and e[:crystax_version] == r[:crystax_version]}).last
+      raise "#{name} has no release #{r[:version]}:#{r[:crystax_version]}" unless rel
+    end
+    rel
+  end
 
   private
 

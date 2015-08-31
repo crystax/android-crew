@@ -1,8 +1,3 @@
-require_relative '../exceptions.rb'
-require_relative '../formulary.rb'
-require_relative '../hold.rb'
-
-
 module Crew
 
   def self.install(args)
@@ -10,21 +5,23 @@ module Crew
       raise FormulaUnspecifiedError
     end
 
+    formulary = Formulary.libraries
+
     args.each.with_index do |n, index|
       release = {}
       name, release[:version], release[:crystax_version] = n.split(':')
-      formula = Formulary.factory(name)
+      release[:crystax_version] = release[:crystax_version].to_i if release[:crystax_version]
+      formula = formulary[name]
       release = formula.find_release release
 
-      hold = Hold.new
-      if hold.installed?(name, release)
+      if formula.installed?(release)
         puts "#{name}:#{release[:version]}:#{release[:crystax_version]} already installed"
         next
       end
 
       puts "calculating dependencies for #{name}: "
-      deps, spacereq = formula.full_dependencies(hold, release)
-      puts "  dependencies to install: #{deps.to_s.gsub('"', '')} "
+      deps, spacereq = formula.full_dependencies(formulary, release)
+      puts "  dependencies to install: #{(deps.map { |d| d.name }).join(', ')} "
       # todo: implement support
       # puts "  space required: #{spacereq}"
 
@@ -34,10 +31,7 @@ module Crew
 
       if deps.count > 0
         puts "installing dependencies for #{name}:"
-        deps.each do |d|
-          f = Formulary.factory(d)
-          f.install
-        end
+        deps.each { |d| d.install }
         puts""
       end
 

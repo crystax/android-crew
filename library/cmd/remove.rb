@@ -1,8 +1,3 @@
-require_relative '../exceptions.rb'
-require_relative '../formulary.rb'
-require_relative '../hold.rb'
-
-
 module Crew
 
   def self.remove(args)
@@ -10,33 +5,33 @@ module Crew
       raise FormulaUnspecifiedError
     end
 
-    formulary = Formulary.new
+    formulary = Formulary.libraries
 
     args.each do |n|
       name, version = n.split(':')
       outname = name + ((version and version != 'all') ? ':' + version : "")
 
-      hold = Hold.new
+      formula = formulary[name]
       release = (version == 'all') ? {} : { version: version}
-      if !hold.installed?(name, release)
+      if !formula.installed?(release)
         raise "#{outname} not installed"
       end
 
-      # currently we do not care for version, only formula name
-      ideps = []
-      ivers = hold.installed_versions(name)
-      formulary.dependants_of(name).each {|d| if hold.installed?(d.name); ideps << d.name end }
+      # currently we do not care for dependency version, only formula name
+      ivers = (formula.releases.map { |r| r[:installed] ? r[:version] : nil }).compact
+      ideps = formulary.dependants_of(name).select { |f| f.installed? }
       if ideps.count > 0 and ivers.count == 1
-        raise "#{outname} has installed dependants: #{ideps}"
+        raise "#{outname} has installed dependants: #{ideps.map {|f| f.name}}"
       end
 
-      # NB: Hold.remove is a class method and does NOT updates hold internal data
       if ivers.count == 1
-        Hold.remove(name, ivers[0])
+        formula.uninstall(ivers[0])
       elsif !version
         raise "more than one version of #{name} installed"
+      elsif version != 'all'
+        formula.uninstall(version)
       else
-        Hold.remove(name, version)
+        ivers.each { |v| formula.uninstall(v) }
       end
     end
   end

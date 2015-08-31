@@ -1,9 +1,3 @@
-require_relative '../exceptions.rb'
-require_relative '../formulary.rb'
-require_relative '../hold.rb'
-require_relative '../engine_room.rb'
-
-
 class Element
 
   attr_reader :name, :version, :crystax_version, :installed_sign
