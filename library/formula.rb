@@ -171,25 +171,26 @@ class Formula
     end
   end
 
-  # def to_info(room)
-  #   info = "Name:        #{name}\n"     \
-  #          "Homepage:    #{homepage}\n" \
-  #          "Description: #{desc}\n"     \
-  #          "Type:        #{type}\n"     \
-  #          "Releases:\n"
-  #   releases.each do |r|
-  #     installed = room.installed?(name, r) ? "installed" : ""
-  #     info += "  #{r[:version]} #{r[:crystax_version]}  #{installed}\n"
-  #   end
-  #   if dependencies.size > 0
-  #     puts "Dependencies:"
-  #     dependencies.each.with_index do |d, ind|
-  #       installed = room.installed?(d.name) ? " (*)" : ""
-  #       info += "  #{d.name}#{installed}"
-  #     end
-  #   end
-  #   info
-  # end
+  def to_info(formulary)
+    info = "Name:        #{name}\n"     \
+           "Formula:     #{path}\n"     \
+           "Homepage:    #{homepage}\n" \
+           "Description: #{desc}\n"     \
+           "Type:        #{type}\n"     \
+           "Releases:\n"
+    releases.each do |r|
+      installed = installed?(r) ? "installed" : ""
+      info += "  #{r[:version]} #{r[:crystax_version]}  #{installed}\n"
+    end
+    if dependencies.size > 0
+      info += "Dependencies:\n"
+      dependencies.each.with_index do |d, ind|
+        installed = formulary[d.name].installed? ? " (*)" : ""
+        info += "  #{d.name}#{installed}"
+      end
+    end
+    info
+  end
 
   # def find_release(r = {})
   #   if !r[:version]

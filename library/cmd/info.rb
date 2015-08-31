@@ -11,26 +11,23 @@ module Crew
       raise FormulaUnspecifiedError
     end
 
-    engine_room = EngineRoom.new
-    hold = Hold.new
+    utils =  Formulary.utilities
+    libs = Formulary.libraries
 
     args.each.with_index do |name, index|
       found = false
       # look for name in utities
-      begin
-        formula = Formulary.factory(File.join(Global::UTILITIES_DIR, "#{name}.rb"))
+      formula = utils[name]
+      if formula
         found = true
-        puts formula.to_info(engine_room)
-      rescue FormulaUnavailableError
-        # ignore error; try to look for name in libraries
+        puts formula.to_info(utils)
       end
-
       # look for name in libraries
-      begin
-        formula = Formulary.factory(name)
-        puts formula.to_info(hold)
-      rescue FormulaUnavailableError
-        raise unless found
+      formula = libs[name]
+      if formula
+        puts formula.to_info(libs)
+      else
+        raise FormulaUnavailableError.new(name) unless found
       end
       puts "" if index + 1 < args.count
     end

@@ -25,6 +25,10 @@ class Formulary
     @formulary.each_value(&block)
   end
 
+  def [](name)
+    @formulary[name]
+  end
+
   private
 
   def self.factory(path)
