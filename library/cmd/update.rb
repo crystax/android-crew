@@ -1,7 +1,3 @@
-require 'rugged'
-require_relative '../exceptions.rb'
-require_relative '../global.rb'
-
 module Crew
 
   def self.update(args)

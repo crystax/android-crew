@@ -1,36 +1,54 @@
-require 'fileutils'
-require_relative '../hold.rb'
-require_relative '../formulary.rb'
-
-
 module Crew
 
   def self.cleanup(args)
-    if args.length > 0
+    case args.length
+    when 0
+      dryrun = false
+    when 1
       if args[0] == '-n'
         dryrun = true
       else
         raise "this command accepts only one optional argument: -n"
       end
+    else
+      raise "this command accepts only one optional argument: -n"
     end
 
     incache = []
-    Hold.new.installed.each_pair do |n, props|
-      formula = Formulary.factory(n)
-      formula.exclude_latest(props).each do |r|
-        dir = Hold.release_directory(n, r[:version])
+    Formulary.utilities.each do |utility|
+      utility.releases.each do |release|
+        cachefile = utility.cache_file(release)
+        if !utility.installed?(release) and File.exists?(cachefile)
+          incache << cachefile
+        end
+      end
+    end
+
+    Formulary.libraries.each do |formula|
+      # releases are sorted from oldest to most recent order
+      irels = []
+      formula.releases.each do |release|
+        if formula.installed?(release)
+          irels << release
+        else
+          cachefile = formula.cache_file(release)
+          incache << cachefile if File.exists?(cachefile)
+        end
+      end
+      irels.pop
+      irels.each do |release|
+        cachefile = formula.cache_file(release)
+        incache << cachefile if File.exists?(cachefile)
+        dir = release_directory(release[:version])
         if (dryrun)
           puts "would remove: #{dir}"
         else
           puts "removing: #{dir}"
           FileUtils.remove_dir(dir)
         end
-        archive = formula.cache_file(r)
-        if File.exists?(archive)
-          incache << archive
-        end
       end
     end
+
     incache.each do |f|
       if (dryrun)
         puts "would remove: #{f}"

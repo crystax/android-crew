@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'json'
 require 'digest'
+require 'rugged'
 require_relative 'library/extend/module.rb'
 require_relative 'library/utils.rb'
 require_relative 'library/exceptions.rb'

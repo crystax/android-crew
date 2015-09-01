@@ -73,13 +73,13 @@ class Formula
     [result, size]
   end
 
-  # def cache_file(release)
-  #   File.join(Global::CACHE_DIR, archive_filename(release))
-  # end
+  def cache_file(release)
+    File.join(Global::CACHE_DIR, archive_filename(release))
+  end
 
   def install(r = {})
-    release = find_release r
-    file = archive_filename release
+    release = find_release(r)
+    file = archive_filename(release)
     cachepath = File.join(Global::CACHE_DIR, file)
 
     if File.exists? cachepath

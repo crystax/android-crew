@@ -242,14 +242,19 @@ Example:
 
 ### cleanup [-n]
 
-For all but the most recent versions of the installed libraries this
-command does two things, removes uninstall library and removes archive from the cache.
+This command does two things.
 
-This command will do nothing with crew utilitites because for any given
-utility there is one and only one version installed.
+First, for every installed library it removes all but the most recent
+version.  For example, if boost 1.57.0, 1.58.0, 1.59.0 are installed the
+command removes versions 1.57.0 and 1.58.0.  Since at any given time one
+and only one version of any crew utility can be installed the command
+does nothing with installed crew utilities.
+
+Second, it removes archives from the cache and leaves only ones for the
+currently installed libraries nad crew utilities.
 
 If -n option is specified then command just outputs information about
-what it will do but otherwise will do nothing.
+what it will do but otherwise does nothing.
 
 Example:
 
