@@ -1,3 +1,4 @@
+# coding: utf-8
 require_relative 'spec_helper.rb'
 
 describe "crew list" do
@@ -41,115 +42,165 @@ describe "crew list" do
     end
   end
 
-  context "with libs argument, no formulas and empty hold" do
-    it "outputs nothing" do
-      crew 'list', 'libs'
-      expect(result).to eq(:ok)
-      expect(out).to eq('')
+  context "with libs argument" do
+
+    context "no formulas and empty hold" do
+      it "outputs nothing" do
+        crew 'list', 'libs'
+        expect(result).to eq(:ok)
+        expect(out).to eq('')
+      end
+    end
+
+    context "empty hold, one formula with one release" do
+      it "outputs info about one not installed release" do
+        copy_formulas 'libone.rb'
+        crew 'list', 'libs'
+        expect(result).to eq(:ok)
+        expect(out).to eq("   libone  1.0.0  1\n")
+      end
+    end
+
+    context "empty hold, one formula with three releases" do
+      it "outputs info about three not installed releases" do
+        copy_formulas 'libthree.rb'
+        crew 'list', 'libs'
+        expect(result).to eq(:ok)
+        expect(out).to eq("   libthree  1.1.1  1\n" \
+                          "   libthree  2.2.2  1\n" \
+                          "   libthree  3.3.3  1\n")
+      end
+    end
+
+    context "empty hold, three formulas with one, two and three releases" do
+      it "outputs info about all available releases" do
+        copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
+        crew 'list', 'libs'
+        expect(result).to eq(:ok)
+        expect(out.split("\n")).to eq(["   libone    1.0.0  1",
+                                       "   libthree  1.1.1  1",
+                                       "   libthree  2.2.2  1",
+                                       "   libthree  3.3.3  1",
+                                       "   libtwo    1.1.0  1",
+                                       "   libtwo    2.2.0  1"])
+      end
+    end
+
+    context "one formula with one release installed" do
+      it "outputs info about one existing release and marks it as installed" do
+        copy_formulas 'libone.rb'
+        crew_checked 'install', 'libone'
+        crew 'list', 'libs'
+        expect(result).to eq(:ok)
+        expect(out).to eq(" * libone  1.0.0  1\n")
+      end
+    end
+
+    context "one formula with 3 version and 10 releases and one release installed" do
+      it "outputs info about 10 releases and marks one as installed" do
+        copy_formulas 'libfour.rb'
+        crew_checked 'install', 'libfour:4.4.4:2'
+        crew 'list', 'libs'
+        expect(result).to eq(:ok)
+        expect(out).to eq("   libfour  1.1.1  1\n" \
+                          "   libfour  2.2.2  1\n" \
+                          "   libfour  2.2.2  2\n" \
+                          "   libfour  3.3.3  1\n" \
+                          "   libfour  3.3.3  2\n" \
+                          "   libfour  3.3.3  3\n" \
+                          "   libfour  4.4.4  1\n" \
+                          " * libfour  4.4.4  2\n" \
+                          "   libfour  4.4.4  3\n" \
+                          "   libfour  4.4.4  4\n")
+      end
+    end
+
+    context "three formulas with one, two and three releases, one of each releases installed" do
+      it "outputs info about six releases and marks three as installed" do
+        copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
+        crew_checked 'install', 'libone', 'libtwo:1.1.0', 'libthree:1.1.1'
+        crew 'list', 'libs'
+        expect(result).to eq(:ok)
+        expect(out.split("\n")).to eq([" * libone    1.0.0  1",
+                                       " * libthree  1.1.1  1",
+                                       "   libthree  2.2.2  1",
+                                       "   libthree  3.3.3  1",
+                                       " * libtwo    1.1.0  1",
+                                       " * libtwo    2.2.0  1"])
+      end
+    end
+
+    context "four formulas with many releases, latest release of each formula installed" do
+      it "outputs info about existing and installed releases" do
+        copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb', 'libfour.rb'
+        crew_checked 'install', 'libone', 'libtwo', 'libthree', 'libfour'
+        crew 'list', 'libs'
+        expect(result).to eq(:ok)
+        expect(out.split("\n")).to eq(["   libfour   1.1.1  1",
+                                       "   libfour   2.2.2  1",
+                                       "   libfour   2.2.2  2",
+                                       "   libfour   3.3.3  1",
+                                       "   libfour   3.3.3  2",
+                                       "   libfour   3.3.3  3",
+                                       "   libfour   4.4.4  1",
+                                       "   libfour   4.4.4  2",
+                                       "   libfour   4.4.4  3",
+                                       " * libfour   4.4.4  4",
+                                       " * libone    1.0.0  1",
+                                       "   libthree  1.1.1  1",
+                                       "   libthree  2.2.2  1",
+                                       " * libthree  3.3.3  1",
+                                       "   libtwo    1.1.0  1",
+                                       " * libtwo    2.2.0  1"])
+      end
     end
   end
 
-  context "with libs argument, empty hold, one formula with one release" do
-    it "outputs info about one not installed release" do
-      copy_formulas 'libone.rb'
-      crew 'list', 'libs'
-      expect(result).to eq(:ok)
-      expect(out).to eq("   libone  1.0.0  1\n")
+  context "with utils argument" do
+
+    context "one release of every utility, all utils are instaled" do
+      it "outputs info about installed utilities" do
+        copy_utilities
+        crew 'list', 'utils'
+        expect(result).to eq(:ok)
+        expect(out.split("\n")).to eq([" * curl   7.42.0  1",
+                                       " * p7zip  9.20.1  1",
+                                       " * ruby   2.2.2   1"])
+      end
     end
   end
 
-  context "with libs argument, empty hold, one formula with three releases" do
-    it "outputs info about three not installed releases" do
-      copy_formulas 'libthree.rb'
-      crew 'list', 'libs'
-      expect(result).to eq(:ok)
-      expect(out).to eq("   libthree  1.1.1  1\n" \
-                        "   libthree  2.2.2  1\n" \
-                        "   libthree  3.3.3  1\n")
-    end
-  end
+  context "whithout arguments" do
 
-  context "with libs argument, empty hold, three formulas with one, two and three releases" do
-    it "outputs info about all available releases" do
-      copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
-      crew 'list', 'libs'
-      expect(result).to eq(:ok)
-      expect(out.split("\n").sort).to eq(["   libone    1.0.0  1",
-                                          "   libthree  1.1.1  1",
-                                          "   libthree  2.2.2  1",
-                                          "   libthree  3.3.3  1",
-                                          "   libtwo    1.1.0  1",
-                                          "   libtwo    2.2.0  1"])
-    end
-  end
-
-  context "with libs argument, one formula with one release installed" do
-    it "outputs info about one existing release and marks it as installed" do
-      copy_formulas 'libone.rb'
-      install_release 'libone', '1.0.0'
-      crew 'list', 'libs'
-      expect(result).to eq(:ok)
-      expect(out).to eq(" * libone 1.0.0\n")
-    end
-  end
-
-  context "one formula with two releases and one release installed" do
-    it "outputs info about two releases and marks one as installed" do
-      copy_formulas 'libtwo.rb'
-      install_release 'libtwo', '2.2.0'
-      crew 'list'
-      expect(result).to eq(:ok)
-      expect(out).to eq("   libtwo 1.1.0\n" \
-                        " * libtwo 2.2.0\n")
-    end
-  end
-
-  context "one formula with three releases and two releases installed" do
-    it "outputs info about three releases and marks two as installed" do
-      copy_formulas 'libthree.rb'
-      install_release 'libthree', '1.1.1'
-      install_release 'libthree', '3.3.3'
-      crew 'list'
-      expect(result).to eq(:ok)
-      expect(out).to eq(" * libthree 1.1.1\n" \
-                        "   libthree 2.2.2\n" \
-                        " * libthree 3.3.3\n")
-    end
-  end
-
-  context "three formulas with one, two and three releases, one of each releases installed" do
-    it "outputs info about six releases and marks three as installed" do
-      copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
-      install_release 'libone', '1.0.0'
-      install_release 'libtwo', '1.1.0'
-      install_release 'libthree', '1.1.1'
-      crew 'list'
-      expect(result).to eq(:ok)
-      expect(out.split("\n").sort).to eq(["   libthree 2.2.2",
-                                          "   libthree 3.3.3",
-                                          "   libtwo   2.2.0",
-                                          " * libone   1.0.0",
-                                          " * libthree 1.1.1",
-                                          " * libtwo   1.1.0"])
-    end
-  end
-
-  context "three formulas with one, two and three releases, one of each releases installed, garbage in the hold" do
-    it "outputs a warning about garbage in the hld and info about six releases and marks three as installed" do
-      copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
-      install_release 'libone', '1.0.0'
-      install_release 'libtwo', '1.1.0'
-      install_release 'libthree', '1.1.1'
-      add_garbage_into_hold 'libone'
-      crew 'list'
-      expect(err).to eq("warning: directory #{File.join(Global::HOLD_DIR, 'libone')} contains foreign object: garbage\n")
-      expect(out.split("\n").sort).to eq(["   libthree 2.2.2",
-                                          "   libthree 3.3.3",
-                                          "   libtwo   2.2.0",
-                                          " * libone   1.0.0",
-                                          " * libthree 1.1.1",
-                                          " * libtwo   1.1.0"])
-      expect(exitstatus).to be_zero
+    context "some formulas with many releases, one release of every utility" do
+      it "outputs info about existing and installed releases" do
+        copy_utilities
+        copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb', 'libfour.rb'
+        crew_checked 'install', 'libone', 'libtwo', 'libthree', 'libfour'
+        crew 'list'
+        expect(result).to eq(:ok)
+        expect(out.split("\n")).to eq(["Utilities:",
+                                       " * curl   7.42.0  1",
+                                       " * p7zip  9.20.1  1",
+                                       " * ruby   2.2.2   1",
+                                       "Libraries:",
+                                       "   libfour   1.1.1  1",
+                                       "   libfour   2.2.2  1",
+                                       "   libfour   2.2.2  2",
+                                       "   libfour   3.3.3  1",
+                                       "   libfour   3.3.3  2",
+                                       "   libfour   3.3.3  3",
+                                       "   libfour   4.4.4  1",
+                                       "   libfour   4.4.4  2",
+                                       "   libfour   4.4.4  3",
+                                       " * libfour   4.4.4  4",
+                                       " * libone    1.0.0  1",
+                                       "   libthree  1.1.1  1",
+                                       "   libthree  2.2.2  1",
+                                       " * libthree  3.3.3  1",
+                                       "   libtwo    1.1.0  1",
+                                       " * libtwo    2.2.0  1"])
+      end
     end
   end
 end

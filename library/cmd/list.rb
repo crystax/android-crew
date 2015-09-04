@@ -8,6 +8,10 @@ class Element
     @crystax_version = cversion
     @installed_sign = iflag ? '*' : ' '
   end
+
+  def <=>(e)
+    "#{name} #{version} #{crystax_version.to_s.rjust(4, '0')}" <=> "#{e.name} #{e.version} #{e.crystax_version.to_s.rjust(4, '0')}"
+  end
 end
 
 
@@ -50,7 +54,7 @@ module Crew
       end
     end
 
-    list.each do |l|
+    list.sort.each do |l|
       printf " %s %-#{max_name_len}s  %-#{max_ver_len}s  %-#{max_cxver_len}s\n", l.installed_sign, l.name, l.version, l.crystax_version
     end
   end

@@ -135,6 +135,13 @@ module Spec
       end
     end
 
+    def copy_utilities
+      src = File.join('data', 'utilities')
+      ['curl', 'p7zip', 'ruby'].each do |u|
+        FileUtils.cp File.join(src, "#{u}-1.rb"), File.join(Global::UTILITIES_DIR,  "#{u}.rb")
+      end
+    end
+
     def install_release(name, version)
       dir = File.join(Global::HOLD_DIR, name, version)
       FileUtils.mkdir_p dir
