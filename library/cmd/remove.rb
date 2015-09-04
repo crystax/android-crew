@@ -20,8 +20,8 @@ module Crew
       # currently we do not care for dependency version, only formula name
       ivers = (formula.releases.map { |r| r[:installed] ? r[:version] : nil }).compact
       ideps = formulary.dependants_of(name).select { |f| f.installed? }
-      if ideps.count > 0 and ivers.count == 1
-        raise "#{outname} has installed dependants: #{ideps.map {|f| f.name}}"
+      if ideps.count > 0 and (ivers.count == 1 or version == 'all')
+        raise "#{outname} has installed dependants: #{ideps.map{|f| f.name}.join(', ')}"
       end
 
       if ivers.count == 1
