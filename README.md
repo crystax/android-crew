@@ -59,17 +59,10 @@ Example:
                       install the specified formula(s)
       remove name[:version|:all] ...
                       uninstall the specified formulas
-      build name:[version]
-                      rebuild formula from sources
       update          update crew repository information
       upgrade         install most recent versions
       cleanup [-n]    uninstall old versions and clean cache
     
-    For every command where formula name is reuqired, name can be specified
-    in two forms. Short form: just formula name, f.e. zlib; full form that
-    includes formula type, f.e. utils/zlib. Full form is required only
-    to resolve ambiguity.
-
 ### list [libs|utils]
 
 List all available formulas, their upstream versions, crysta versions and status (installed or

@@ -5,9 +5,9 @@ class BoostIcu4c < Formula
   homepage 'http://www.boost.org'
   name 'boost+icu4c'
 
-  release version: '1.57.0', crystax_version: 1, sha256: '6669dc32da5b73471cd98023d06d7ac6ccfb3cdeeaa2607de91ac7da848dcfd0'
-  release version: '1.58.0', crystax_version: 1, sha256: '1eccb7b625b412f5dedf3cbe5386a760664fad212e325de029f920e7bdfd7aa3'
-  release version: '1.59.0', crystax_version: 1, sha256: 'fdfd64eddc11035bde49e477f39f7c2419ed7bd5ee2ef88245c4013be0db8168'
+  release version: '1.57.0', crystax_version: 1, sha256: '42c1c8ab00f17ad2dd927cc8a2c8dac8ac2791264f674b121b3bcbdf0d2011dd'
+  release version: '1.58.0', crystax_version: 1, sha256: 'efa668966560eec18e15eeecd6e9c1d53077d378397fc27b3de38e58e72b1696'
+  release version: '1.59.0', crystax_version: 1, sha256: '3dcf79d9f0c92340b4a6e8f2eadb3099e27f0b5f60ae9e06f57583a12702ae79'
 
   depends_on 'icu4c'
 end

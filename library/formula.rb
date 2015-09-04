@@ -21,7 +21,7 @@ class Formula
     self.class.name File.basename(path, '.rb') unless name
     # mark installed releases
     releases.each do |rel|
-      dir = release_directory(rel[:version])
+      dir = release_directory(rel)
       if Dir.exists? dir
         prop = get_properties(dir)
         if rel[:crystax_version] == prop[:crystax_version]
@@ -85,7 +85,7 @@ class Formula
     if File.exists? cachepath
       puts "using cached file #{file}"
     else
-      url = "#{Global::DOWNLOAD_BASE}/#{file}"
+      url = "#{Global::DOWNLOAD_BASE}/#{name}/#{file}"
       puts "downloading #{url}"
       Utils.download(url, cachepath)
     end
@@ -95,7 +95,7 @@ class Formula
       raise "bad SHA256 sum of the downloaded file #{cachepath}"
     end
 
-    outdir = release_directory(release[:version])
+    outdir = release_directory(release)
     FileUtils.rm_rf outdir
     FileUtils.mkdir_p outdir
     puts "unpacking archive"
@@ -105,7 +105,7 @@ class Formula
 
   def uninstall(version)
     puts "removing #{name}-#{version}"
-    dir = release_directory(version)
+    dir = release_directory({version: version})
     props = get_properties(dir)
     FileUtils.rm_rf dir
     releases.each do |r|
@@ -220,11 +220,6 @@ class Formula
 
   PROPERTIES_FILE = 'properties.json'
 
-  def release_directory(version)
-    File.join(install_dir, name, version)
-    #File.join(Global::HOLD_DIR, name, version)
-  end
-
   def get_properties(dir)
     # use full path here to get better error message if case open fails
     propfile = File.join(dir, PROPERTIES_FILE)
@@ -234,13 +229,4 @@ class Formula
   def archive_filename(release)
     "#{name}-#{Formula.package_version(release)}.7z"
   end
-
-  # def find_release_index_by_version(version)
-  #   releases.each.with_index do |rel, ind|
-  #     if rel[:version] == version
-  #       return ind
-  #     end
-  #   end
-  #   raise "formula #{name} has no release with version #{version}"
-  # end
 end

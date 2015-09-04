@@ -4,12 +4,16 @@ module Utility
     Global::ENGINE_DIR
   end
 
+  def release_directory(release)
+    File.join(install_dir, name, "#{release[:version]}_#{release[:crystax_version]}")
+  end
+
   def type
     :utility
   end
 
   def src_dir(release, dirname)
-    File.join('..', 'crew', name, Formula.package_version(release), dirname)
+    File.join('..', 'crew', name, release_directory(release), dirname)
   end
 
   def dest_dir(ndk_dir, platform, dirname)

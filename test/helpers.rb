@@ -100,12 +100,12 @@ module Spec
       (exitstatus == 0 and err == '') ? :ok : [exitstatus, err]
     end
 
-    def archive_name(name, version)
-      "#{name}-#{version}.7z"
+    def archive_name(name, version, cxver)
+      "#{name}-#{version}_#{cxver}.7z"
     end
 
-    def in_cache?(name, version)
-      File.exists?(File.join(Global::CACHE_DIR, archive_name(name, version)))
+    def in_cache?(name, version, cxver)
+      File.exists?(File.join(Global::CACHE_DIR, archive_name(name, version, cxver)))
     end
 
     def cache_empty?
@@ -126,7 +126,7 @@ module Spec
       clean_cache
       clean_hold
       FileUtils.remove_dir(Global::FORMULA_DIR, true)
-      FileUtils.mkdir_p(Global::FORMULA_DIR)
+      FileUtils.mkdir_p(Global::UTILITIES_DIR)
     end
 
     def copy_formulas(*names)

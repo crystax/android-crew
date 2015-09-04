@@ -22,9 +22,9 @@ module Crew
       list_elements Formulary.libraries
     when 1
       case args[0]
-      when 'libs'
-        list_elements Formulary.utilities
       when 'utils'
+        list_elements Formulary.utilities
+      when 'libs'
         list_elements Formulary.libraries
       else
         raise "argument must either 'libs' or 'utils'"

@@ -26,7 +26,9 @@ class Formulary
   end
 
   def [](name)
-    @formulary[name]
+    formula = @formulary[name]
+    raise FormulaUnavailableError.new(name) unless formula
+    formula
   end
 
   def select(&block)

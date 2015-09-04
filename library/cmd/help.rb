@@ -11,10 +11,9 @@ COMMAND is one of the following:
   version         output version information
   help            show this help message
   env             show crew's command working environment
-  list [libs|utils|tools]
-                  list all available formulas for libraries, utilities
-                  or toolchains; whithout an argument list all
-                  formulas
+  list [libs|utils]
+                  list all available formulas for libraries or utilities;
+                  whithout an argument list all formulas
   info name ...   show information about the specified formula(s)
   install name[[:version]:crystax_version] ...
                   install the specified formula(s)

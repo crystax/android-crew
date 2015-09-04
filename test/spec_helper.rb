@@ -6,7 +6,7 @@ require 'webrick'
 
 PORT = 9999
 
-download_base = "http://localhost:#{PORT}"
+download_base = "http://localhost:#{PORT}/packages"
 www_dir =  'www'
 docroot_dir = File.join(www_dir, 'docroot')
 log_dir = File.join(www_dir, 'log')
@@ -28,7 +28,7 @@ FileUtils.remove_dir(base_dir, true)
 FileUtils.remove_dir(ndk_dir, true)
 
 FileUtils.mkdir_p(File.join(ndk_dir, 'sources'))
-FileUtils.mkdir_p(File.join(base_dir, 'formula'))
+FileUtils.mkdir_p(File.join(base_dir, 'formula', 'utilities'))
 FileUtils.mkdir_p(File.join(base_dir, 'cache'))
 
 ENV['CREW_DOWNLOAD_BASE'] = download_base

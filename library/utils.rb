@@ -1,7 +1,3 @@
-require 'open3'
-require_relative 'global.rb'
-require_relative 'exceptions.rb'
-
 module Utils
 
   # todo: add hash with options like this { stdout: drop|string, stdin: ignore }
@@ -14,7 +10,6 @@ module Utils
     Open3.popen3(cmd) do |_, out, err, t|
       ot = Thread.start do
         while c = out.getc
-          $stdout.putc c if Global::DEBUG.include?(:stdout)
           outstr += "#{c}"
         end
       end

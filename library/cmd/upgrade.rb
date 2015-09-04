@@ -10,20 +10,47 @@ module Crew
       raise CommandRequresNoArguments
     end
 
-    list = []
-    Hold.new.installed.each_pair do |name, ivers|
-      formula = Formulary.factory(name)
-      lver = formula.latest_version
-      list << [name, lver] unless ivers.include?(lver)
-    end
-
-    if list.size > 0
-      str = list.map{|e| e.join('-') }.join(' ')
-      puts "Will install: #{str}"
-      list.each do |pair|
-        name, ver = pair
-        Formulary.factory(name).install(ver)
+    names = []
+    utils = []
+    Formulary.utilities.each do |formula|
+      last_release = formula.releases.last
+      if !last_release[:installed]
+        utils << formula
+        names << "#{formula.name}:#{last_release[:version]}:#{last_release[:crystax_version]}"
       end
     end
+
+    if utils.size > 0
+      puts "Will upgrade: #{names.join(', ')}"
+      utils.each do |formula|
+        formula.install
+        formula.link Global::NDK_DIR, File.basename(Global::TOOLS_DIR), formula.releases.last[:version] unless Global::OS == 'windows'
+      end
+    end
+
+    write_upgrade_script utils if Global::OS == windows
+
+    names = []
+    libs = []
+    Formulary.libraries.each do |formula|
+      if formula.installed?
+        last_release = formula.releases.last
+        if !formula.installed?(last_release)
+          libs << formula
+          names << "#{formula.name}-#{Formula.package_version(last_release)}"
+        end
+      end
+    end
+
+    if libs.size > 0
+      puts "Will install: #{names.join(', ')}"
+      libs.each { |formula| formula.install }
+    end
+  end
+
+  private
+
+  def write_upgrade_script utils
+    # todo: all
   end
 end

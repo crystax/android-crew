@@ -21,7 +21,7 @@ module Crew
 
       puts "calculating dependencies for #{name}: "
       deps, spacereq = formula.full_dependencies(formulary, release)
-      puts "  dependencies to install: #{(deps.map { |d| d.name }).join(', ')} "
+      puts "  dependencies to install: #{(deps.map { |d| d.name }).join(', ')}"
       # todo: implement support
       # puts "  space required: #{spacereq}"
 

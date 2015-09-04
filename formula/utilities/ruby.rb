@@ -6,17 +6,17 @@ class Ruby < Formula
 
   release version: '2.2.2', crystax_version: 1, sha256: '0'
 
-  def link(ndk_dir, platform, release)
+  def link(ndk_dir, platform, version)
     FileUtils.cd(dest_dir(ndk_dir, platform, 'bin')) do
       prog_ruby = exec_name(platform, 'ruby')
       FileUtils.rm_rf prog_ruby
-      FileUtils.ln_s File.join(src_dir(release, 'bin'), prog_ruby), prog_ruby
+      FileUtils.ln_s File.join(src_dir(version, 'bin'), prog_ruby), prog_ruby
       FileUtils.rm_rf 'rspec'
-      FileUtils.ln_s File.join(src_dir(release, 'bin'), 'rspec'), 'rspec'
+      FileUtils.ln_s File.join(src_dir(version, 'bin'), 'rspec'), 'rspec'
     end
     FileUtils.cd(dest_dir(ndk_dir, platform, 'lib')) do
       FileUtils.rm_rf 'ruby'
-      FileUtils.ln_s File.join(src_dir(release, 'lib'), 'ruby'), 'ruby'
+      FileUtils.ln_s File.join(src_dir(version, 'lib'), 'ruby'), 'ruby'
     end
   end
 end
