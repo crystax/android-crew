@@ -9,18 +9,18 @@ module Crew
     libs = Formulary.libraries
 
     args.each.with_index do |name, index|
-      found = false
       # look for name in utities
-      formula = utils[name]
-      if formula
+      begin
+        puts utils[name].to_info(utils)
         found = true
-        puts formula.to_info(utils)
+      rescue FormulaUnavailableError
+        # ignore error
+        found = false
       end
       # look for name in libraries
-      formula = libs[name]
-      if formula
-        puts formula.to_info(libs)
-      else
+      begin
+        puts libs[name].to_info(utils)
+      rescue FormulaUnavailableError
         raise FormulaUnavailableError.new(name) unless found
       end
       puts "" if index + 1 < args.count
