@@ -19,7 +19,7 @@ module Crew
       end
       # look for name in libraries
       begin
-        puts libs[name].to_info(utils)
+        puts libs[name].to_info(libs)
       rescue FormulaUnavailableError
         raise FormulaUnavailableError.new(name) unless found
       end
