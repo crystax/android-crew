@@ -38,7 +38,7 @@ describe "crew install" do
     it "outputs info about installing existing release" do
       copy_formulas 'libone.rb'
       file = 'libone-1.0.0_1.7z'
-      url = File.join(Global::DOWNLOAD_BASE, 'libone', file)
+      url = "#{Global::DOWNLOAD_BASE}/packages/libone/#{file}"
       crew 'install', 'libone'
       expect(result).to eq(:ok)
       expect(out).to eq("calculating dependencies for libone: \n"             \
@@ -54,7 +54,7 @@ describe "crew install" do
     it "outputs info about installing existing release" do
       copy_formulas 'libone.rb'
       file = 'libone-1.0.0_1.7z'
-      url = File.join(Global::DOWNLOAD_BASE, 'libone', file)
+      url = "#{Global::DOWNLOAD_BASE}/packages/libone/#{file}"
       crew 'install', 'libone:1.0.0'
       expect(result).to eq(:ok)
       expect(out).to eq("calculating dependencies for libone: \n"             \
@@ -70,7 +70,7 @@ describe "crew install" do
     it "outputs info about installing existing release" do
       copy_formulas 'libone.rb'
       file = 'libone-1.0.0_1.7z'
-      url = File.join(Global::DOWNLOAD_BASE, 'libone', file)
+      url = "#{Global::DOWNLOAD_BASE}/packages/libone/#{file}"
       crew 'install', 'libone:1.0.0:1'
       expect(result).to eq(:ok)
       expect(out).to eq("calculating dependencies for libone: \n"             \
@@ -104,9 +104,9 @@ describe "crew install" do
     it "outputs info about installing dependency and the latest version" do
       copy_formulas 'libone.rb', 'libtwo.rb'
       depfile = 'libone-1.0.0_1.7z'
-      depurl = File.join(Global::DOWNLOAD_BASE, 'libone', "#{depfile}")
+      depurl = "#{Global::DOWNLOAD_BASE}/packages/libone/#{depfile}"
       resfile = 'libtwo-2.2.0_1.7z'
-      resurl = File.join(Global::DOWNLOAD_BASE, 'libtwo', "#{resfile}")
+      resurl = "#{Global::DOWNLOAD_BASE}/packages/libtwo/#{resfile}"
       crew 'install', 'libtwo'
       expect(result).to eq(:ok)
       expect(out).to eq("calculating dependencies for libtwo: \n"                \
@@ -128,11 +128,11 @@ describe "crew install" do
     it "outputs info about installing dependencies and the specified release" do
       copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
       depfile1 = 'libone-1.0.0_1.7z'
-      depurl1 = File.join(Global::DOWNLOAD_BASE, 'libone', "#{depfile1}")
+      depurl1 = "#{Global::DOWNLOAD_BASE}/packages/libone/#{depfile1}"
       depfile2 = 'libtwo-2.2.0_1.7z'
-      depurl2 = File.join(Global::DOWNLOAD_BASE, 'libtwo', "#{depfile2}")
+      depurl2 = "#{Global::DOWNLOAD_BASE}/packages/libtwo/#{depfile2}"
       resfile = 'libthree-2.2.2_1.7z'
-      resurl = File.join(Global::DOWNLOAD_BASE, 'libthree', "#{resfile}")
+      resurl = "#{Global::DOWNLOAD_BASE}/packages/libthree/#{resfile}"
       crew 'install', 'libthree:2.2.2:1'
       expect(result).to eq(:ok)
       expect(out).to eq("calculating dependencies for libthree: \n"               \
@@ -175,7 +175,7 @@ describe "crew install" do
     it "outputs info about installing latest release" do
       copy_formulas 'libfour.rb'
       file = 'libfour-4.4.4_4.7z'
-      url = File.join(Global::DOWNLOAD_BASE, 'libfour', file)
+      url = "#{Global::DOWNLOAD_BASE}/packages/libfour/#{file}"
       crew 'install', 'libfour'
       expect(result).to eq(:ok)
       expect(out).to eq("calculating dependencies for libfour: \n"            \
@@ -191,7 +191,7 @@ describe "crew install" do
     it "outputs info about installing latest crystax_version of the specified version" do
       copy_formulas 'libfour.rb'
       file = 'libfour-3.3.3_3.7z'
-      url = File.join(Global::DOWNLOAD_BASE, 'libfour', file)
+      url = "#{Global::DOWNLOAD_BASE}/packages/libfour/#{file}"
       crew 'install', 'libfour:3.3.3'
       expect(result).to eq(:ok)
       expect(out).to eq("calculating dependencies for libfour: \n"            \
@@ -207,7 +207,7 @@ describe "crew install" do
     it "outputs info about installing the specified release" do
       copy_formulas 'libfour.rb'
       file = 'libfour-2.2.2_1.7z'
-      url = File.join(Global::DOWNLOAD_BASE, 'libfour', file)
+      url = "#{Global::DOWNLOAD_BASE}/packages/libfour/#{file}"
       crew 'install', 'libfour:2.2.2:1'
       expect(result).to eq(:ok)
       expect(out).to eq("calculating dependencies for libfour: \n"            \

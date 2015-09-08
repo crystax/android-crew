@@ -8,6 +8,10 @@ module Library
     File.join(install_dir, name, release[:version])
   end
 
+  def download_base
+    "#{Global::DOWNLOAD_BASE}/packages"
+  end
+
   def type
     :library
   end

@@ -8,6 +8,10 @@ module Utility
     File.join(install_dir, name, "#{release[:version]}_#{release[:crystax_version]}")
   end
 
+  def download_base
+    "#{Global::DOWNLOAD_BASE}/utilities"
+  end
+
   def type
     :utility
   end

@@ -6,7 +6,7 @@ require 'webrick'
 
 PORT = 9999
 
-download_base = "http://localhost:#{PORT}/packages"
+download_base = "http://localhost:#{PORT}"
 www_dir =  'www'
 docroot_dir = File.join(www_dir, 'docroot')
 log_dir = File.join(www_dir, 'log')

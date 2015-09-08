@@ -28,7 +28,7 @@ module Crew
       end
     end
 
-    write_upgrade_script utils if Global::OS == windows
+    write_upgrade_script utils if Global::OS == 'windows'
 
     names = []
     libs = []
@@ -37,7 +37,7 @@ module Crew
         last_release = formula.releases.last
         if !formula.installed?(last_release)
           libs << formula
-          names << "#{formula.name}-#{Formula.package_version(last_release)}"
+          names << "#{formula.name}:#{last_release[:version]}:#{last_release[:crystax_version]}"
         end
       end
     end
