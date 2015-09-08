@@ -57,6 +57,7 @@ module Spec
       end
     end
 
+    UTILS = ['curl', 'p7zip', 'ruby']
 
     attr_reader :command, :out, :err, :exitstatus
 
@@ -135,11 +136,8 @@ module Spec
       end
     end
 
-    def copy_utilities
-      src = File.join('data', 'utilities')
-      ['curl', 'p7zip', 'ruby'].each do |u|
-        FileUtils.cp File.join(src, "#{u}-1.rb"), File.join(Global::UTILITIES_DIR,  "#{u}.rb")
-      end
+    def copy_utilities(dst = Global::UTILITIES_DIR)
+      UTILS.each { |u| FileUtils.cp File.join('data', "#{u}-1.rb"), File.join(dst,  "#{u}.rb") }
     end
 
     def install_release(name, version)
@@ -153,15 +151,17 @@ module Spec
     def repository_init
       clean_hold
       dir = origin_dir
+      utils_dir = File.join(dir, 'formula', 'utilities')
       FileUtils.rm_rf dir
-      FileUtils.mkdir dir
+      FileUtils.mkdir_p [File.join(dir, 'cache'), utils_dir]
+      copy_utilities utils_dir
       FileUtils.cd(dir) do
         repo = Repository.init_at '.'
-        FileUtils.mkdir [File.join('cache'), File.join('formula')]
         [File.join('cache', '.placeholder'), File.join('formula', '.placeholder')].each do |file|
           FileUtils.touch file
           repo.add file
         end
+        Dir[File.join('formula', 'utilities', '*')].each { |file| repo.add file }
         repo.commit 'initial'
       end
     end
@@ -177,7 +177,15 @@ module Spec
       repo.close
     end
 
-    def repository_add_formula(*names)
+    def repository_add_formula(type, *names)
+      case type
+      when :library
+        dir = 'formula'
+      when :utility
+        dir = File.join('formula', 'utilities')
+      else
+        raise "unknown formula type: #{type}"
+      end
       repo = Repository.new origin_dir
       names.each do |n|
         a = n.split(':')
@@ -187,7 +195,7 @@ module Spec
           src = a[0]
           dst = a[1]
         end
-        file = File.join('formula', dst)
+        file = File.join(dir, dst)
         FileUtils.cp File.join('data', src), File.join(origin_dir, file)
         repo.add file
       end

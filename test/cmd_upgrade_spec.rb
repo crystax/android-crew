@@ -26,11 +26,11 @@ describe "crew upgrade" do
   context "when there is one new release in one formula" do
     it "says about installing new release" do
       repository_init
-      repository_add_formula 'libone.rb', 'libtwo-1.rb:libtwo.rb'
+      repository_add_formula :library, 'libone.rb', 'libtwo-1.rb:libtwo.rb'
       repository_clone
       install_release 'libone', '1.0.0'
       install_release 'libtwo', '1.1.0'
-      repository_add_formula 'libtwo.rb'
+      repository_add_formula :library, 'libtwo.rb'
       crew 'update'
       crew 'upgrade'
       expect(err).to eq('')
@@ -45,12 +45,12 @@ describe "crew upgrade" do
   context "when there are two formulas with new release in each" do
     it "says about installing new releases" do
       repository_init
-      repository_add_formula 'libone.rb', 'libtwo-1.rb:libtwo.rb', 'libthree-2.rb:libthree.rb'
+      repository_add_formula :library, 'libone.rb', 'libtwo-1.rb:libtwo.rb', 'libthree-2.rb:libthree.rb'
       repository_clone
       install_release 'libone', '1.0.0'
       install_release 'libtwo', '1.1.0'
       install_release 'libthree', '1.1.1'
-      repository_add_formula 'libtwo.rb', 'libthree.rb'
+      repository_add_formula :library, 'libtwo.rb', 'libthree.rb'
       crew 'update'
       crew 'upgrade'
       expect(err).to eq('')

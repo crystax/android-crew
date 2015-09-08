@@ -47,7 +47,7 @@ module Crew
     def report
       map = { utils: Hash.new { |h,k| h[k] = [] }, libs: Hash.new { |h,k| h[k] = [] } }
       formula_dir = Global::FORMULA_DIR.basename.to_s
-      utility_dir = File.join(formula_dir, Global::UTULITY_DIR.basename.to_s)
+      utility_dir = File.join(formula_dir, Global::UTILITIES_DIR.basename.to_s)
 
       if initial_revision and initial_revision != current_revision
         diff.each_delta do |delta|
@@ -58,7 +58,7 @@ module Crew
           next unless [src, dst].any? { |p| File.dirname(p).start_with?(formula_dir) }
 
           status = delta.status_char.to_s
-          type = (src == utility_dir) ? :utils : :libs
+          type = (File.dirname(src) == utility_dir) ? :utils : :libs
           case status
           when "A", "M", "D"
             map[type][status.to_sym] << repository_path.join(src)
@@ -135,7 +135,7 @@ module Crew
     def select_formula(type, key)
       fetch(type, key, []).map do |path|
           path.basename(".rb").to_s
-      end.sort
+      end.sort.join(', ')
     end
 
     def fetch(type, *args)
