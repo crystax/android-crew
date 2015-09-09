@@ -39,7 +39,7 @@ module Crew
       irels.each do |release|
         cachefile = formula.cache_file(release)
         incache << cachefile if File.exists?(cachefile)
-        dir = release_directory(release[:version])
+        dir = formula.release_directory(release[:version])
         if (dryrun)
           puts "would remove: #{dir}"
         else

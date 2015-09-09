@@ -17,9 +17,8 @@ describe "crew upgrade" do
       repository_clone
       crew 'update'
       crew 'upgrade'
-      expect(err).to eq('')
+      expect(result).to eq(:ok)
       expect(out).to eq('')
-      expect(exitstatus).to be_zero
     end
   end
 
@@ -28,17 +27,16 @@ describe "crew upgrade" do
       repository_init
       repository_add_formula :library, 'libone.rb', 'libtwo-1.rb:libtwo.rb'
       repository_clone
-      install_release 'libone', '1.0.0'
-      install_release 'libtwo', '1.1.0'
+      crew_checked 'install', 'libone'
+      crew_checked 'install', 'libtwo'
       repository_add_formula :library, 'libtwo.rb'
-      crew 'update'
+      crew_checked 'update'
       crew 'upgrade'
-      expect(err).to eq('')
-      expect(out).to eq("Will install: libtwo-2.2.0\n"                                \
-                        "downloading http://localhost:9999/libtwo-2.2.0.7z\n"         \
-                        "checking integrity of the downloaded file libtwo-2.2.0.7z\n" \
+      expect(result).to eq(:ok)
+      expect(out).to eq("Will install: libtwo:2.2.0:1\n"                                  \
+                        "downloading #{Global::DOWNLOAD_BASE}/packages/libtwo/libtwo-2.2.0_1.7z\n" \
+                        "checking integrity of the archive file libtwo-2.2.0_1.7z\n"   \
                         "unpacking archive\n")
-      expect(exitstatus).to be_zero
     end
   end
 
@@ -47,21 +45,35 @@ describe "crew upgrade" do
       repository_init
       repository_add_formula :library, 'libone.rb', 'libtwo-1.rb:libtwo.rb', 'libthree-2.rb:libthree.rb'
       repository_clone
-      install_release 'libone', '1.0.0'
-      install_release 'libtwo', '1.1.0'
-      install_release 'libthree', '1.1.1'
+      crew_checked 'install', 'libone'
+      crew_checked 'install', 'libtwo'
+      crew_checked 'install', 'libthree:1.1.1'
       repository_add_formula :library, 'libtwo.rb', 'libthree.rb'
-      crew 'update'
+      crew_checked 'update'
       crew 'upgrade'
-      expect(err).to eq('')
-      expect(out).to eq("Will install: libthree-3.3.3 libtwo-2.2.0\n"                   \
-                        "downloading http://localhost:9999/libthree-3.3.3.7z\n"         \
-                        "checking integrity of the downloaded file libthree-3.3.3.7z\n" \
-                        "unpacking archive\n"                                           \
-                        "downloading http://localhost:9999/libtwo-2.2.0.7z\n"           \
-                        "checking integrity of the downloaded file libtwo-2.2.0.7z\n"   \
+      expect(result).to eq(:ok)
+      expect(out).to eq("Will install: libthree:3.3.3:1, libtwo:2.2.0:1\n"                             \
+                        "downloading #{Global::DOWNLOAD_BASE}/packages/libthree/libthree-3.3.3_1.7z\n" \
+                        "checking integrity of the archive file libthree-3.3.3_1.7z\n"              \
+                        "unpacking archive\n"                                                          \
+                        "downloading #{Global::DOWNLOAD_BASE}/packages/libtwo/libtwo-2.2.0_1.7z\n"     \
+                        "checking integrity of the archive file libtwo-2.2.0_1.7z\n"                \
                         "unpacking archive\n")
-      expect(exitstatus).to be_zero
     end
   end
+
+  # context "when there is one new release in one utility" do
+  #   it "says about installing new release" do
+  #     repository_init
+  #     repository_clone
+  #     repository_add_formula :utility, 'curl-2.rb:curl.rb'
+  #     crew_checked 'update'
+  #     crew 'upgrade'
+  #     expect(result).to eq(:ok)
+  #     expect(out).to eq("Will install: curl:7.43.0:1\n"                                          \
+  #                       "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/curl_7.43.0_1.7z\n" \
+  #                       "checking integrity of the archive file curl_7.43.0_1.7z\n"           \
+  #                       "unpacking archive\n")
+  #   end
+  # end
 end

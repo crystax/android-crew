@@ -44,7 +44,7 @@ describe "crew install" do
       expect(out).to eq("calculating dependencies for libone: \n"             \
                         "  dependencies to install: \n"                       \
                         "downloading #{url}\n"                                \
-                        "checking integrity of the downloaded file #{file}\n" \
+                        "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
     end
@@ -60,7 +60,7 @@ describe "crew install" do
       expect(out).to eq("calculating dependencies for libone: \n"             \
                         "  dependencies to install: \n"                       \
                         "downloading #{url}\n"                                \
-                        "checking integrity of the downloaded file #{file}\n" \
+                        "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
     end
@@ -76,7 +76,7 @@ describe "crew install" do
       expect(out).to eq("calculating dependencies for libone: \n"             \
                         "  dependencies to install: \n"                       \
                         "downloading #{url}\n"                                \
-                        "checking integrity of the downloaded file #{file}\n" \
+                        "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
     end
@@ -113,11 +113,11 @@ describe "crew install" do
                         "  dependencies to install: libone\n"                    \
                         "installing dependencies for libtwo:\n"                  \
                         "downloading #{depurl}\n"                                \
-                        "checking integrity of the downloaded file #{depfile}\n" \
+                        "checking integrity of the archive file #{depfile}\n" \
                         "unpacking archive\n"                                    \
                         "\n"                                                     \
                         "downloading #{resurl}\n"                                \
-                        "checking integrity of the downloaded file #{resfile}\n" \
+                        "checking integrity of the archive file #{resfile}\n" \
                         "unpacking archive\n")
       expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
       expect(in_cache?('libtwo', '2.2.0', 1)).to eq(true)
@@ -139,14 +139,14 @@ describe "crew install" do
                         "  dependencies to install: libone, libtwo\n"             \
                         "installing dependencies for libthree:\n"                 \
                         "downloading #{depurl1}\n"                                \
-                        "checking integrity of the downloaded file #{depfile1}\n" \
+                        "checking integrity of the archive file #{depfile1}\n" \
                         "unpacking archive\n"                                     \
                         "downloading #{depurl2}\n"                                \
-                        "checking integrity of the downloaded file #{depfile2}\n" \
+                        "checking integrity of the archive file #{depfile2}\n" \
                         "unpacking archive\n"                                     \
                         "\n"                                                      \
                         "downloading #{resurl}\n"                                 \
-                        "checking integrity of the downloaded file #{resfile}\n"  \
+                        "checking integrity of the archive file #{resfile}\n"  \
                         "unpacking archive\n")
       expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
       expect(in_cache?('libtwo', '2.2.0', 1)).to eq(true)
@@ -165,7 +165,7 @@ describe "crew install" do
       expect(out).to eq("calculating dependencies for libone: \n"             \
                         "  dependencies to install: \n"                       \
                         "using cached file #{file}\n"                         \
-                        "checking integrity of the downloaded file #{file}\n" \
+                        "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
     end
@@ -181,7 +181,7 @@ describe "crew install" do
       expect(out).to eq("calculating dependencies for libfour: \n"            \
                         "  dependencies to install: \n"                       \
                         "downloading #{url}\n"                                \
-                        "checking integrity of the downloaded file #{file}\n" \
+                        "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?('libfour', '4.4.4', 4)).to eq(true)
     end
@@ -197,7 +197,7 @@ describe "crew install" do
       expect(out).to eq("calculating dependencies for libfour: \n"            \
                         "  dependencies to install: \n"                       \
                         "downloading #{url}\n"                                \
-                        "checking integrity of the downloaded file #{file}\n" \
+                        "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?('libfour', '3.3.3', 3)).to eq(true)
     end
@@ -213,7 +213,7 @@ describe "crew install" do
       expect(out).to eq("calculating dependencies for libfour: \n"            \
                         "  dependencies to install: \n"                       \
                         "downloading #{url}\n"                                \
-                        "checking integrity of the downloaded file #{file}\n" \
+                        "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?('libfour', '2.2.2', 1)).to eq(true)
     end

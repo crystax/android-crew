@@ -61,6 +61,8 @@ module Global
   NDK_DIR       = ENV['CREW_NDK_DIR']       ? ENV['CREW_NDK_DIR']       : Pathname.new(BASE_DIR).realpath.dirname.dirname.to_s
   TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     ? ENV['CREW_TOOLS_DIR']     : def_tools_dir(NDK_DIR, OS)
 
+  PLATFORM = File.basename(TOOLS_DIR)
+
   HOLD_DIR        = Pathname.new(File.join(NDK_DIR, 'sources')).realpath
   ENGINE_DIR      = Pathname.new(File.join(TOOLS_DIR, 'crew')).realpath
   FORMULA_DIR     = Pathname.new(File.join(BASE_DIR, 'formula')).realpath

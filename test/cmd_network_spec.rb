@@ -44,7 +44,7 @@ describe "Test how Crew works over HTTPS" do
       expect(out).to eq("calculating dependencies for icu: \n"             \
                         "  dependencies to install: [] \n"                    \
                         "downloading #{url}\n"                                \
-                        "checking integrity of the downloaded file #{file}\n" \
+                        "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?('icu', '54.1')).to eq(true)
     end

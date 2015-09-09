@@ -1,11 +1,7 @@
 module Utility
 
-  def install_dir
-    Global::ENGINE_DIR
-  end
-
   def release_directory(release)
-    File.join(install_dir, name, "#{release[:version]}_#{release[:crystax_version]}")
+    File.join(Global::ENGINE_DIR, name, "#{release[:version]}_#{release[:crystax_version]}")
   end
 
   def download_base
@@ -27,5 +23,17 @@ module Utility
   def exec_name(platform, prog)
     prog += '.exe' if platform =~ /windows/
     prog
+  end
+
+  private
+
+  def archive_filename(release)
+    "#{name}-#{Formula.package_version(release)}-#{Global::PLATFORM}.7z"
+  end
+
+  def install_archive(outdir, archive)
+    FileUtils.rm_rf outdir
+    FileUtils.mkdir_p outdir
+    Utils.unpack(archive, Global::NDK_DIR)
   end
 end

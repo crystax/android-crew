@@ -90,17 +90,13 @@ class Formula
       Utils.download(url, cachepath)
     end
 
-    puts "checking integrity of the downloaded file #{file}"
+    puts "checking integrity of the archive file #{file}"
     if Digest::SHA256.hexdigest(File.read(cachepath, mode: "rb")) != release[:sha256]
       raise "bad SHA256 sum of the downloaded file #{cachepath}"
     end
 
-    outdir = release_directory(release)
-    FileUtils.rm_rf outdir
-    FileUtils.mkdir_p outdir
     puts "unpacking archive"
-    Utils.unpack(cachepath, outdir)
-    # todo: remove downloaded file in case of any exception; on not?
+    install_archive release_directory(release), cachepath
   end
 
   def uninstall(version)
@@ -224,9 +220,5 @@ class Formula
     # use full path here to get better error message if case open fails
     propfile = File.join(dir, PROPERTIES_FILE)
     JSON.parse(IO.read(propfile), symbolize_names: true)
-  end
-
-  def archive_filename(release)
-    "#{name}-#{Formula.package_version(release)}.7z"
   end
 end
