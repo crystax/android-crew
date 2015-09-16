@@ -16,7 +16,7 @@ if [ -z $CREW_RUBY_DIR ]; then
     if [ -d "$CREW_FILE_DIR/../../prebuilt/$CREW_HOST_OS-$CREW_HOST_CPU" ]; then
         CREW_RUBY_DIR="$CREW_FILE_DIR/../../prebuilt/$CREW_HOST_OS-$CREW_HOST_CPU/bin"
     else
-        CREW_TOOLS_DIR="$CREW_FILE_DIR/../../prebuilt/$CREW_HOST_OS-$CREW_32BIT_HOST_CPU/bin"
+        CREW_RUBY_DIR="$CREW_FILE_DIR/../../prebuilt/$CREW_HOST_OS-$CREW_32BIT_HOST_CPU/bin"
     fi
 fi
 
