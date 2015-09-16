@@ -23,40 +23,26 @@ else
 endif
 
 ifneq ($(wildcard ../../../prebuilt/$(host_os)-x86_64),)
-  CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-x86_64)
+  TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-x86_64)
+  PLATFORM = $(host_os)-x86_64
 else ifeq ($(host_os),windows)
-  CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os))/
+  TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os))/
+  PLATFORM = $(host_os)
 else
-  CREW_TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-x86)
+  TOOLS_DIR = $(realpath ../../../prebuilt/$(host_os)-x86)
+  PLATFORM = $(host_os)-x86
 endif
 
-#
-# What we do to find ruby:
-#  1. try environment varible
-#  2. if env var is not set then suppose that crew is in NDK directory
-#     and try ruby from tools dir
-#  3. fallback to system ruby
-#
-ifdef CREW_RUBY_DIR
-RUBY  = $(CREW_RUBY_DIR)/$(ruby_prog)
-RSPEC = $(CREW_RUBY_DIR)/$(ruby_prog) $(CREW_RUBY_DIR)/rspec
-$(info Using path to ruby from environment: $(CREW_RUBY_DIR))
-else ifneq ($(wildcard $(CREW_TOOLS_DIR)/bin/$(ruby_prog)),)
-CREW_RUBY_DIR = $(CREW_TOOLS_DIR)/bin
-RUBY  = $(CREW_RUBY_DIR)/$(ruby_prog)
-RSPEC = $(CREW_RUBY_DIR)/$(ruby_prog) $(CREW_RUBY_DIR)/rspec
-$(info Using ruby form NDK: $(CREW_RUBY_DIR))
-else
-RUBY  = $(ruby_prog)
-RSPEC = $(ruby_prog)
-CREW_RUBY_DIR = $(dir $(dir $(shell which ruby)))
-$(info Using system ruby: $(CREW_RUBY_DIR))
-endif
+RUBY_DIR = $(TOOLS_DIR)/bin
+
+RUBY  = $(RUBY_DIR)/bin/$(ruby_prog)
+RSPEC = $(RUBY_DIR)/bin/$(ruby_prog) $(RUBY_DIR)/rspec
 
 
-CREW_BASE_DIR      = crew
-CREW_DOWNLOAD_BASE = http://localhost:9999
-CREW_NDK_DIR       = ndk
+CREW_BASE_DIR  = crew
+CREW_NDK_DIR   = ndk
+CREW_TOOLS_DIR = $(CREW_NDK_DIR)/prebuilt/$(PLATFORM)
+CREW_RUBY_DIR  = $(CREW_TOOLS_DIR)/bin
 
 SSL_CERT_FILE = $(abspath ../etc/ca-certificates.crt)
 
@@ -80,25 +66,29 @@ else
 endif
 
 
-export CREW_BASE_DIR CREW_DOWNLOAD_BASE CREW_NDK_DIR CREW_TOOLS_DIR CREW_RUBY_DIR
+export CREW_BASE_DIR CREW_NDK_DIR CREW_TOOLS_DIR CREW_RUBY_DIR
 export SSL_CERT_FILE
 
 
-.PHONY: all test clean dirs unit-tests rspec-tests $(rspec_cmd_tests)
+.PHONY: all test clean dirs test-data clean-test-data unit-tests rspec-tests $(rspec_cmd_tests)
 
 all: test clean dirs
 
 test: unit-tests rspec-tests
 
-clean:
-	$(RM) $(RMFLAGS) crew
-	$(RM) $(RMFLAGS) crew.git
-	$(RM) $(RMFLAGS) ndk
+clean: clean-test-data
+	$(RM) $(RMFLAGS) crew crew.git ndk
 
 unit-tests: dirs
 	$(RUBY) -I ../library test_crew.rb
 
-rspec-tests: dirs
+test-data:
+	$(RUBY) test_prepare.rb
+
+clean-test-data:
+	$(RUBY) test_cleanup.rb
+
+rspec-tests: dirs test-data
 	$(RSPEC) $(rspec_files)
 
 test-%:

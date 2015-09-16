@@ -57,8 +57,6 @@ module Spec
       end
     end
 
-    UTILS = ['curl', 'p7zip', 'ruby']
-
     attr_reader :command, :out, :err, :exitstatus
 
     def crew(*params)
@@ -137,7 +135,7 @@ module Spec
     end
 
     def copy_utilities(dst = Global::UTILITIES_DIR)
-      UTILS.each { |u| FileUtils.cp File.join('data', "#{u}-1.rb"), File.join(dst,  "#{u}.rb") }
+      Crew_test::UTILS.each { |u| FileUtils.cp File.join('data', "#{u}-1.rb"), File.join(dst,  "#{u}.rb") }
     end
 
     def install_release(name, version)
@@ -206,10 +204,6 @@ module Spec
       repo = Repository.new origin_dir
       names.each { |n| repo.remove File.join('formula', n) }
       repo.commit "del_#{names.join('_')}"
-    end
-
-    def add_garbage_into_hold name
-      FileUtils.cp File.join('data', 'garbage'),  File.join(Global::HOLD_DIR, name, 'garbage')
     end
 
     def origin_dir

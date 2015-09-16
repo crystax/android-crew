@@ -62,18 +62,18 @@ describe "crew upgrade" do
     end
   end
 
-  # context "when there is one new release in one utility" do
-  #   it "says about installing new release" do
-  #     repository_init
-  #     repository_clone
-  #     repository_add_formula :utility, 'curl-2.rb:curl.rb'
-  #     crew_checked 'update'
-  #     crew 'upgrade'
-  #     expect(result).to eq(:ok)
-  #     expect(out).to eq("Will install: curl:7.43.0:1\n"                                          \
-  #                       "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/curl_7.43.0_1.7z\n" \
-  #                       "checking integrity of the archive file curl_7.43.0_1.7z\n"           \
-  #                       "unpacking archive\n")
-  #   end
-  # end
+  context "when there is one new release in curl utility, with crystax_version changed" do
+    it "says about installing new release" do
+      repository_init
+      repository_clone
+      repository_add_formula :utility, 'curl-2.rb:curl.rb'
+      crew_checked 'update'
+      crew 'upgrade'
+      expect(result).to eq(:ok)
+      expect(out).to eq("Will install: curl:7.43.0:1\n"                                          \
+                        "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/curl_7.43.0_1.7z\n" \
+                        "checking integrity of the archive file curl_7.43.0_1.7z\n"           \
+                        "unpacking archive\n")
+    end
+  end
 end

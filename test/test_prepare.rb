@@ -6,21 +6,25 @@ require_relative '../library/release.rb'
 require_relative 'test_consts.rb'
 
 
-TOOLS_DIR      = ENV['CREW_RUBY_DIR']
-PLATFORM       = File.basename(TOOLS_DIR)
-ORIG_NDK_DIR   = File.join('..', '..', '..')
-ORIG_TOOLS_DIR = File.join(ORIG_NDK_DIR, 'prebuilt', PLATFORM)
+TOOLS_DIR          = ENV['CREW_RUBY_DIR']
+PLATFORM           = File.basename(TOOLS_DIR)
+UTILS_DOWNLOAD_DIR = File.join(Crew_test::DOCROOT_DIR, 'utilities')
+ORIG_NDK_DIR       = File.join('..', '..', '..')
+ORIG_TOOLS_DIR     = File.join(ORIG_NDK_DIR, 'prebuilt', PLATFORM)
 
 # copy utils from NDK dir to tests directory structure
 FileUtils.mkdir_p File.dirname(TOOLS_DIR)
+FileUtils.mkdir_p UTILS_DOWNLOAD_DIR
 FileUtils.cp_r File.join(ORIG_TOOLS_DIR, 'crew') TOOLS_DIR
 FileUtils.cp_r File.join(ORIG_TOOLS_DIR, 'bin')  TOOLS_DIR
 
 ORIG_NDK_DIR       = Pathname.new(ORIG_NDK_DIR).realpath.to_s
-ORIG_FORMULA_DIR   = File.join(NDK_DIR, 'tools', 'crew', 'formula', 'utilities')
+ORIG_TOOLS_DIR     = Pathname.new(ORIG_TOOLS_DIR).realpath.to_s
+ORIG_FORMULA_DIR   = Pathname.new(File.join(NDK_DIR, 'tools', 'crew', 'formula', 'utilities')).realpath.to_s
 TOOLS_DIR          = Pathname.new(TOOLS_DIR).realpath.to_s
-UTILS_DOWNLOAD_DIR = Pathname.new(File.join(Crew_test::DOCROOT_DIR, 'utilities')).realpath.to_s
+UTILS_DOWNLOAD_DIR = Pathname.new(UTILS_DOWNLOAD_DIR).realpath.to_s
 DATA_DIR           = Pathname.new(Crew_test::DATA_DIR).realpath.to_s
+NDK_DIR            = Pathname.new(Crew_test::NDK_DIR).realpath.to_s
 
 
 def replace_releases(formula, releases)
@@ -61,7 +65,7 @@ def create_archive(orig_release, release, util)
   archive_path = File.join(UTILS_DOWNLOAD_DIR, util, "#{util}-#{release}-#{PLATFORM}.7z")
   FileUtils.mkdir_p File.dirname(archive_path)
   FileUtils.cd('tmp') do
-    cmd = "#{File.join(TOOLS_DIR, 'bin', 'p7zip')} a #{archive_path} #{dir_to_archive}"
+    cmd = "#{File.join(ORIG_TOOLS_DIR, 'bin', 'p7zip')} a #{archive_path} #{dir_to_archive}"
   end
   # rename new release back to old
   FileUtils.cd(util_dir) { FileUtils.mv new, old if old != new }
@@ -69,20 +73,15 @@ def create_archive(orig_release, release, util)
   Digest::SHA256.hexdigest(File.read(archive_path, mode: "rb"))
 end
 
-def save_original_utilities
-  # todo: all
-end
-
-
 #
 # create test data for utilities
 #
 
 orig_releases = {}
 Crew_test::UTILS.each do |u|
-  formula = File.join(FORMULA_DIR, "#{u}.rb")
+  formula = File.join(ORIG_FORMULA_DIR, "#{u}.rb")
   orig_releases[u] = ur = get_lastest_utility_release(formula)
-  src_dir = File.join(NDK_DIR, 'prebuilt', PLATFORM, 'crew', "#{u}", "#{ur.to_s}")
+  src_dir = File.join(ORIG_NDK_DIR, 'prebuilt', PLATFORM, 'crew', "#{u}", "#{ur.to_s}")
   dst_dir = File.join('tmp', 'prebuilt', PLATFORM, 'crew', "#{u}")
   FileUtils.mkdir_p dst_dir
   FileUtils.cp_r src_dir, dst_dir
