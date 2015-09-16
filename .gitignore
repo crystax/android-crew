@@ -5,3 +5,7 @@ test/crew
 test/crew.git
 test/ndk
 test/www/log
+test/data/curl-*.rb
+test/data/p7zip-*.rb
+test/data/ruby-*.rb
+test/tmp
