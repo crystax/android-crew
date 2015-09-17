@@ -100,13 +100,19 @@ File.open(File.join(DATA_DIR, 'curl-2.rb'), 'w') { |f| f.puts replace_releases(c
 File.open(File.join(DATA_DIR, 'curl-3.rb'), 'w') { |f| f.puts replace_releases(curl_formula, curl_releases) }
 
 # create archives and formulas for p7zip
-p7zip_release = Release.new('9.20.1', 1)
-p7zip_release.shasum = create_archive(orig_releases['p7zip'], p7zip_release, 'p7zip')
+p7zip_releases = [Release.new('9.20.1', 1), Release.new('9.21.2', 1)].map do |r|
+  r.shasum = create_archive(orig_releases['p7zip'], r, 'p7zip')
+  r
+end
 p7zip_formula = File.join(ORIG_FORMULA_DIR, 'p7zip.rb')
-File.open(File.join(DATA_DIR, 'p7zip-1.rb'), 'w') { |f| f.puts replace_releases(p7zip_formula, [p7zip_release]) }
+File.open(File.join(DATA_DIR, 'p7zip-1.rb'), 'w') { |f| f.puts replace_releases(p7zip_formula, p7zip_releases.slice(0, 1)) }
+File.open(File.join(DATA_DIR, 'p7zip-2.rb'), 'w') { |f| f.puts replace_releases(p7zip_formula, p7zip_releases.slice(0, 2)) }
 
 # create archives and formulas for ruby
-ruby_release = Release.new('2.2.2', 1)
-ruby_release.shasum = create_archive(orig_releases['ruby'], ruby_release, 'ruby')
+ruby_releases = [Release.new('2.2.2', 1), Release.new('2.2.3', 1)].map do |r|
+  r.shasum = create_archive(orig_releases['ruby'], r, 'ruby')
+  r
+end
 ruby_formula = File.join(ORIG_FORMULA_DIR, 'ruby.rb')
-File.open(File.join(DATA_DIR, 'ruby-1.rb'), 'w') { |f| f.puts replace_releases(ruby_formula, [ruby_release]) }
+File.open(File.join(DATA_DIR, 'ruby-1.rb'), 'w') { |f| f.puts replace_releases(ruby_formula, ruby_releases.slice(0, 1)) }
+File.open(File.join(DATA_DIR, 'ruby-2.rb'), 'w') { |f| f.puts replace_releases(ruby_formula, ruby_releases.slice(0, 2)) }
