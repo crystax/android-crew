@@ -2,6 +2,7 @@ require 'fileutils'
 require_relative 'test_consts.rb'
 
 
+FileUtils.rm_rf 'tmp'
 FileUtils.rm_rf File.join('ndk', 'prebuilt')
 FileUtils.rm_rf File.join(Crew_test::DOCROOT_DIR, 'utilities')
 
