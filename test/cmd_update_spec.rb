@@ -82,7 +82,7 @@ describe "crew update" do
   end
 
   context "when there are two updated utilities" do
-    it "says about updated utility" do
+    it "says about updated utilities" do
       repository_clone
       repository_add_formula :utility, 'curl-2.rb:curl.rb', 'ruby-2.rb:ruby.rb'
       crew 'update'
@@ -94,7 +94,7 @@ describe "crew update" do
   end
 
   context "when there are three updated utilities" do
-    it "says about updated utility" do
+    it "says about updated utilities" do
       repository_clone
       repository_add_formula :utility, 'curl-2.rb:curl.rb', 'ruby-2.rb:ruby.rb', 'p7zip-2.rb:p7zip.rb'
       crew 'update'
