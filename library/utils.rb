@@ -1,3 +1,5 @@
+require 'open3'
+
 module Utils
 
   # todo: add hash with options like this { stdout: drop|string, stdin: ignore }
