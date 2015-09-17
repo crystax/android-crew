@@ -35,8 +35,8 @@ endif
 
 RUBY_DIR = $(TOOLS_DIR)/bin
 
-RUBY  = $(RUBY_DIR)/bin/$(ruby_prog)
-RSPEC = $(RUBY_DIR)/bin/$(ruby_prog) $(RUBY_DIR)/rspec
+RUBY  = $(RUBY_DIR)/$(ruby_prog)
+RSPEC = $(RUBY_DIR)/$(ruby_prog) $(RUBY_DIR)/rspec
 
 
 CREW_BASE_DIR  = crew
@@ -54,7 +54,7 @@ ifeq ($(host_os),windows)
   MKDIRFLAGS  =
   NDKSRC_DIR  = ndk\sources
   CACHE_DIR   = crew\cache
-  FORMULA_DIR = crew\formula
+  FORMULA_DIR = crew\formula\utilities
 else
   RM          = rm
   MKDIR       = mkdir
@@ -62,7 +62,7 @@ else
   MKDIRFLAGS  = -p
   NDKSRC_DIR  = ndk/sources
   CACHE_DIR   = crew/cache
-  FORMULA_DIR = crew/formula
+  FORMULA_DIR = crew/formula/utilities
 endif
 
 
@@ -74,7 +74,7 @@ export SSL_CERT_FILE
 
 all: test clean dirs
 
-test: unit-tests rspec-tests
+test: test-data unit-tests rspec-tests
 
 clean: clean-test-data
 	$(RM) $(RMFLAGS) crew crew.git ndk
@@ -88,7 +88,7 @@ test-data:
 clean-test-data:
 	$(RUBY) test_cleanup.rb
 
-rspec-tests: dirs test-data
+rspec-tests: dirs
 	$(RSPEC) $(rspec_files)
 
 test-%:
