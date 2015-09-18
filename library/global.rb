@@ -57,9 +57,9 @@ module Global
   OS = operating_system
 
   DOWNLOAD_BASE = ENV['CREW_DOWNLOAD_BASE'] ? ENV['CREW_DOWNLOAD_BASE'] : "https://crew.crystax.net:9876"
-  BASE_DIR      = ENV['CREW_BASE_DIR']      ? ENV['CREW_BASE_DIR']      : Pathname.new(__FILE__).realpath.dirname.dirname.to_s
-  NDK_DIR       = ENV['CREW_NDK_DIR']       ? ENV['CREW_NDK_DIR']       : Pathname.new(BASE_DIR).realpath.dirname.dirname.to_s
-  TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     ? ENV['CREW_TOOLS_DIR']     : def_tools_dir(NDK_DIR, OS)
+  BASE_DIR      = ENV['CREW_BASE_DIR']      ? Pathname.new(ENV['CREW_BASE_DIR']).realpath.to_s  : Pathname.new(__FILE__).realpath.dirname.dirname.to_s
+  NDK_DIR       = ENV['CREW_NDK_DIR']       ? Pathname.new(ENV['CREW_NDK_DIR']).realpath.to_s   : Pathname.new(BASE_DIR).realpath.dirname.dirname.to_s
+  TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     ? Pathname.new(ENV['CREW_TOOLS_DIR']).realpath.to_s : def_tools_dir(NDK_DIR, OS)
 
   PLATFORM = File.basename(TOOLS_DIR)
 

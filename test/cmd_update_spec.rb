@@ -3,8 +3,8 @@ require_relative '../library/global.rb'
 
 describe "crew update" do
   before(:each) do
-      clean
-      repository_init
+    clean
+    repository_init
   end
 
   context "with argument" do

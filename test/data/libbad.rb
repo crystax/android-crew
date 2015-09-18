@@ -1,5 +1,4 @@
-class Libbad < Formula
-  include Library
+class Libbad < Library
 
   desc "Bad Library"
   homepage "http://www.bad.org"

@@ -23,7 +23,7 @@ describe "crew info" do
     it "outputs info about ruby" do
       clean
       copy_utilities
-      crew 'info', 'ruby'
+      crew '-b', 'info', 'ruby'
       expect(result).to eq(:ok)
       expect(out.split("\n")).to eq(["Name:        ruby",
                                      "Formula:     #{Global::UTILITIES_DIR}/ruby.rb",

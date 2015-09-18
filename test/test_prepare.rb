@@ -2,9 +2,14 @@ require 'fileutils'
 require 'digest'
 require 'pathname'
 require 'json'
-require_relative '../library/release.rb'
-require_relative '../library/utils.rb'
 require_relative 'test_consts.rb'
+
+
+if File.exists? Crew_test::DATA_READY_FILE
+  puts "Test data already prepared"
+  puts "If you think this's an error, run make clean or make clean-test-data and rerun make"
+  exit 0
+end
 
 
 tools_dir          = ENV['CREW_TOOLS_DIR']
@@ -14,10 +19,19 @@ orig_ndk_dir       = File.join('..', '..', '..')
 orig_tools_dir     = File.join(orig_ndk_dir, 'prebuilt', PLATFORM)
 
 # copy utils from NDK dir to tests directory structure
+FileUtils.mkdir_p File.join(Crew_test::CREW_DIR, 'cache')
+FileUtils.mkdir_p File.join(Crew_test::CREW_DIR, 'formula', 'utilities')
+FileUtils.mkdir_p File.join(Crew_test::NDK_DIR, 'sources')
 FileUtils.mkdir_p File.dirname(File.join(tools_dir, 'crew'))
 FileUtils.mkdir_p utils_download_dir
 FileUtils.cp_r File.join(orig_tools_dir, 'crew'), File.join(tools_dir, 'crew')
 FileUtils.cp_r File.join(orig_tools_dir, 'bin'),  tools_dir
+FileUtils.cp_r Crew_test::NDK_DIR, Crew_test::NDK_COPY_DIR
+
+
+require_relative '../library/release.rb'
+require_relative '../library/utils.rb'
+
 
 ORIG_NDK_DIR       = Pathname.new(orig_ndk_dir).realpath.to_s
 ORIG_TOOLS_DIR     = Pathname.new(orig_tools_dir).realpath.to_s
@@ -27,12 +41,13 @@ UTILS_DOWNLOAD_DIR = Pathname.new(utils_download_dir).realpath.to_s
 DATA_DIR           = Pathname.new(Crew_test::DATA_DIR).realpath.to_s
 NDK_DIR            = Pathname.new(Crew_test::NDK_DIR).realpath.to_s
 
+RELEASE_REGEX = /^[[:space:]]*release[[:space:]]+version/
 
 def replace_releases(formula, releases)
   lines = []
   replaced = false
   File.foreach(formula) do |l|
-    if l !~ /release/
+    if l !~ RELEASE_REGEX
       lines << l
     elsif !replaced
       releases.each { |r| lines << "  release version: '#{r.version}', crystax_version: #{r.crystax_version}, sha256: '#{r.shasum}'" }
@@ -43,7 +58,7 @@ def replace_releases(formula, releases)
 end
 
 def get_lastest_utility_release(formula)
-  a = File.foreach(formula).select{|l| l =~ /release/}.last.split(' ')
+  a = File.foreach(formula).select{ |l| l =~ RELEASE_REGEX }.last.split(' ')
   Release.new(a[2].delete("',"),  a[4].delete(","))
 end
 
@@ -116,3 +131,5 @@ end
 ruby_formula = File.join(ORIG_FORMULA_DIR, 'ruby.rb')
 File.open(File.join(DATA_DIR, 'ruby-1.rb'), 'w') { |f| f.puts replace_releases(ruby_formula, ruby_releases.slice(0, 1)) }
 File.open(File.join(DATA_DIR, 'ruby-2.rb'), 'w') { |f| f.puts replace_releases(ruby_formula, ruby_releases.slice(0, 2)) }
+
+FileUtils.touch Crew_test::DATA_READY_FILE

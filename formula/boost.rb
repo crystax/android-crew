@@ -1,5 +1,4 @@
-class Boost < Formula
-  include Library
+class Boost < Library
 
   desc "Boost libraries built without ICU4C"
   homepage "http://www.boost.org"

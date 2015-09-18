@@ -1,4 +1,5 @@
 require 'open3'
+require_relative 'global.rb'
 
 module Utils
 

@@ -1,5 +1,4 @@
-class Icu4c < Formula
-  include Library
+class Icu4c < Library
 
   desc "C/C++ and Java libraries for Unicode and globalization"
   homepage "http://site.icu-project.org/"

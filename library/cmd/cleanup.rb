@@ -1,3 +1,7 @@
+require 'fileutils'
+require_relative '../release.rb'
+require_relative '../formulary.rb'
+
 module Crew
 
   def self.cleanup(args)
@@ -21,6 +25,7 @@ module Crew
         if !utility.installed?(release) and File.exists?(cachefile)
           incache << cachefile
         end
+        # todo: remove old release dirs
       end
     end
 
@@ -39,7 +44,7 @@ module Crew
       irels.each do |release|
         cachefile = formula.cache_file(release)
         incache << cachefile if File.exists?(cachefile)
-        dir = formula.release_directory(release[:version])
+        dir = formula.release_directory(release)
         if (dryrun)
           puts "would remove: #{dir}"
         else

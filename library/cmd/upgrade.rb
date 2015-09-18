@@ -12,18 +12,17 @@ module Crew
     names = []
     utils = []
     Formulary.utilities.each do |formula|
-      last_release = formula.releases.last
-      if !last_release[:installed]
+      if not formula.releases.last.installed?
         utils << formula
-        names << "#{formula.name}:#{last_release[:version]}:#{last_release[:crystax_version]}"
+        names << last_release_name(formula)
       end
     end
 
     if utils.size > 0
-      puts "Will upgrade: #{names.join(', ')}"
+      puts "Will install utilities: #{names.join(', ')}"
       utils.each do |formula|
         formula.install
-        formula.link Global::NDK_DIR, File.basename(Global::TOOLS_DIR), formula.releases.last[:version] unless Global::OS == 'windows'
+        formula.link
       end
     end
 
@@ -33,10 +32,9 @@ module Crew
     libs = []
     Formulary.libraries.each do |formula|
       if formula.installed?
-        last_release = formula.releases.last
-        if !formula.installed?(last_release)
+        if not formula.releases.last.installed?
           libs << formula
-          names << "#{formula.name}:#{last_release[:version]}:#{last_release[:crystax_version]}"
+          names << last_release_name(formula)
         end
       end
     end
@@ -49,7 +47,13 @@ module Crew
 
   private
 
-  def write_upgrade_script utils
+  def self.last_release_name(formula)
+    last_release = formula.releases.last
+    "#{formula.name}:#{last_release.version}:#{last_release.crystax_version}"
+  end
+
+  def self.write_upgrade_script utils
     # todo: all
+    raise "TODO: handle windows case for update utilities!"
   end
 end

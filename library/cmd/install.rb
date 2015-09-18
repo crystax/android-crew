@@ -1,3 +1,8 @@
+require_relative '../exceptions.rb'
+require_relative '../release.rb'
+require_relative '../formulary.rb'
+
+
 module Crew
 
   def self.install(args)
@@ -8,14 +13,12 @@ module Crew
     formulary = Formulary.libraries
 
     args.each.with_index do |n, index|
-      release = {}
-      name, release[:version], release[:crystax_version] = n.split(':')
-      release[:crystax_version] = release[:crystax_version].to_i if release[:crystax_version]
+      name, ver, cxver = n.split(':')
       formula = formulary[name]
-      release = formula.find_release release
+      release = formula.find_release Release.new(ver, cxver)
 
       if formula.installed?(release)
-        puts "#{name}:#{release[:version]}:#{release[:crystax_version]} already installed"
+        puts "#{name}:#{release.version}:#{release.crystax_version} already installed"
         next
       end
 

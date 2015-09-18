@@ -1,5 +1,4 @@
-class Libone < Formula
-  include Library
+class Libone < Library
 
   desc "Library One"
   homepage "http://www.libone.org"

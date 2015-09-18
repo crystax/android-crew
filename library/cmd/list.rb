@@ -1,3 +1,8 @@
+require_relative '../exceptions.rb'
+require_relative '../release.rb'
+require_relative '../formulary.rb'
+
+
 class Element
 
   attr_reader :name, :version, :crystax_version, :installed_sign
@@ -46,11 +51,11 @@ module Crew
     formulary.each do |f|
       f.releases.each do |r|
         max_name_len = f.name.size if f.name.size > max_name_len
-        ver = r[:version]
+        ver = r.version
         max_ver_len = ver.size if ver.size > max_ver_len
-        cxver = r[:crystax_version]
+        cxver = r.crystax_version
         max_cxver_len = cxver.to_s.size if cxver.to_s.size > max_cxver_len
-        list << Element.new(f.name, ver, cxver, f.installed?(r))
+        list << Element.new(f.name, ver, cxver, r.installed?)
       end
     end
 

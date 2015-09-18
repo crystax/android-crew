@@ -1,3 +1,6 @@
+require_relative '../exceptions.rb'
+
+
 CREW_HELP = <<-EOS
 Usage: crew [OPTIONS] COMMAND [parameters]
 

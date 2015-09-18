@@ -1,3 +1,5 @@
+require_relative '../exceptions.rb'
+
 module Crew
 
   def self.env(args)

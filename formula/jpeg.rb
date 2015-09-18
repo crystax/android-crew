@@ -1,5 +1,4 @@
-class Jpeg < Formula
-  include Library
+class Jpeg < Library
 
   desc "JPEG image manipulation library"
   homepage "http://www.ijg.org"

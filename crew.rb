@@ -1,17 +1,7 @@
 require 'fileutils'
-require 'json'
-require 'digest'
-require 'rugged'
-require 'open3'
 require_relative 'library/extend/module.rb'
-require_relative 'library/utils.rb'
 require_relative 'library/exceptions.rb'
 require_relative 'library/global.rb'
-require_relative 'library/formula.rb'
-require_relative 'library/formulary.rb'
-require_relative 'library/library.rb'
-require_relative 'library/utility.rb'
-
 
 def split_arguments(arguments)
   goptions = []

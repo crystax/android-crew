@@ -19,14 +19,14 @@ server = WEBrick::HTTPServer.new :Port => Crew_test::PORT,
 
 Thread.start { server.start }
 
-FileUtils.remove_dir(base_dir, true)
+FileUtils.remove_dir(Crew_test::CREW_DIR, true)
 
 FileUtils.mkdir_p(File.join(Crew_test::NDK_DIR, 'sources'))
-FileUtils.mkdir_p(File.join(base_dir, 'formula', 'utilities'))
-FileUtils.mkdir_p(File.join(base_dir, 'cache'))
+FileUtils.mkdir_p(File.join(Crew_test::CREW_DIR, 'formula', 'utilities'))
+FileUtils.mkdir_p(File.join(Crew_test::CREW_DIR, 'cache'))
 
 ENV['CREW_DOWNLOAD_BASE'] = Crew_test::DOWNLOAD_BASE
-ENV['CREW_BASE_DIR'] = base_dir
+ENV['CREW_BASE_DIR'] = Crew_test::CREW_DIR
 ENV['CREW_NDK_DIR'] = Crew_test::NDK_DIR
 
 # global.rb requires evn vars to be set so we put it here

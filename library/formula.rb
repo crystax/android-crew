@@ -1,7 +1,14 @@
+require 'json'
+require 'digest'
+require 'fileutils'
+require_relative 'release.rb'
+require_relative 'utils.rb'
+
+
 class Formula
 
   def self.package_version(release)
-    "#{release[:version]}_#{release[:crystax_version]}"
+    release.to_s
   end
 
   def self.split_package_version(pkgver)
@@ -9,24 +16,22 @@ class Formula
     raise "bad package version string: #{pkgver}" if r.size < 2
     cxver = r.pop.to_i
     ver = r.join('_')
-    {version: ver, crystax_version: cxver}
+    Release.new(ver, cxver)
   end
 
-  # The full path to this {Formula}.
-  # e.g. `formula/this-formula.rb`
   attr_reader :path
 
   def initialize(path)
     @path = path
     self.class.name File.basename(path, '.rb') unless name
     # mark installed releases
-    releases.each do |rel|
-      dir = release_directory(rel)
+    releases.each do |r|
+      dir = release_directory(r)
       if Dir.exists? dir
         prop = get_properties(dir)
-        if rel[:crystax_version] == prop[:crystax_version]
-          rel.update prop
-          rel[:installed] = true
+        if r.crystax_version == prop[:crystax_version]
+          r.update prop
+          r.installed = true
         end
       end
     end
@@ -77,7 +82,7 @@ class Formula
     File.join(Global::CACHE_DIR, archive_filename(release))
   end
 
-  def install(r = {})
+  def install(r = releases.last)
     release = find_release(r)
     file = archive_filename(release)
     cachepath = File.join(Global::CACHE_DIR, file)
@@ -91,7 +96,7 @@ class Formula
     end
 
     puts "checking integrity of the archive file #{file}"
-    if Digest::SHA256.hexdigest(File.read(cachepath, mode: "rb")) != release[:sha256]
+    if Digest::SHA256.hexdigest(File.read(cachepath, mode: "rb")) != release.shasum
       raise "bad SHA256 sum of the downloaded file #{cachepath}"
     end
 
@@ -101,50 +106,33 @@ class Formula
 
   def uninstall(version)
     puts "removing #{name}-#{version}"
-    dir = release_directory({version: version})
+    dir = release_directory(Release.new(version))
     props = get_properties(dir)
     FileUtils.rm_rf dir
     releases.each do |r|
-      if r[:version] == version and r[:crystax_version] == props[:crystax_version]
-        r[:installed] = false
+      if (r.version == version) and (r.crystax_version == props[:crystax_version])
+        r.installed = false
         break
       end
     end
   end
 
-  def installed?(release = {})
+  # todo: use Release == operator
+  def installed?(release = Release.new)
     answer = false
-    ver = release[:version]
-    cxver = release[:crystax_version]
+    ver = release.version
+    cxver = release.crystax_version
     if !ver and !cxver
-      answer = releases.any? {|r| r[:installed] }
+      answer = releases.any? {|r| r.installed? }
     elsif !ver and cxver
       raise "internal error: crystax_version was set and version was not"
     elsif ver and !cxver
-      answer = releases.any? {|r| (r[:version] == ver) and r[:installed] }
+      answer = releases.any? {|r| (r.version == ver) and r.installed? }
     else
-      answer = releases.any? {|r| (r[:version] == ver) and (r[:crystax_version] == cxver) and r[:installed] }
+      answer = releases.any? {|r| (r.version == ver) and (r.crystax_version == cxver) and r.installed? }
     end
     answer
   end
-
-  # def latest_version
-  #   releases.last[:version]
-  # end
-
-  # def exclude_latest(props)
-  #   lver = nil
-  #   lind = -1
-  #   props.each do |r|
-  #     ind = find_release_index_by_version(r[:version])
-  #     if ind > lind
-  #       lind = ind
-  #       lver = r[:version]
-  #     end
-  #   end
-  #   props.delete(lver)
-  #   props
-  # end
 
   class Dependency
 
@@ -169,7 +157,7 @@ class Formula
       raise ":crystax_version key not present in the release" unless r.has_key?(:crystax_version)
       raise ":sha256 key not present in the release"          unless r.has_key?(:sha256)
       @releases = [] if !@releases
-      @releases << r
+      @releases << Release.new(r[:version], r[:crystax_version], r[:sha256])
     end
 
     def depends_on(name, options = {})
@@ -187,7 +175,7 @@ class Formula
            "Releases:\n"
     releases.each do |r|
       installed = installed?(r) ? "installed" : ""
-      info += "  #{r[:version]} #{r[:crystax_version]}  #{installed}\n"
+      info += "  #{r.version} #{r.crystax_version}  #{installed}\n"
     end
     if dependencies.size > 0
       info += "Dependencies:\n"
@@ -199,15 +187,16 @@ class Formula
     info
   end
 
-  def find_release(r = {})
-    if !r[:version]
+  # todo: use Release == operator
+  def find_release(r)
+    if not r.version
       rel = releases.last
-    elsif !r[:crystax_version]
-      rel = (releases.select {|e| e[:version] == r[:version]}).last
-      raise "#{name} has no release with version #{r[:version]}" unless rel
+    elsif not r.crystax_version
+      rel = (releases.select {|e| e.version == r.version}).last
+      raise "#{name} has no release with version #{r.version}" unless rel
     else
-      rel = (releases.select {|e| e[:version] == r[:version] and e[:crystax_version] == r[:crystax_version]}).last
-      raise "#{name} has no release #{r[:version]}:#{r[:crystax_version]}" unless rel
+      rel = (releases.select {|e| e.version == r.version and e.crystax_version == r.crystax_version}).last
+      raise "#{name} has no release #{r.version}:#{r.crystax_version}" unless rel
     end
     rel
   end

@@ -1,7 +1,10 @@
-module Library
+require_relative 'formula.rb'
+
+
+class Library < Formula
 
   def release_directory(release)
-    File.join(Global::HOLD_DIR, name, release[:version])
+    File.join(Global::HOLD_DIR, name, release.version)
   end
 
   def download_base

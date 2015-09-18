@@ -1,7 +1,22 @@
-module Utility
+require_relative 'formula.rb'
+
+
+class Utility < Formula
+
+  def self.programs(*args)
+    if args.size == 0
+      @programs ? @programs : []
+    else
+      @programs = args
+    end
+  end
+
+  def programs
+    self.class.programs
+  end
 
   def release_directory(release)
-    File.join(Global::ENGINE_DIR, name, "#{release[:version]}_#{release[:crystax_version]}")
+    File.join(Global::ENGINE_DIR, name, release.to_s)
   end
 
   def download_base
@@ -12,17 +27,15 @@ module Utility
     :utility
   end
 
-  def src_dir(release, dirname)
-    File.join('..', 'crew', name, release_directory(release), dirname)
-  end
-
-  def dest_dir(ndk_dir, platform, dirname)
-    File.join(ndk_dir, 'prebuilt', platform, dirname)
-  end
-
-  def exec_name(platform, prog)
-    prog += '.exe' if platform =~ /windows/
-    prog
+  def link(release = releases.last, tools_dir = Global::TOOLS_DIR)
+    FileUtils.cd(File.join(tools_dir, 'bin')) do
+      src_dir = File.join('..', 'crew', name, release.to_s, 'bin')
+      programs.each do |prog|
+        prog += '.exe' if File.exists? File.join(src_dir, "#{prog}.exe")
+        FileUtils.rm_f prog
+        FileUtils.ln_s File.join(src_dir, prog),  prog
+      end
+    end
   end
 
   private

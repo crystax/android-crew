@@ -1,3 +1,6 @@
+require_relative '../exceptions.rb'
+require_relative '../formulary.rb'
+
 module Crew
 
   def self.info(args)
@@ -5,7 +8,7 @@ module Crew
       raise FormulaUnspecifiedError
     end
 
-    utils =  Formulary.utilities
+    utils = Formulary.utilities
     libs = Formulary.libraries
 
     args.each.with_index do |name, index|

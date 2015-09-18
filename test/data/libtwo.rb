@@ -1,5 +1,4 @@
-class Libtwo < Formula
-  include Library
+class Libtwo < Library
 
   desc "Library Two"
   homepage "http://www.libtwo.org"
