@@ -64,20 +64,77 @@ describe "crew upgrade" do
     end
   end
 
-  context "when there is one new release in curl utility, with crystax_version changed" do
+  context "when there is one new release for curl utility, with crystax_version changed" do
     it "says about installing new release" do
       repository_clone
       repository_add_formula :utility, 'curl-2.rb:curl.rb'
       crew_checked 'update'
       crew '-b', 'upgrade'
-      file = "curl-7.42.0_3-#{Global::PLATFORM}.7z"
+      ver = "7.42.0"
+      cxver = 3
+      file = "curl-#{ver}_#{cxver}-#{Global::PLATFORM}.7z"
       expect(result).to eq(:ok)
-      expect(out).to eq("Will install utilities: curl:7.42.0:3\n"                       \
+      expect(out).to eq("Will install utilities: curl:#{ver}:#{cxver}\n"                \
                         "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/#{file}\n" \
                         "checking integrity of the archive file #{file}\n"              \
                         "unpacking archive\n")
       expect(utility_working('curl')).to eq(:ok)
-      expect(utility_link('curl', 'curl', Release.new('7.42.0', 3))).to eq(:ok)
+      expect(utility_link('curl', 'curl', Release.new(ver, cxver))).to eq(:ok)
+    end
+  end
+
+  context "when there are two new releases for curl utility, one with crystax_version changed, and one with upstream version changed" do
+    it "says about installing new release (with new upstream)" do
+      repository_clone
+      repository_add_formula :utility, 'curl-3.rb:curl.rb'
+      crew_checked 'update'
+      crew '-b', 'upgrade'
+      ver = "8.21.0"
+      cxver = 1
+      file = "curl-#{ver}_#{cxver}-#{Global::PLATFORM}.7z"
+      expect(result).to eq(:ok)
+      expect(out).to eq("Will install utilities: curl:#{ver}:#{cxver}\n"                \
+                        "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/#{file}\n" \
+                        "checking integrity of the archive file #{file}\n"              \
+                        "unpacking archive\n")
+      expect(utility_working('curl')).to eq(:ok)
+      expect(utility_link('curl', 'curl', Release.new(ver, cxver))).to eq(:ok)
+    end
+  end
+
+  context "when there are new releases for all utilities" do
+    it "says about installing new releases" do
+      repository_clone
+      repository_add_formula :utility, 'curl-3.rb:curl.rb', 'p7zip-2.rb:p7zip.rb', 'ruby-2.rb:ruby.rb'
+      crew_checked 'update'
+      crew '-b', 'upgrade'
+      curl_ver = "8.21.0"
+      curl_cxver = 1
+      curl_file = "curl-#{curl_ver}_#{curl_cxver}-#{Global::PLATFORM}.7z"
+      p7zip_ver = "9.21.2"
+      p7zip_cxver = 1
+      p7zip_file = "p7zip-#{p7zip_ver}_#{p7zip_cxver}-#{Global::PLATFORM}.7z"
+      ruby_ver = "2.2.3"
+      ruby_cxver = 1
+      ruby_file = "ruby-#{ruby_ver}_#{ruby_cxver}-#{Global::PLATFORM}.7z"
+      expect(result).to eq(:ok)
+      expect(out).to eq(
+       "Will install utilities: curl:#{curl_ver}:#{curl_cxver}, p7zip:#{p7zip_ver}:#{p7zip_cxver}, ruby:#{ruby_ver}:#{ruby_cxver}\n" \
+       "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/#{curl_file}\n"   \
+       "checking integrity of the archive file #{curl_file}\n"                \
+       "unpacking archive\n"                                                  \
+       "downloading #{Global::DOWNLOAD_BASE}/utilities/p7zip/#{p7zip_file}\n" \
+       "checking integrity of the archive file #{p7zip_file}\n"               \
+       "unpacking archive\n"                                                  \
+       "downloading #{Global::DOWNLOAD_BASE}/utilities/ruby/#{ruby_file}\n"   \
+       "checking integrity of the archive file #{ruby_file}\n"                \
+       "unpacking archive\n")
+      expect(utility_working('curl')).to eq(:ok)
+      expect(utility_link('curl', 'curl', Release.new(curl_ver, curl_cxver))).to eq(:ok)
+      expect(utility_working('7za')).to eq(:ok)
+      expect(utility_link('7za', 'p7zip', Release.new(p7zip_ver, p7zip_cxver))).to eq(:ok)
+      expect(utility_working('ruby')).to eq(:ok)
+      expect(utility_link('ruby', 'ruby', Release.new(ruby_ver, ruby_cxver))).to eq(:ok)
     end
   end
 end
