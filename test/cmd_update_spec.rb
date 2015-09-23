@@ -4,6 +4,7 @@ require_relative '../library/global.rb'
 describe "crew update" do
   before(:each) do
     clean
+    ndk_init
     repository_init
   end
 
