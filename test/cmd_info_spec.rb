@@ -1,9 +1,15 @@
 require_relative 'spec_helper.rb'
 
 describe "crew info" do
+  before(:each) do
+    clean
+    ndk_init
+    repository_init
+    repository_clone
+  end
+
   context "without argument" do
     it "outputs error message" do
-      clean
       crew 'info'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: this command requires a formula argument')
@@ -12,7 +18,6 @@ describe "crew info" do
 
   context "non existing name" do
     it "outputs error message" do
-      clean
       crew 'info', 'foo'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: no available formula for foo')
@@ -21,8 +26,6 @@ describe "crew info" do
 
   context "about ruby, all utilities with one release each" do
     it "outputs info about ruby" do
-      clean
-      copy_utilities
       crew '-b', 'info', 'ruby'
       expect(result).to eq(:ok)
       expect(out.split("\n")).to eq(["Name:        ruby",
@@ -37,8 +40,6 @@ describe "crew info" do
 
   context "about all crew utilities, all utilities with one release each" do
     it "outputs info about crew utilities" do
-      clean
-      copy_utilities
       crew 'info', 'curl', 'p7zip', 'ruby'
       expect(result).to eq(:ok)
       expect(out.split("\n")).to eq(["Name:        curl",
@@ -69,7 +70,6 @@ describe "crew info" do
 
   context "formula with one release and no dependencies, not installed" do
     it "outputs info about one not installed release with no dependencies" do
-      clean
       copy_formulas 'libone.rb'
       crew 'info', 'libone'
       expect(result).to eq(:ok)
@@ -85,7 +85,6 @@ describe "crew info" do
 
   context "formula with two releases and one dependency, none installed" do
     it "outputs info about two releases and one dependency" do
-      clean
       copy_formulas 'libone.rb', 'libtwo.rb'
       crew 'info', 'libtwo'
       expect(result).to eq(:ok)
@@ -104,7 +103,6 @@ describe "crew info" do
 
   context "formula with three releases and two dependencies, none installed" do
     it "outputs info about three releases and two dependencies" do
-      clean
       copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
       crew 'info', 'libthree'
       expect(result).to eq(:ok)
@@ -124,7 +122,6 @@ describe "crew info" do
 
   context "formula with three releases and two dependencies, both dependencies installed" do
     it "outputs info about two releases and one dependency" do
-      clean
       copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
       crew_checked 'install', 'libtwo'
       crew 'info', 'libthree'

@@ -3,7 +3,9 @@ require_relative '../library/global.rb'
 
 describe "crew cleanup" do
   before(:each) do
-      clean
+    clean
+    ndk_init
+    repository_init
   end
 
   context "with wrong argument" do
@@ -25,80 +27,154 @@ describe "crew cleanup" do
   context "when one release installed" do
     it "outputs nothing" do
       copy_formulas 'libone.rb'
-      crew 'install', 'libone' ; expect(result).to eq(:ok)
+      crew_checked 'install', 'libone'
       crew 'cleanup'
       expect(result).to eq(:ok)
       expect(out).to eq('')
-      expect(in_cache?('libone', '1.0.0')).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
     end
   end
 
   context "when one release installed and -n specified" do
     it "outputs nothing" do
       copy_formulas 'libone.rb'
-      crew 'install', 'libone' ; expect(result).to eq(:ok)
+      crew_checked 'install', 'libone'
       crew 'cleanup', '-n'
       expect(result).to eq(:ok)
       expect(out).to eq('')
-      expect(in_cache?('libone', '1.0.0')).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
     end
   end
 
   context "when two releases installed" do
     it "outputs about removing libtwo 1.1.0" do
       copy_formulas 'libone.rb', 'libtwo.rb'
-      crew 'install', 'libone:1.0.0' ; expect(result).to eq(:ok)
-      crew 'install', 'libtwo:1.1.0' ; expect(result).to eq(:ok)
-      crew 'install', 'libtwo:2.2.0' ; expect(result).to eq(:ok)
-      crew 'cleanup'
+      crew_checked 'install', 'libone:1.0.0'
+      crew_checked 'install', 'libtwo:1.1.0'
+      crew_checked 'install', 'libtwo:2.2.0'
+      crew '-b', 'cleanup'
       expect(result).to eq(:ok)
       expect(out).to eq("removing: #{Global::HOLD_DIR}/libtwo/1.1.0\n" \
-                        "removing: #{Global::CACHE_DIR}/#{archive_name('libtwo', '1.1.0')}\n")
-      expect(in_cache?('libone', '1.0.0')).to eq(true)
-      expect(in_cache?('libtwo', '1.1.0')).to eq(false)
-      expect(in_cache?('libtwo', '2.2.0')).to eq(true)
+                        "removing: #{Global::CACHE_DIR}/#{archive_name(:library, 'libtwo', '1.1.0', 1)}\n")
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '1.1.0', 1)).to eq(false)
+      expect(in_cache?(:library, 'libtwo', '2.2.0', 1)).to eq(true)
     end
   end
 
   context "when two releases installed and -n specified" do
     it "outputs that would remove libtwo 1.1.0" do
       copy_formulas 'libone.rb', 'libtwo.rb'
-      crew 'install', 'libone:1.0.0' ; expect(result).to eq(:ok)
-      crew 'install', 'libtwo:1.1.0' ; expect(result).to eq(:ok)
-      crew 'install', 'libtwo:2.2.0' ; expect(result).to eq(:ok)
+      crew_checked 'install', 'libone:1.0.0'
+      crew_checked 'install', 'libtwo:1.1.0'
+      crew_checked 'install', 'libtwo:2.2.0'
       crew 'cleanup', '-n'
       expect(result).to eq(:ok)
       expect(out).to eq("would remove: #{Global::HOLD_DIR}/libtwo/1.1.0\n" \
-                        "would remove: #{Global::CACHE_DIR}/#{archive_name('libtwo', '1.1.0')}\n")
-      expect(in_cache?('libone', '1.0.0')).to eq(true)
-      expect(in_cache?('libtwo', '1.1.0')).to eq(true)
-      expect(in_cache?('libtwo', '2.2.0')).to eq(true)
+                        "would remove: #{Global::CACHE_DIR}/#{archive_name(:library, 'libtwo', '1.1.0', 1)}\n")
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '1.1.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '2.2.0', 1)).to eq(true)
     end
   end
 
   context "when of three formulas one release, two releases and three releases installed" do
     it "outputs about removing libtwo 1.1.0, libthree 1.1.1 and 2.2.2" do
       copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
-      crew 'install', 'libone:1.0.0'   ; expect(result).to eq(:ok)
-      crew 'install', 'libtwo:1.1.0'   ; expect(result).to eq(:ok)
-      crew 'install', 'libtwo:2.2.0'   ; expect(result).to eq(:ok)
-      crew 'install', 'libthree:1.1.1' ; expect(result).to eq(:ok)
-      crew 'install', 'libthree:2.2.2' ; expect(result).to eq(:ok)
-      crew 'install', 'libthree:3.3.3' ; expect(result).to eq(:ok)
+      crew_checked 'install', 'libone:1.0.0'
+      crew_checked 'install', 'libtwo:1.1.0'
+      crew_checked 'install', 'libtwo:2.2.0'
+      crew_checked 'install', 'libthree:1.1.1'
+      crew_checked 'install', 'libthree:2.2.2'
+      crew_checked 'install', 'libthree:3.3.3'
       crew 'cleanup'
       expect(result).to eq(:ok)
-      expect(out).to eq("removing: #{Global::HOLD_DIR}/libthree/1.1.1\n"     \
-                        "removing: #{Global::HOLD_DIR}/libthree/2.2.2\n"     \
-                        "removing: #{Global::HOLD_DIR}/libtwo/1.1.0\n"       \
-                        "removing: #{Global::CACHE_DIR}/libthree-1.1.1.7z\n" \
-                        "removing: #{Global::CACHE_DIR}/libthree-2.2.2.7z\n" \
-                        "removing: #{Global::CACHE_DIR}/libtwo-1.1.0.7z\n")
-      expect(in_cache?('libone', '1.0.0')).to eq(true)
-      expect(in_cache?('libtwo', '1.1.0')).to eq(false)
-      expect(in_cache?('libtwo', '2.2.0')).to eq(true)
-      expect(in_cache?('libthree', '1.1.1')).to eq(false)
-      expect(in_cache?('libthree', '2.2.2')).to eq(false)
-      expect(in_cache?('libthree', '3.3.3')).to eq(true)
+      expect(out).to eq("removing: #{Global::HOLD_DIR}/libthree/1.1.1\n"       \
+                        "removing: #{Global::HOLD_DIR}/libthree/2.2.2\n"       \
+                        "removing: #{Global::HOLD_DIR}/libtwo/1.1.0\n"         \
+                        "removing: #{Global::CACHE_DIR}/libthree-1.1.1_1.7z\n" \
+                        "removing: #{Global::CACHE_DIR}/libthree-2.2.2_1.7z\n" \
+                        "removing: #{Global::CACHE_DIR}/libtwo-1.1.0_1.7z\n")
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '1.1.0', 1)).to eq(false)
+      expect(in_cache?(:library, 'libtwo', '2.2.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libthree', '1.1.1', 1)).to eq(false)
+      expect(in_cache?(:library, 'libthree', '2.2.2', 1)).to eq(false)
+      expect(in_cache?(:library, 'libthree', '3.3.3', 1)).to eq(true)
+    end
+  end
+
+  context "when two releases of the curl utility are installed" do
+    it "outputs about removing curl 7.42.0:1" do
+      repository_clone
+      repository_add_formula :utility, 'curl-2.rb:curl.rb'
+      crew_checked 'update'
+      crew_checked 'upgrade'
+      crew '-b', 'cleanup'
+      ver = '7.42.0'
+      cxver = 1
+      expect(result).to eq(:ok)
+      expect(out).to eq("removing: #{Global::ENGINE_DIR}/curl/#{ver}_#{cxver}\n")
+      expect(in_cache?(:utility, 'curl', ver, 3)).to eq(true)
+    end
+  end
+
+  context "when two releases of the two utilities are installed" do
+    it "says about removing two old releases" do
+      repository_clone
+      repository_add_formula :utility, 'curl-2.rb:curl.rb', 'ruby-2.rb:ruby.rb'
+      crew_checked 'update'
+      crew_checked 'upgrade'
+      crew '-b', 'cleanup'
+      curl_ver = '7.42.0'
+      curl_cxver = 1
+      ruby_ver = '2.2.2'
+      ruby_cxver = 1
+      expect(result).to eq(:ok)
+      expect(out).to eq("removing: #{Global::ENGINE_DIR}/curl/#{curl_ver}_#{curl_cxver}\n" \
+                        "removing: #{Global::ENGINE_DIR}/ruby/#{ruby_ver}_#{ruby_cxver}\n")
+      expect(in_cache?(:utility, 'curl', '7.42.0', 3)).to eq(true)
+      expect(in_cache?(:utility, 'ruby', '2.2.3',  1)).to eq(true)
+    end
+  end
+
+  context "when three releases of the curl utility are installed" do
+    it "outputs about removing curl 7.42.0:1, 7.42.0:3" do
+      repository_clone
+      repository_add_formula :utility, 'curl-2.rb:curl.rb'
+      crew_checked 'update'
+      crew_checked 'upgrade'
+      repository_add_formula :utility, 'curl-3.rb:curl.rb'
+      crew_checked 'update'
+      crew_checked 'upgrade'
+      crew '-b', 'cleanup'
+      expect(result).to eq(:ok)
+      expect(out).to eq("removing: #{Global::ENGINE_DIR}/curl/7.42.0_1\n" \
+                        "removing: #{Global::ENGINE_DIR}/curl/7.42.0_3\n" \
+                        "removing: #{Global::CACHE_DIR}/curl-7.42.0_3-#{Global::PLATFORM}.7z\n")
+      expect(in_cache?(:utility, 'curl', '8.21.0', 1)).to eq(true)
+    end
+  end
+
+  context "when all utilities have more than one release installed" do
+    it "says about removing old releases" do
+      repository_clone
+      repository_add_formula :utility, 'curl-2.rb:curl.rb', 'p7zip-2.rb:p7zip.rb', 'ruby-2.rb:ruby.rb'
+      crew_checked 'update'
+      crew_checked 'upgrade'
+      repository_add_formula :utility, 'curl-3.rb:curl.rb'
+      crew_checked 'update'
+      crew_checked 'upgrade'
+      crew 'cleanup'
+      expect(result).to eq(:ok)
+      expect(out).to eq("removing: #{Global::ENGINE_DIR}/curl/7.42.0_1\n"  \
+                        "removing: #{Global::ENGINE_DIR}/curl/7.42.0_3\n"  \
+                        "removing: #{Global::ENGINE_DIR}/p7zip/9.20.1_1\n" \
+                        "removing: #{Global::ENGINE_DIR}/ruby/2.2.2_1\n"   \
+                        "removing: #{Global::CACHE_DIR}/curl-7.42.0_3-darwin-x86_64.7z\n")
+      expect(in_cache?(:utility, 'curl',  '8.21.0', 1)).to eq(true)
+      expect(in_cache?(:utility, 'p7zip', '9.21.2', 1)).to eq(true)
+      expect(in_cache?(:utility, 'ruby',  '2.2.3',  1)).to eq(true)
     end
   end
 end

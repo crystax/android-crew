@@ -1,4 +1,5 @@
 require_relative 'formula.rb'
+require_relative 'release.rb'
 
 
 class Library < Formula

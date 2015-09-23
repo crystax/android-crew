@@ -46,7 +46,7 @@ describe "Test how Crew works over HTTPS" do
                         "downloading #{url}\n"                                \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
-      expect(in_cache?('icu', '54.1')).to eq(true)
+      expect(in_cache?(:library, 'icu', '54.1')).to eq(true)
     end
   end
 end

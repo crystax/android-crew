@@ -30,7 +30,7 @@ describe "crew install" do
       crew 'install', 'libbad'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq("error: bad SHA256 sum of the downloaded file #{file}")
-      expect(in_cache?('libbad', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libbad', '1.0.0', 1)).to eq(true)
     end
   end
 
@@ -46,7 +46,7 @@ describe "crew install" do
                         "downloading #{url}\n"                                \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
-      expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
     end
   end
 
@@ -62,7 +62,7 @@ describe "crew install" do
                         "downloading #{url}\n"                                \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
-      expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
     end
   end
 
@@ -78,7 +78,7 @@ describe "crew install" do
                         "downloading #{url}\n"                                \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
-      expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
     end
   end
 
@@ -119,8 +119,8 @@ describe "crew install" do
                         "downloading #{resurl}\n"                                \
                         "checking integrity of the archive file #{resfile}\n" \
                         "unpacking archive\n")
-      expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
-      expect(in_cache?('libtwo', '2.2.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '2.2.0', 1)).to eq(true)
     end
   end
 
@@ -148,9 +148,9 @@ describe "crew install" do
                         "downloading #{resurl}\n"                                 \
                         "checking integrity of the archive file #{resfile}\n"  \
                         "unpacking archive\n")
-      expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
-      expect(in_cache?('libtwo', '2.2.0', 1)).to eq(true)
-      expect(in_cache?('libthree', '2.2.2', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '2.2.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libthree', '2.2.2', 1)).to eq(true)
     end
   end
 
@@ -167,7 +167,7 @@ describe "crew install" do
                         "using cached file #{file}\n"                         \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
-      expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
     end
   end
 
@@ -183,7 +183,7 @@ describe "crew install" do
                         "downloading #{url}\n"                                \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
-      expect(in_cache?('libfour', '4.4.4', 4)).to eq(true)
+      expect(in_cache?(:library, 'libfour', '4.4.4', 4)).to eq(true)
     end
   end
 
@@ -199,7 +199,7 @@ describe "crew install" do
                         "downloading #{url}\n"                                \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
-      expect(in_cache?('libfour', '3.3.3', 3)).to eq(true)
+      expect(in_cache?(:library, 'libfour', '3.3.3', 3)).to eq(true)
     end
   end
 
@@ -215,7 +215,7 @@ describe "crew install" do
                         "downloading #{url}\n"                                \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
-      expect(in_cache?('libfour', '2.2.2', 1)).to eq(true)
+      expect(in_cache?(:library, 'libfour', '2.2.2', 1)).to eq(true)
     end
   end
 end

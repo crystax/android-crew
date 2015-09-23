@@ -29,8 +29,8 @@ describe "crew remove" do
       crew 'remove', 'libone'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: libone has installed dependants: libtwo')
-      expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
-      expect(in_cache?('libtwo', '1.1.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '1.1.0', 1)).to eq(true)
     end
   end
 
@@ -42,9 +42,9 @@ describe "crew remove" do
       crew 'remove', 'libtwo'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: more than one version of libtwo installed')
-      expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
-      expect(in_cache?('libtwo', '1.1.0', 1)).to eq(true)
-      expect(in_cache?('libtwo', '2.2.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '1.1.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '2.2.0', 1)).to eq(true)
     end
   end
 
@@ -57,9 +57,9 @@ describe "crew remove" do
       crew 'remove', 'libtwo:1.1.0'
       expect(result).to eq(:ok)
       expect(out.chomp).to eq('removing libtwo-1.1.0')
-      expect(in_cache?('libone',   '1.0.0', 1)).to eq(true)
-      expect(in_cache?('libtwo',   '2.2.0', 1)).to eq(true)
-      expect(in_cache?('libthree', '2.2.2', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone',   '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo',   '2.2.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libthree', '2.2.2', 1)).to eq(true)
     end
   end
 
@@ -70,7 +70,7 @@ describe "crew remove" do
       crew 'remove', 'libone'
       expect(result).to eq(:ok)
       expect(out).to eq("removing libone-1.0.0\n")
-      expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
     end
   end
 
@@ -84,9 +84,9 @@ describe "crew remove" do
       expect(result).to eq(:ok)
       expect(out.split("\n").sort).to eq(["removing libtwo-1.1.0",
                                           "removing libtwo-2.2.0"])
-      expect(in_cache?('libone', '1.0.0', 1)).to eq(true)
-      expect(in_cache?('libtwo', '1.1.0', 1)).to eq(true)
-      expect(in_cache?('libtwo', '2.2.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '1.1.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '2.2.0', 1)).to eq(true)
     end
   end
 
@@ -100,10 +100,10 @@ describe "crew remove" do
       crew 'remove', 'libtwo:all'
       expect(exitstatus).to_not be_zero
       expect(err.chomp).to eq('error: libtwo has installed dependants: libthree')
-      expect(in_cache?('libone',   '1.0.0', 1)).to eq(true)
-      expect(in_cache?('libtwo',   '1.1.0', 1)).to eq(true)
-      expect(in_cache?('libtwo',   '2.2.0', 1)).to eq(true)
-      expect(in_cache?('libthree', '3.3.3', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone',   '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo',   '1.1.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo',   '2.2.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libthree', '3.3.3', 1)).to eq(true)
     end
   end
 end

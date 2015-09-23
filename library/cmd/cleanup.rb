@@ -1,6 +1,8 @@
 require 'fileutils'
 require_relative '../release.rb'
 require_relative '../formulary.rb'
+require_relative '../library.rb'
+require_relative '../utility.rb'
 
 module Crew
 
@@ -19,40 +21,8 @@ module Crew
     end
 
     incache = []
-    Formulary.utilities.each do |utility|
-      utility.releases.each do |release|
-        cachefile = utility.cache_file(release)
-        if !utility.installed?(release) and File.exists?(cachefile)
-          incache << cachefile
-        end
-        # todo: remove old release dirs
-      end
-    end
-
-    Formulary.libraries.each do |formula|
-      # releases are sorted from oldest to most recent order
-      irels = []
-      formula.releases.each do |release|
-        if formula.installed?(release)
-          irels << release
-        else
-          cachefile = formula.cache_file(release)
-          incache << cachefile if File.exists?(cachefile)
-        end
-      end
-      irels.pop
-      irels.each do |release|
-        cachefile = formula.cache_file(release)
-        incache << cachefile if File.exists?(cachefile)
-        dir = formula.release_directory(release)
-        if (dryrun)
-          puts "would remove: #{dir}"
-        else
-          puts "removing: #{dir}"
-          FileUtils.remove_dir(dir)
-        end
-      end
-    end
+    Formulary.utilities.each { |formula| incache += remove_old_releases(formula, dryrun) }
+    Formulary.libraries.each { |formula| incache += remove_old_releases(formula, dryrun) }
 
     incache.each do |f|
       if (dryrun)
@@ -62,5 +32,36 @@ module Crew
         FileUtils.remove_file(f)
       end
     end
+  end
+
+  private
+
+  def self.remove_old_releases(formula, dryrun)
+    # releases are sorted from oldest to most recent order
+    incache = []
+    irels = []
+    formula.releases.each do |release|
+      if release.installed?
+        irels << release
+      else
+        # archives for not installed releases should be removed during cleanup
+        cachefile = formula.cache_file(r)
+        incache << cachefile if File.exists?(cachefile)
+      end
+    end
+    irels.pop # exclude latest release
+    irels.each do |release|
+      cachefile = formula.cache_file(release)
+      incache << cachefile if File.exists?(cachefile)
+      dir = formula.release_directory(release)
+      if (dryrun)
+        puts "would remove: #{dir}"
+      else
+        puts "removing: #{dir}"
+        FileUtils.remove_dir(dir)
+      end
+    end
+
+    incache
   end
 end

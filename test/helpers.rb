@@ -101,12 +101,20 @@ module Spec
       (exitstatus == 0 and err == '') ? :ok : [exitstatus, err]
     end
 
-    def archive_name(name, version, cxver)
-      "#{name}-#{version}_#{cxver}.7z"
+    def archive_name(type, name, version, cxver)
+      suffix = case type
+               when :library
+                 ''
+               when :utility
+                 "-#{Global::PLATFORM}"
+               else
+                 raise "bad archive type #{type}"
+               end
+      "#{name}-#{version}_#{cxver}#{suffix}.7z"
     end
 
-    def in_cache?(name, version, cxver)
-      File.exists?(File.join(Global::CACHE_DIR, archive_name(name, version, cxver)))
+    def in_cache?(type, name, version, cxver)
+      File.exists?(File.join(Global::CACHE_DIR, archive_name(type, name, version, cxver)))
     end
 
     def cache_empty?

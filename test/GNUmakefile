@@ -72,7 +72,7 @@ export SSL_CERT_FILE
 
 .PHONY: all test clean dirs test-data clean-test-data unit-tests rspec-tests $(rspec_cmd_tests)
 
-all: test clean dirs
+all: test clean
 
 test: test-data unit-tests rspec-tests
 

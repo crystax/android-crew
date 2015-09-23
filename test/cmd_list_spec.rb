@@ -4,6 +4,9 @@ require_relative 'spec_helper.rb'
 describe "crew list" do
   before(:each) do
     clean
+    ndk_init
+    repository_init
+    repository_clone
   end
 
   context "with 3 incorrect arguments" do
