@@ -197,17 +197,15 @@ formulas if any.
 Example:
 
     $ crew update
-    new utilities versions:
-      ruby: 2.2.2:2, 2.2.3:1
-      curl: 7.42.0:2
-            
-    new formulas:
-      libjpeg: 8d:1
-      ffmped:  2.5.3:3, 3.0.0:1
-                   
-    new versions:
-      boost: 2.0.0:1
-      icu:   54.2:2, 55.0:1
+    Updated Crew from a813ec99 to 6d2d71e9.
+    ==> Updated Utilities
+    curl, p7zip, ruby
+    ==> New Formulae
+    jpeg
+    ==> Updated Formulae
+    boost
+    ==> Deleted Formulae
+    libold
 
 
 ### upgrade
@@ -218,19 +216,13 @@ then install it.
 Example:
 
     $ upgrade
-    will install icu-55.0, boost-2.0.0
-
-    icu 55.0 will be installed
-    downloading: .....
-    unpacking: .....
-
-    boost 2.0.0 will be installed
-    downloading: .....
-    unpacking: .....
-
-    $ upgrade boost icu
-    Error: boost 2.0.0 already installed
-    Error: icu 55.0a already installed
+    Will install: boost:1.59.0:1, icu4c:55.1:1
+    downloading http://localhost:9999/packages/boost/boost-1.59.0_1.7z
+    checking integrity of the archive file boost-1.59.0_1.7z
+    unpacking archive
+    downloading http://localhost:9999/packages/icu4c/icu4c-55.1_1.7z
+    checking integrity of the archive file icu4c-55.1_1.7z
+    unpacking archive
 
 
 ### cleanup [-n]
