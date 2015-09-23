@@ -47,3 +47,10 @@ class ErrorDuringExecution < RuntimeError
     super "Failure while executing: #{msg}"
   end
 end
+
+class ReleaseNotFound < RuntimeError
+  def initialize(name, release)
+    msg = !release.crystax_version ? "with version #{release.version}" : "#{release.version}:#{release.crystax_version}"
+    super "#{name} has no release #{msg}"
+  end
+end

@@ -33,12 +33,11 @@ class Release
     @r.update(hash)
   end
 
+  def match?(r)
+    ((version == r.version) or (version == nil) or (r.version == nil)) and ((crystax_version == r.crystax_version) or (crystax_version == nil) or (r.crystax_version == nil))
+  end
+
   def to_s
     "#{@r[:version]}_#{@r[:crystax_version]}"
   end
-
-  # todo:
-  # def ==(r)
-  #   (version == r.version) and (crystax_version == r.crystax_version) and (shasum == r.shasum)
-  # end
 end

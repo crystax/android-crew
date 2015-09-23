@@ -117,21 +117,8 @@ class Formula
     end
   end
 
-  # todo: use Release == operator
   def installed?(release = Release.new)
-    answer = false
-    ver = release.version
-    cxver = release.crystax_version
-    if !ver and !cxver
-      answer = releases.any? {|r| r.installed? }
-    elsif !ver and cxver
-      raise "internal error: crystax_version was set and version was not"
-    elsif ver and !cxver
-      answer = releases.any? {|r| (r.version == ver) and r.installed? }
-    else
-      answer = releases.any? {|r| (r.version == ver) and (r.crystax_version == cxver) and r.installed? }
-    end
-    answer
+    releases.any? { |r| r.match?(release) and r.installed? }
   end
 
   class Dependency
@@ -187,17 +174,9 @@ class Formula
     info
   end
 
-  # todo: use Release == operator
-  def find_release(r)
-    if not r.version
-      rel = releases.last
-    elsif not r.crystax_version
-      rel = (releases.select {|e| e.version == r.version}).last
-      raise "#{name} has no release with version #{r.version}" unless rel
-    else
-      rel = (releases.select {|e| e.version == r.version and e.crystax_version == r.crystax_version}).last
-      raise "#{name} has no release #{r.version}:#{r.crystax_version}" unless rel
-    end
+  def find_release(release)
+    rel = releases.reverse_each.find { |r| r.match?(release) }
+    raise ReleaseNotFound.new(name, release) unless rel
     rel
   end
 
