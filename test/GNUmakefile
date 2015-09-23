@@ -70,7 +70,7 @@ export CREW_BASE_DIR CREW_NDK_DIR CREW_TOOLS_DIR CREW_RUBY_DIR
 export SSL_CERT_FILE
 
 
-.PHONY: all test clean dirs test-data clean-test-data unit-tests rspec-tests $(rspec_cmd_tests)
+.PHONY: all test clean test-data clean-test-data unit-tests rspec-tests $(rspec_cmd_tests)
 
 all: test clean
 
@@ -79,7 +79,7 @@ test: test-data unit-tests rspec-tests
 clean: clean-test-data
 	$(RM) $(RMFLAGS) crew crew.git ndk
 
-unit-tests: dirs
+unit-tests:
 	$(RUBY) -I ../library test_crew.rb
 
 test-data:
@@ -88,16 +88,11 @@ test-data:
 clean-test-data:
 	$(RUBY) test_cleanup.rb
 
-rspec-tests: dirs
+rspec-tests:
 	$(RSPEC) $(rspec_files)
 
 test-%:
 	$(RSPEC) cmd_$*_spec.rb
-
-dirs:
-	-$(MKDIR) $(MKDIRFLAGS) $(NDKSRC_DIR)
-	-$(MKDIR) $(MKDIRFLAGS) $(CACHE_DIR)
-	-$(MKDIR) $(MKDIRFLAGS) $(FORMULA_DIR)
 
 shell:
 	@PS1="[$(PS1) crew test] " bash
