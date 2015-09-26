@@ -1,4 +1,4 @@
-unit_test_files = test_crew.rb
+unit_test_files = ts_crew.rb test_crew.rb test_release.rb
 
 # skip network tests while we're not ready to update crew-test repository
 # cmd_network_spec.rb
@@ -79,8 +79,8 @@ test: test-data unit-tests rspec-tests
 clean: clean-test-data
 	$(RM) $(RMFLAGS) crew crew.git ndk
 
-unit-tests:
-	$(RUBY) -I ../library test_crew.rb
+unit-tests: test-data $(unit_test_files)
+	$(RUBY) -I ../library ts_crew.rb
 
 test-data:
 	$(RUBY) test_prepare.rb
@@ -88,7 +88,7 @@ test-data:
 clean-test-data:
 	$(RUBY) test_cleanup.rb
 
-rspec-tests:
+rspec-tests: test-data
 	$(RSPEC) $(rspec_files)
 
 test-%:
