@@ -1,11 +1,14 @@
 require 'json'
 require 'digest'
 require 'fileutils'
+require_relative 'extend/module.rb'
 require_relative 'release.rb'
 require_relative 'utils.rb'
 
 
 class Formula
+
+  PROPERTIES_FILE = 'properties.json'
 
   def self.package_version(release)
     release.to_s
@@ -181,8 +184,6 @@ class Formula
   end
 
   private
-
-  PROPERTIES_FILE = 'properties.json'
 
   def get_properties(dir)
     # use full path here to get better error message if case open fails
