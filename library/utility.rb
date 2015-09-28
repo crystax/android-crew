@@ -28,7 +28,9 @@ class Utility < Formula
   end
 
   def link(release = releases.last, tools_dir = Global::TOOLS_DIR)
-    FileUtils.cd(File.join(tools_dir, 'bin')) do
+    bin_dir = File.join(tools_dir, 'bin')
+    FileUtils.mkdir_p bin_dir
+    FileUtils.cd(bin_dir) do
       src_dir = File.join('..', 'crew', name, release.to_s, 'bin')
       programs.each do |prog|
         prog += '.exe' if File.exists? File.join(src_dir, "#{prog}.exe")
