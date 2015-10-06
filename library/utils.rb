@@ -1,5 +1,6 @@
 require 'open3'
 require_relative 'global.rb'
+require_relative 'exceptions.rb'
 
 module Utils
 
@@ -47,6 +48,7 @@ module Utils
 
   def self.to_cmd_s(*args)
     # todo: escape ( and ) too
-    args.map { |a| a.to_s.gsub " ", "\\ " }.join(" ")
+    s = args.map { |a| a.to_s.gsub " ", "\\ " }.join(" ")
+    s.gsub(%r{/}) { '\\' } if Global::OS == 'windows'
   end
 end
