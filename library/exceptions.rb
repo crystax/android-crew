@@ -42,9 +42,15 @@ class FormulaUnavailableError < RuntimeError
 end
 
 class ErrorDuringExecution < RuntimeError
-  def initialize(cmd, err)
+
+  attr_reader :exit_code, :error_text
+
+  def initialize(cmd, exitcode, err)
+    @exit_code = exitcode
+    @error_text = err
+
     msg = err.size > 0 ? "#{cmd}; error output: #{err}" : "#{cmd}"
-    super "Failure while executing: #{msg}"
+    super "Failure while executing: #{msg}; exit code: #{exit_code}"
   end
 end
 
@@ -52,5 +58,17 @@ class ReleaseNotFound < RuntimeError
   def initialize(name, release)
     msg = !release.crystax_version ? "with version #{release.version}" : "#{release.version}:#{release.crystax_version}"
     super "#{name} has no release #{msg}"
+  end
+end
+
+class DownloadError < RuntimeError
+
+  attr_reader :url, :error_code
+
+  def initialize(url, error_code, text = nil)
+    @url = url
+    @error_code = error_code
+    msg = text ? "; text: #{text}" : ''
+    super "failed to download #{url}: code: #{error_code}#{msg}"
   end
 end
