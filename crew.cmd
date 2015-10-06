@@ -8,37 +8,18 @@ set GEM_PATH=
 set CREWFILEDIR=%~dp0
 set CREWHOSTOS=windows
 
-if not defined CREW_BASE_DIR (
-   set CREW_BASE_DIR=%CREWFILEDIR%
-)
-
-if not defined SSL_CERT_FILE (
-    set SSL_CERT_FILE=%CREW_BASE_DIR%\etc\ca-certificates.crt
-)
-
-if not defined CREW_DOWNLOAD_BASE (
-   set CREW_DOWNLOAD_BASE=https://crew.crystax.net:9876
-)
-
-if not defined CREW_NDK_DIR (
-   set CREW_NDK_DIR=%CREWFILEDIR%..\..\
-)
-
-
 set CREWHOSTCPU=-x86_64
-if not exist %CREW_NDK_DIR%prebuilt\windows%CREWHOSTCPU% (
+if not exist %CREWFILEDIR%..\..\prebuilt\windows%CREWHOSTCPU% (
    set CREWHOSTCPU=
 )
 
-if not defined CREW_TOOLS_DIR (
-   set CREW_TOOLS_DIR=%CREW_NDK_DIR%prebuilt\windows%CREWHOSTCPU%\
+if not defined SSL_CERT_FILE (
+    set SSL_CERT_FILE=%CREWFILEDIR%\etc\ca-certificates.crt
 )
 
 if not defined CREW_RUBY_DIR (
-   set CREW_RUBY_DIR=%CREW_TOOLS_DIR%bin\
+   set CREW_RUBY_DIR=%CREWFILEDIR%..\..\prebuilt\windows%CREWHOSTCPU%\bin\
 )
-
-set GIT_EXEC_PATH=%CREW_TOOLS_DIR%\libexec\git-core
 
 rem set CREW
 rem set GIT
