@@ -46,6 +46,10 @@ class Utility < Formula
     "#{name}-#{Formula.package_version(release)}-#{Global::PLATFORM}.7z"
   end
 
+  def sha256_sum(release)
+    release.shasum(Global::PLATFORM.gsub(/-/, '_').to_sym)
+  end
+
   def install_archive(outdir, archive)
     FileUtils.rm_rf outdir
     FileUtils.mkdir_p outdir

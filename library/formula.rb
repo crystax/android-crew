@@ -99,7 +99,7 @@ class Formula
     end
 
     puts "checking integrity of the archive file #{file}"
-    if Digest::SHA256.hexdigest(File.read(cachepath, mode: "rb")) != release.shasum
+    if Digest::SHA256.hexdigest(File.read(cachepath, mode: "rb")) != sha256_sum(release)
       raise "bad SHA256 sum of the downloaded file #{cachepath}"
     end
 

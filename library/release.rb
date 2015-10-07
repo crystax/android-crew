@@ -1,8 +1,14 @@
 class Release
 
-  def initialize(ver = nil, cxver = nil, shasum = '0')
+  def initialize(ver = nil, cxver = nil, sum = nil)
     cxver = cxver.to_i if cxver
-    @r = { version: ver, crystax_version: cxver, shasum: shasum }
+    @r = { version: ver, crystax_version: cxver }
+    @shasum = {}
+    if sum.is_a? Hash
+      @shasum.update(sum)
+    else
+      @shasum[:android] = sum
+    end
   end
 
   def version
@@ -13,16 +19,21 @@ class Release
     @r[:crystax_version]
   end
 
-  def shasum
-    @r[:shasum]
+  def shasum(platform = :android)
+    @shasum[platform]
   end
 
   def installed?
     @r[:installed]
   end
 
+  # 's' must be either a hash like this { platform_name: 'sha256_sum' } or just a string
   def shasum=(s)
-    @r[:shasum] = s
+    if s.is_a? Hash
+      @shasum.update(s)
+    else
+      @shasum[:android] = s
+    end
   end
 
   def installed=(v)

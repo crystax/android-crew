@@ -14,6 +14,7 @@ end
 
 tools_dir          = ENV['CREW_TOOLS_DIR']
 PLATFORM           = File.basename(tools_dir)
+PLATFORM_SYM       = PLATFORM.gsub(/-/, '_').to_sym
 utils_download_dir = File.join(Crew_test::DOCROOT_DIR, 'utilities')
 orig_ndk_dir       = File.join('..', '..', '..')
 orig_tools_dir     = File.join(orig_ndk_dir, 'prebuilt', PLATFORM)
@@ -41,27 +42,58 @@ UTILS_DOWNLOAD_DIR = Pathname.new(utils_download_dir).realpath.to_s
 DATA_DIR           = Pathname.new(Crew_test::DATA_DIR).realpath.to_s
 NDK_DIR            = Pathname.new(Crew_test::NDK_DIR).realpath.to_s
 
-RELEASE_REGEX = /^[[:space:]]*release[[:space:]]+version/
+RELEASE_REGEXP = /^[[:space:]]*release[[:space:]]+version/
+RELEASE_END_REGEXP = /^[[:space:]]+}[[:space:]]*$/
+PROGRAMS_REGEXP = /^[[:space:]]+programs[[:space:]]+'/
 
 def replace_releases(formula, releases)
   lines = []
-  replaced = false
+  state = :copy
   File.foreach(formula) do |l|
-    if l !~ RELEASE_REGEX
-      lines << l
-    elsif !replaced
-      releases.each { |r| lines << "  release version: '#{r.version}', crystax_version: #{r.crystax_version}, sha256: '#{r.shasum}'" }
-      replaced = true
+    fname = File.basename(formula)
+    puts "state: #{state}"
+    puts "line:  #{l}"
+    case l
+    when RELEASE_REGEXP
+      puts "release matched"
+      case state
+      when :copy
+        state = :skip
+      else
+        raise "error in #{fname}: in state '#{state}' unexpected line: #{l}"
+      end
+    when RELEASE_END_REGEXP
+      puts "release END matched"
+      case state
+      when :skip
+        state = :copy
+      else
+        raise "error in #{fname}: in state '#{state}' unexpected line: #{l}"
+      end
+    when PROGRAMS_REGEXP
+      puts "programs matched"
+      case state
+      when :copy
+        releases.each do |r|
+          lines << "  release version: '#{r.version}', crystax_version: #{r.crystax_version}, sha256: { #{PLATFORM_SYM}: '#{r.shasum(PLATFORM_SYM)}' }"
+        end
+        lines << ''
+        lines << l
+      else
+        raise "error in #{fname}: in state #{state} unexpected line: #{l}"
+      end
+    else
+        lines << l if state == :copy
     end
   end
+
   lines
 end
 
 def get_lastest_utility_release(formula)
-  a = File.foreach(formula).select{ |l| l =~ RELEASE_REGEX }.last.split(' ')
+  a = File.foreach(formula).select{ |l| l =~ RELEASE_REGEXP }.last.split(' ')
   Release.new(a[2].delete("',"),  a[4].delete(","))
 end
-
 
 def create_archive(orig_release, release, util)
   util_dir = File.join('tmp', 'prebuilt', PLATFORM, 'crew', util)
@@ -106,7 +138,7 @@ end
 
 # create archives and formulas for curl
 curl_releases = [Release.new('7.42.0', 1), Release.new('7.42.0', 3), Release.new('8.21.0', 1)].map do |r|
-  r.shasum = create_archive(orig_releases['curl'], r, 'curl')
+  r.shasum = { PLATFORM_SYM => create_archive(orig_releases['curl'], r, 'curl') }
   r
 end
 curl_formula = File.join(ORIG_FORMULA_DIR, 'curl.rb')
@@ -116,7 +148,7 @@ File.open(File.join(DATA_DIR, 'curl-3.rb'), 'w') { |f| f.puts replace_releases(c
 
 # create archives and formulas for p7zip
 p7zip_releases = [Release.new('9.20.1', 1), Release.new('9.21.2', 1)].map do |r|
-  r.shasum = create_archive(orig_releases['p7zip'], r, 'p7zip')
+  r.shasum = { PLATFORM_SYM => create_archive(orig_releases['p7zip'], r, 'p7zip') }
   r
 end
 p7zip_formula = File.join(ORIG_FORMULA_DIR, 'p7zip.rb')
@@ -125,7 +157,7 @@ File.open(File.join(DATA_DIR, 'p7zip-2.rb'), 'w') { |f| f.puts replace_releases(
 
 # create archives and formulas for ruby
 ruby_releases = [Release.new('2.2.2', 1), Release.new('2.2.3', 1)].map do |r|
-  r.shasum = create_archive(orig_releases['ruby'], r, 'ruby')
+  r.shasum = { PLATFORM_SYM => create_archive(orig_releases['ruby'], r, 'ruby') }
   r
 end
 ruby_formula = File.join(ORIG_FORMULA_DIR, 'ruby.rb')
