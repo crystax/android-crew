@@ -27,6 +27,7 @@ class Formula
   def initialize(path)
     @path = path
     self.class.name File.basename(path, '.rb') unless name
+
     # mark installed releases
     releases.each do |r|
       dir = release_directory(r)

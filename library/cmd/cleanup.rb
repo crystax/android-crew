@@ -21,8 +21,8 @@ module Crew
     end
 
     incache = []
-    Formulary.utilities.each { |formula| incache += remove_old_releases(formula, dryrun) }
-    Formulary.libraries.each { |formula| incache += remove_old_releases(formula, dryrun) }
+    Formulary.utilities.each { |formula| incache += remove_old_utilities(formula, dryrun) }
+    Formulary.libraries.each { |formula| incache += remove_old_libraries(formula, dryrun) }
 
     incache.each do |f|
       if (dryrun)
@@ -36,7 +36,34 @@ module Crew
 
   private
 
-  def self.remove_old_releases(formula, dryrun)
+  def self.remove_old_utilities(formula, dryrun)
+    # releases are sorted from oldest to most recent order
+    incache = []
+    irels = []
+    formula.releases.each do |release|
+      if not release.installed?
+        # archives for not installed releases should be removed during cleanup
+        cachefile = formula.cache_file(release)
+        incache << cachefile if File.exists?(cachefile)
+        if Dir.exists?(formula.release_directory(release))
+          irels << release
+        end
+      end
+    end
+    irels.each do |release|
+      dir = formula.release_directory(release)
+      if (dryrun)
+        puts "would remove: #{dir}"
+      else
+        puts "removing: #{dir}"
+        FileUtils.remove_dir(dir)
+      end
+    end
+
+    incache
+  end
+
+  def self.remove_old_libraries(formula, dryrun)
     # releases are sorted from oldest to most recent order
     incache = []
     irels = []
@@ -45,7 +72,7 @@ module Crew
         irels << release
       else
         # archives for not installed releases should be removed during cleanup
-        cachefile = formula.cache_file(r)
+        cachefile = formula.cache_file(release)
         incache << cachefile if File.exists?(cachefile)
       end
     end

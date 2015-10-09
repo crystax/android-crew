@@ -104,42 +104,49 @@ describe "crew cleanup" do
     end
   end
 
-  context "when two releases of the curl utility are installed" do
+  context "when two releases of the curl utility are installed, releases differ in crystax_version" do
     it "outputs about removing curl 7.42.0:1" do
       repository_clone
       repository_add_formula :utility, 'curl-2.rb:curl.rb'
       crew_checked 'update'
       crew_checked 'upgrade'
       crew '-b', 'cleanup'
-      ver = '7.42.0'
-      cxver = 1
       expect(result).to eq(:ok)
-      expect(out).to eq("removing: #{Global::ENGINE_DIR}/curl/#{ver}_#{cxver}\n")
-      expect(in_cache?(:utility, 'curl', ver, 3)).to eq(true)
+      expect(out).to eq("removing: #{Global::ENGINE_DIR}/curl/7.42.0_1\n")
+      expect(in_cache?(:utility, 'curl', '7.42.0', 3)).to eq(true)
+    end
+  end
+
+  context "when two releases of the curl utility are installed, releases differ in upstream version" do
+    it "outputs about removing curl 7.42.0:1" do
+      repository_clone
+      repository_add_formula :utility, 'curl-3.rb:curl.rb'
+      crew_checked 'update'
+      crew_checked 'upgrade'
+      crew '-b', 'cleanup'
+      expect(result).to eq(:ok)
+      expect(out).to eq("removing: #{Global::ENGINE_DIR}/curl/7.42.0_1\n")
+      expect(in_cache?(:utility, 'curl', '8.21.0', 1)).to eq(true)
     end
   end
 
   context "when two releases of the two utilities are installed" do
     it "says about removing two old releases" do
       repository_clone
-      repository_add_formula :utility, 'curl-2.rb:curl.rb', 'ruby-2.rb:ruby.rb'
+      repository_add_formula :utility, 'curl-3.rb:curl.rb', 'ruby-2.rb:ruby.rb'
       crew_checked 'update'
       crew_checked 'upgrade'
       crew '-b', 'cleanup'
-      curl_ver = '7.42.0'
-      curl_cxver = 1
-      ruby_ver = '2.2.2'
-      ruby_cxver = 1
       expect(result).to eq(:ok)
-      expect(out).to eq("removing: #{Global::ENGINE_DIR}/curl/#{curl_ver}_#{curl_cxver}\n" \
-                        "removing: #{Global::ENGINE_DIR}/ruby/#{ruby_ver}_#{ruby_cxver}\n")
-      expect(in_cache?(:utility, 'curl', '7.42.0', 3)).to eq(true)
+      expect(out).to eq("removing: #{Global::ENGINE_DIR}/curl/7.42.0_1\n" \
+                        "removing: #{Global::ENGINE_DIR}/ruby/2.2.2_1\n")
+      expect(in_cache?(:utility, 'curl', '8.21.0', 1)).to eq(true)
       expect(in_cache?(:utility, 'ruby', '2.2.3',  1)).to eq(true)
     end
   end
 
   context "when three releases of the curl utility are installed" do
-    it "outputs about removing curl 7.42.0:1, 7.42.0:3" do
+    it "outputs about removing curl 7.42.0:3" do
       repository_clone
       repository_add_formula :utility, 'curl-2.rb:curl.rb'
       crew_checked 'update'
@@ -177,4 +184,6 @@ describe "crew cleanup" do
       expect(in_cache?(:utility, 'ruby',  '2.2.3',  1)).to eq(true)
     end
   end
+
+  # todo: cleaning utilities and libraries at the same time
 end

@@ -19,8 +19,8 @@ describe "crew upgrade" do
   context "when there are no formulas and no changes" do
     it "outputs nothing" do
       repository_clone
-      crew 'update'
-      crew 'upgrade'
+      crew_checked 'update'
+      crew '-b', 'upgrade'
       expect(result).to eq(:ok)
       expect(out).to eq('')
     end
@@ -74,12 +74,14 @@ describe "crew upgrade" do
       cxver = 3
       file = "curl-#{ver}_#{cxver}-#{Global::PLATFORM}.7z"
       expect(result).to eq(:ok)
-      expect(out).to eq("Will install utilities: curl:#{ver}:#{cxver}\n"                \
+      expect(out).to eq("Will install: curl:#{ver}:#{cxver}\n"                          \
                         "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/#{file}\n" \
                         "checking integrity of the archive file #{file}\n"              \
                         "unpacking archive\n")
-      expect(utility_working('curl')).to eq(:ok)
-      expect(utility_link('curl', 'curl', Release.new(ver, cxver))).to eq(:ok)
+      expect(Dir.exists?("#{Global::ENGINE_DIR}/curl/#{ver}_1")).to eq(true)
+      expect(Dir.exists?("#{Global::ENGINE_DIR}/curl/#{ver}_#{cxver}")).to eq(true)
+      expect(Global.active_util_version('curl')).to eq("#{ver}_#{cxver}")
+      expect(in_cache?(:utility, 'curl', ver, cxver)).to eq(true)
     end
   end
 
@@ -93,12 +95,14 @@ describe "crew upgrade" do
       cxver = 1
       file = "curl-#{ver}_#{cxver}-#{Global::PLATFORM}.7z"
       expect(result).to eq(:ok)
-      expect(out).to eq("Will install utilities: curl:#{ver}:#{cxver}\n"                \
+      expect(out).to eq("Will install: curl:#{ver}:#{cxver}\n"                          \
                         "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/#{file}\n" \
                         "checking integrity of the archive file #{file}\n"              \
                         "unpacking archive\n")
-      expect(utility_working('curl')).to eq(:ok)
-      expect(utility_link('curl', 'curl', Release.new(ver, cxver))).to eq(:ok)
+      expect(Dir.exists?("#{Global::ENGINE_DIR}/curl/7.42.0_1")).to eq(true)
+      expect(Dir.exists?("#{Global::ENGINE_DIR}/curl/#{ver}_#{cxver}")).to eq(true)
+      expect(Global.active_util_version('curl')).to eq("#{ver}_#{cxver}")
+      expect(in_cache?(:utility, 'curl', ver, cxver)).to eq(true)
     end
   end
 
@@ -119,7 +123,7 @@ describe "crew upgrade" do
       ruby_file = "ruby-#{ruby_ver}_#{ruby_cxver}-#{Global::PLATFORM}.7z"
       expect(result).to eq(:ok)
       expect(out).to eq(
-       "Will install utilities: curl:#{curl_ver}:#{curl_cxver}, p7zip:#{p7zip_ver}:#{p7zip_cxver}, ruby:#{ruby_ver}:#{ruby_cxver}\n" \
+       "Will install: curl:#{curl_ver}:#{curl_cxver}, p7zip:#{p7zip_ver}:#{p7zip_cxver}, ruby:#{ruby_ver}:#{ruby_cxver}\n" \
        "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/#{curl_file}\n"   \
        "checking integrity of the archive file #{curl_file}\n"                \
        "unpacking archive\n"                                                  \
@@ -129,12 +133,15 @@ describe "crew upgrade" do
        "downloading #{Global::DOWNLOAD_BASE}/utilities/ruby/#{ruby_file}\n"   \
        "checking integrity of the archive file #{ruby_file}\n"                \
        "unpacking archive\n")
-      expect(utility_working('curl')).to eq(:ok)
-      expect(utility_link('curl', 'curl', Release.new(curl_ver, curl_cxver))).to eq(:ok)
-      expect(utility_working('7za')).to eq(:ok)
-      expect(utility_link('7za', 'p7zip', Release.new(p7zip_ver, p7zip_cxver))).to eq(:ok)
-      expect(utility_working('ruby')).to eq(:ok)
-      expect(utility_link('ruby', 'ruby', Release.new(ruby_ver, ruby_cxver))).to eq(:ok)
+      expect(Dir.exists?("#{Global::ENGINE_DIR}/curl/7.42.0_1")).to eq(true)
+      expect(Dir.exists?("#{Global::ENGINE_DIR}/curl/8.21.0_1")).to eq(true)
+      expect(Dir.exists?("#{Global::ENGINE_DIR}/p7zip/9.20.1_1")).to eq(true)
+      expect(Dir.exists?("#{Global::ENGINE_DIR}/p7zip/9.21.2_1")).to eq(true)
+      expect(Dir.exists?("#{Global::ENGINE_DIR}/ruby/2.2.2_1")).to eq(true)
+      expect(Dir.exists?("#{Global::ENGINE_DIR}/ruby/2.2.3_1")).to eq(true)
+      expect(in_cache?(:utility, 'curl',  '8.21.0', 1)).to eq(true)
+      expect(in_cache?(:utility, 'p7zip', '9.21.2', 1)).to eq(true)
+      expect(in_cache?(:utility, 'ruby',  '2.2.3',  1)).to eq(true)
     end
   end
 end

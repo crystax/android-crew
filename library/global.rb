@@ -34,6 +34,18 @@ module Global
 
   public
 
+  def self.active_file_path(uname, engine_dir = ENGINE_DIR)
+    File.join(engine_dir, uname, ACTIVE_UTIL_FILE)
+  end
+
+  def self.active_util_version(uname, engine_dir = ENGINE_DIR)
+    File.read(active_file_path(uname, engine_dir)).split("\n")[0]
+  end
+
+  def self.active_util_dir(uname, engine_dir = ENGINE_DIR)
+    File.join(engine_dir, uname, active_util_version(uname, engine_dir), 'bin')
+  end
+
   def self.raise_env_var_not_set(var)
     raise "#{var} environment varible is not set"
   end
@@ -59,7 +71,9 @@ module Global
   DOWNLOAD_BASE = ENV['CREW_DOWNLOAD_BASE'] ? ENV['CREW_DOWNLOAD_BASE'] : "https://crew.crystax.net:9876"
   BASE_DIR      = ENV['CREW_BASE_DIR']      ? Pathname.new(ENV['CREW_BASE_DIR']).realpath.to_s  : Pathname.new(__FILE__).realpath.dirname.dirname.to_s
   NDK_DIR       = ENV['CREW_NDK_DIR']       ? Pathname.new(ENV['CREW_NDK_DIR']).realpath.to_s   : Pathname.new(BASE_DIR).realpath.dirname.dirname.to_s
-  TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     ? Pathname.new(ENV['CREW_TOOLS_DIR']).realpath.to_s : def_tools_dir(NDK_DIR, OS)
+  # todo: check
+  #TOOLS_DIR     = ENV['CREW_TOOLS_DIR']     ? Pathname.new(ENV['CREW_TOOLS_DIR']).realpath.to_s : def_tools_dir(NDK_DIR, OS)
+  TOOLS_DIR     = def_tools_dir(NDK_DIR, OS)
 
   PLATFORM = File.basename(TOOLS_DIR)
 
@@ -72,8 +86,10 @@ module Global
 
   EXE_EXT = RUBY_PLATFORM =~ /mingw/ ? '.exe' : ''
 
-  CREW_CURL_PROG = Pathname.new(File.join(TOOLS_DIR, 'bin')).realpath + "curl#{EXE_EXT}"
-  CREW_7Z_PROG   = Pathname.new(File.join(TOOLS_DIR, 'bin')).realpath + "7za#{EXE_EXT}"
+  ACTIVE_UTIL_FILE = 'active_version.txt'
+
+  CREW_CURL_PROG = Pathname.new(active_util_dir('curl')).realpath  + "curl#{EXE_EXT}"
+  CREW_7Z_PROG   = Pathname.new(active_util_dir('p7zip')).realpath + "7za#{EXE_EXT}"
 
   private
 

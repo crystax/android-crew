@@ -18,6 +18,7 @@ PLATFORM_SYM       = PLATFORM.gsub(/-/, '_').to_sym
 utils_download_dir = File.join(Crew_test::DOCROOT_DIR, 'utilities')
 orig_ndk_dir       = File.join('..', '..', '..')
 orig_tools_dir     = File.join(orig_ndk_dir, 'prebuilt', PLATFORM)
+orig_engine_dir    = File.join(orig_tools_dir, 'crew')
 
 # copy utils from NDK dir to tests directory structure
 FileUtils.mkdir_p File.join(Crew_test::CREW_DIR, 'cache')
@@ -36,6 +37,7 @@ require_relative '../library/utils.rb'
 
 ORIG_NDK_DIR       = Pathname.new(orig_ndk_dir).realpath.to_s
 ORIG_TOOLS_DIR     = Pathname.new(orig_tools_dir).realpath.to_s
+ORIG_ENGINE_DIR    = Pathname.new(orig_engine_dir).realpath.to_s
 ORIG_FORMULA_DIR   = Pathname.new(File.join(orig_ndk_dir, 'tools', 'crew', 'formula', 'utilities')).realpath.to_s
 TOOLS_DIR          = Pathname.new(tools_dir).realpath.to_s
 UTILS_DOWNLOAD_DIR = Pathname.new(utils_download_dir).realpath.to_s
@@ -51,11 +53,8 @@ def replace_releases(formula, releases)
   state = :copy
   File.foreach(formula) do |l|
     fname = File.basename(formula)
-    puts "state: #{state}"
-    puts "line:  #{l}"
     case l
     when RELEASE_REGEXP
-      puts "release matched"
       case state
       when :copy
         state = :skip
@@ -63,7 +62,6 @@ def replace_releases(formula, releases)
         raise "error in #{fname}: in state '#{state}' unexpected line: #{l}"
       end
     when RELEASE_END_REGEXP
-      puts "release END matched"
       case state
       when :skip
         state = :copy
@@ -71,7 +69,6 @@ def replace_releases(formula, releases)
         raise "error in #{fname}: in state '#{state}' unexpected line: #{l}"
       end
     when PROGRAMS_REGEXP
-      puts "programs matched"
       case state
       when :copy
         releases.each do |r|
@@ -114,7 +111,7 @@ def create_archive(orig_release, release, util)
   FileUtils.mkdir_p File.dirname(archive_path)
   FileUtils.cd('tmp') do
     args = ['a', archive_path, dir_to_archive]
-    Utils.run_command(File.join(ORIG_TOOLS_DIR, 'bin', '7za'), *args)
+    Utils.run_command(File.join(Global::active_util_dir('p7zip', ORIG_ENGINE_DIR), '7za'), *args)
   end
   # rename new release back to old
   FileUtils.cd(util_dir) { FileUtils.mv new, old if old != new }

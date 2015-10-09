@@ -9,51 +9,32 @@ module Crew
       raise CommandRequresNoArguments
     end
 
+    install_latest(Formulary.utilities)
+    install_latest(Formulary.libraries)
+  end
+
+  private
+
+  def self.install_latest(formulary)
     names = []
-    utils = []
-    Formulary.utilities.each do |formula|
-      if not formula.releases.last.installed?
-        utils << formula
-        names << last_release_name(formula)
-      end
-    end
-
-    if utils.size > 0
-      puts "Will install utilities: #{names.join(', ')}"
-      utils.each do |formula|
-        formula.install
-        formula.link
-      end
-    end
-
-    write_upgrade_script utils if Global::OS == 'windows'
-
-    names = []
-    libs = []
-    Formulary.libraries.each do |formula|
+    formulas = []
+    formulary.each do |formula|
       if formula.installed?
         if not formula.releases.last.installed?
-          libs << formula
+          formulas << formula
           names << last_release_name(formula)
         end
       end
     end
 
-    if libs.size > 0
+    if formulas.size > 0
       puts "Will install: #{names.join(', ')}"
-      libs.each { |formula| formula.install }
+      formulas.each { |formula| formula.install }
     end
   end
-
-  private
 
   def self.last_release_name(formula)
     last_release = formula.releases.last
     "#{formula.name}:#{last_release.version}:#{last_release.crystax_version}"
-  end
-
-  def self.write_upgrade_script utils
-    # todo: all
-    raise "TODO: handle windows case for update utilities!"
   end
 end

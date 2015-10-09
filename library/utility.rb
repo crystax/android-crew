@@ -11,6 +11,17 @@ class Utility < Formula
     end
   end
 
+  def initialize(path)
+    super(path)
+
+    # formula's ctor marked as 'installed' all releases that are unpacked (resp. dir exixts)
+    # but for utilities a release considered 'installed' only if it's version is equal
+    # to the one saved in the 'active' file
+
+    active_version = Global::active_util_version(name)
+    releases.each { |r| r.installed = (r.to_s == active_version) }
+  end
+
   def programs
     self.class.programs
   end
@@ -27,19 +38,6 @@ class Utility < Formula
     :utility
   end
 
-  def link(release = releases.last, tools_dir = Global::TOOLS_DIR)
-    bin_dir = File.join(tools_dir, 'bin')
-    FileUtils.mkdir_p bin_dir
-    FileUtils.cd(bin_dir) do
-      src_dir = File.join('..', 'crew', name, release.to_s, 'bin')
-      programs.each do |prog|
-        prog += '.exe' if File.exists? File.join(src_dir, "#{prog}.exe")
-        FileUtils.rm_f prog
-        FileUtils.ln_s File.join(src_dir, prog),  prog
-      end
-    end
-  end
-
   private
 
   def archive_filename(release)
@@ -54,5 +52,10 @@ class Utility < Formula
     FileUtils.rm_rf outdir
     FileUtils.mkdir_p outdir
     Utils.unpack(archive, Global::NDK_DIR)
+    write_active_file(File.basename(outdir))
+  end
+
+  def write_active_file(version)
+    File.open(Global.active_file_path(name), 'w') { |f| f.puts version }
   end
 end

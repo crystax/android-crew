@@ -224,23 +224,5 @@ module Spec
     def origin_dir
       Global::BASE_DIR + '.git'
     end
-
-    def utility_working(name)
-      util = File.join(Global::TOOLS_DIR, 'bin', name)
-      run_command("#{util} -h")
-      (exitstatus == 0) and (err == '') ? :ok : "failed: code: #{exitstatus}; error: #{err}"
-    end
-
-    def utility_link(prog, util, release)
-      link_file = File.join(Global::TOOLS_DIR, 'bin', prog)
-      orig_file = File.join(Global::TOOLS_DIR, 'crew', util, release.to_s, 'bin', prog)
-      if File.exists? "#{orig_file}.exe"
-        link_file += '.exe'
-        orig_file += '.exe'
-      end
-      s1 = Digest::SHA256.hexdigest(File.read(link_file, mode: "rb"))
-      s2 = Digest::SHA256.hexdigest(File.read(orig_file, mode: "rb"))
-      s1 == s2 ? :ok : "files differ: #{link_file} and #{orig_file}"
-    end
   end
 end

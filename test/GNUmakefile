@@ -4,9 +4,7 @@ unit_test_files = ts_crew.rb test_crew.rb test_release.rb
 # cmd_network_spec.rb
 rspec_files = cmd_nocmd_spec.rb cmd_version_spec.rb cmd_help_spec.rb cmd_env_spec.rb   \
               cmd_install_spec.rb cmd_remove_spec.rb cmd_list_spec.rb cmd_info_spec.rb \
-              cmd_update_spec.rb cmd_upgrade_spec.rb
-
-#cmd_cleanup_spec.rb
+              cmd_update_spec.rb cmd_upgrade_spec.rb cmd_cleanup_spec.rb
 
 rspec_cmd_tests = $(patubst cmd_%_spec,test-%,$(basename $(rspec_files)))
 
@@ -33,7 +31,9 @@ else
   PLATFORM = $(host_os)-x86
 endif
 
-RUBY_DIR = $(TOOLS_DIR)/bin
+
+RUBY_VERSION = $(shell cat $(TOOLS_DIR)/crew/ruby/active_version.txt)
+RUBY_DIR = $(TOOLS_DIR)/crew/ruby/$(RUBY_VERSION)/bin
 
 RUBY  = $(RUBY_DIR)/$(ruby_prog)
 RSPEC = $(RUBY_DIR)/$(ruby_prog) $(RUBY_DIR)/rspec
