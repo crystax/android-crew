@@ -43,7 +43,7 @@ module Crew
     end
   end
 
-  private
+  # private
 
   def self.list_elements(formulary)
     list = []

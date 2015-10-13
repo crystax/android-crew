@@ -34,7 +34,7 @@ module Crew
     end
   end
 
-  private
+  # private
 
   def self.remove_old_utilities(formula, dryrun)
     # releases are sorted from oldest to most recent order

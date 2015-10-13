@@ -4,6 +4,10 @@ require_relative 'exceptions.rb'
 
 module Utils
 
+  @@crew_curl_prog = nil
+  @@crew_7z_prog   = nil
+
+
   def self.run_command(prog, *args)
     cmd = to_cmd_s(prog, *args)
 
@@ -33,7 +37,7 @@ module Utils
 
   def self.download(url, outpath)
     args = [url, '-o', outpath, '--silent', '--fail']
-    run_command(Global::CREW_CURL_PROG, *args)
+    run_command(crew_curl_prog, *args)
   rescue ErrorDuringExecution => e
     case e.exit_code
     when 7
@@ -47,10 +51,20 @@ module Utils
 
   def self.unpack(archive, outdir)
     args = ["x", "-y", "-o#{outdir}", archive]
-    run_command(Global::CREW_7Z_PROG, *args)
+    run_command(crew_7z_prog, *args)
   end
 
-  private
+  # private
+
+  def self.crew_curl_prog
+    @@crew_curl_prog = Pathname.new(Global.active_util_dir('curl')).realpath  + "curl#{Global::EXE_EXT}" unless @@crew_curl_prog
+    @@crew_curl_prog
+  end
+
+  def self.crew_7z_prog
+    @@crew_7z_prog = Pathname.new(Global.active_util_dir('p7zip')).realpath + "7za#{Global::EXE_EXT}" unless @@crew_7z_prog
+    @@crew_7z_prog
+  end
 
   def self.to_cmd_s(*args)
     # todo: escape ( and ) too

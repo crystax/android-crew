@@ -11,15 +11,21 @@ class Utility < Formula
     end
   end
 
-  def initialize(path)
+  # formula's ctor marked as 'installed' all releases that are unpacked (resp. dir exixts)
+  # but for utilities a release considered 'installed' only if it's version is equal
+  # to the one saved in the 'active' file
+  #
+  # formula's ctor called with :no_active_file from the NDK's build scripts
+  # in tht case we should just mark all releases as 'uninstalled'
+  def initialize(path, *options)
     super(path)
 
-    # formula's ctor marked as 'installed' all releases that are unpacked (resp. dir exixts)
-    # but for utilities a release considered 'installed' only if it's version is equal
-    # to the one saved in the 'active' file
-
-    active_version = Global::active_util_version(name)
-    releases.each { |r| r.installed = (r.to_s == active_version) }
+    if options.include? :no_active_file
+      releases.each { |r| r.installed = false }
+    else
+      active_version = Global::active_util_version(name)
+      releases.each { |r| r.installed = (r.to_s == active_version) }
+    end
   end
 
   def programs

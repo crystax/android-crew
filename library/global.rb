@@ -2,7 +2,7 @@ require 'pathname'
 
 module Global
 
-  private
+  # private
 
   def self.check_program(prog)
     raise "#{prog} is not executable" unless prog.exist? and prog.executable?
@@ -32,7 +32,7 @@ module Global
     Dir.exists?(dir64) ? dir64 : dir32
   end
 
-  public
+  # public
 
   def self.active_file_path(uname, engine_dir = ENGINE_DIR)
     File.join(engine_dir, uname, ACTIVE_UTIL_FILE)
@@ -88,10 +88,7 @@ module Global
 
   ACTIVE_UTIL_FILE = 'active_version.txt'
 
-  CREW_CURL_PROG = Pathname.new(active_util_dir('curl')).realpath  + "curl#{EXE_EXT}"
-  CREW_7Z_PROG   = Pathname.new(active_util_dir('p7zip')).realpath + "7za#{EXE_EXT}"
-
-  private
+  # private
 
   @@options = { backtrace: false }
 

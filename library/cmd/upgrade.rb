@@ -13,7 +13,7 @@ module Crew
     install_latest(Formulary.libraries)
   end
 
-  private
+  # private
 
   def self.install_latest(formulary)
     names = []

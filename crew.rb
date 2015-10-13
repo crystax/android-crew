@@ -2,6 +2,7 @@ require 'fileutils'
 require_relative 'library/extend/module.rb'
 require_relative 'library/exceptions.rb'
 require_relative 'library/global.rb'
+require_relative 'library/utils.rb'
 
 def split_arguments(arguments)
   goptions = []
@@ -30,8 +31,8 @@ end
 
 if __FILE__ == $0
   begin
-    Global.check_program(Global::CREW_CURL_PROG)
-    Global.check_program(Global::CREW_7Z_PROG)
+    Global.check_program(Utils.crew_curl_prog)
+    Global.check_program(Utils.crew_7z_prog)
 
     goptions, cmd, args = split_arguments(ARGV)
     Global.set_options(goptions)

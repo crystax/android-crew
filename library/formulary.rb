@@ -51,7 +51,7 @@ class Formulary
     list
   end
 
-  private
+  # private
 
   def self.factory(path)
     Formulary.klass(path).new(path)
