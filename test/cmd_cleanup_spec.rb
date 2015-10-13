@@ -178,7 +178,7 @@ describe "crew cleanup" do
                         "removing: #{Global::ENGINE_DIR}/curl/7.42.0_3\n"  \
                         "removing: #{Global::ENGINE_DIR}/p7zip/9.20.1_1\n" \
                         "removing: #{Global::ENGINE_DIR}/ruby/2.2.2_1\n"   \
-                        "removing: #{Global::CACHE_DIR}/curl-7.42.0_3-darwin-x86_64.7z\n")
+                        "removing: #{Global::CACHE_DIR}/curl-7.42.0_3-#{Global::PLATFORM}.7z\n")
       expect(in_cache?(:utility, 'curl',  '8.21.0', 1)).to eq(true)
       expect(in_cache?(:utility, 'p7zip', '9.21.2', 1)).to eq(true)
       expect(in_cache?(:utility, 'ruby',  '2.2.3',  1)).to eq(true)
