@@ -18,7 +18,7 @@ class Formulary
 
   def initialize(dir)
     @formulary = {}
-    Dir[File.join(dir, '*.rb')].each do |path|
+    Dir[File.join(dir, '*.rb')].sort.each do |path|
       formula = Formulary.factory(path)
       @formulary[formula.name] = formula
     end
