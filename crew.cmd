@@ -17,14 +17,20 @@ if not defined SSL_CERT_FILE (
     set SSL_CERT_FILE=%CREWFILEDIR%\etc\ca-certificates.crt
 )
 
-if not defined CREW_RUBY_DIR (
-   set CREW_RUBY_DIR=%CREWFILEDIR%..\..\prebuilt\windows%CREWHOSTCPU%\bin\
+if not defined CREW_TOOLS_DIR (
+   set CREW_TOOLS_DIR=%CREWFILEDIR%..\..\prebuilt\windows%CREWHOSTCPU%
 )
 
 rem set CREW
 rem set GIT
 
-%CREW_RUBY_DIR%ruby.exe -W0 %CREWFILEDIR%crew.rb %*
+set CREWRUBYVER=
+pushd %CREW_TOOLS_DIR%\crew\ruby
+for /f "delims=" %%a in ('type active_version.txt') do @set CREWRUBYVER=%%a
+popd
+set CREWRUBYDIR=%CREW_TOOLS_DIR%\crew\ruby\%CREWRUBYVER%\bin
+
+%CREWRUBYDIR%\ruby.exe -W0 %CREWFILEDIR%crew.rb %*
 
 endlocal
 
