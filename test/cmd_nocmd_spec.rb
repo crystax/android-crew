@@ -4,7 +4,7 @@ require_relative '../library/cmd/help.rb'
 describe "crew" do
   it "outputs help info" do
     crew '-b'
+    expect(result).to eq(:ok)
     expect(out).to eq(CREW_HELP)
-    expect(exitstatus).to be_zero
   end
 end

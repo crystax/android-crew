@@ -12,8 +12,6 @@ if exist %toolsbasedir%\windows-x86_64 (
 
 set bindir=%toolsbasedir%\windows%cpu%\bin
 
-echo %bindir%
-
 %bindir%\make SHELL=cmd %*
 
 endlocal
