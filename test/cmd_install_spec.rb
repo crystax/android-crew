@@ -1,8 +1,15 @@
 require_relative 'spec_helper.rb'
 
 describe "crew install" do
+  before(:all) do
+    ndk_init
+  end
+
   before(:each) do
-      clean
+    clean_hold
+    clean_cache
+    repository_init
+    repository_clone
   end
 
   context "without argument" do
@@ -41,9 +48,9 @@ describe "crew install" do
       url = "#{Global::DOWNLOAD_BASE}/packages/libone/#{file}"
       crew 'install', 'libone'
       expect(result).to eq(:ok)
-      expect(out).to eq("calculating dependencies for libone: \n"             \
-                        "  dependencies to install: \n"                       \
-                        "downloading #{url}\n"                                \
+      expect(out).to eq("calculating dependencies for libone: \n"          \
+                        "  dependencies to install: \n"                    \
+                        "downloading #{url}\n"                             \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
@@ -57,9 +64,9 @@ describe "crew install" do
       url = "#{Global::DOWNLOAD_BASE}/packages/libone/#{file}"
       crew 'install', 'libone:1.0.0'
       expect(result).to eq(:ok)
-      expect(out).to eq("calculating dependencies for libone: \n"             \
-                        "  dependencies to install: \n"                       \
-                        "downloading #{url}\n"                                \
+      expect(out).to eq("calculating dependencies for libone: \n"          \
+                        "  dependencies to install: \n"                    \
+                        "downloading #{url}\n"                             \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
@@ -73,9 +80,9 @@ describe "crew install" do
       url = "#{Global::DOWNLOAD_BASE}/packages/libone/#{file}"
       crew 'install', 'libone:1.0.0:1'
       expect(result).to eq(:ok)
-      expect(out).to eq("calculating dependencies for libone: \n"             \
-                        "  dependencies to install: \n"                       \
-                        "downloading #{url}\n"                                \
+      expect(out).to eq("calculating dependencies for libone: \n"          \
+                        "  dependencies to install: \n"                    \
+                        "downloading #{url}\n"                             \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
@@ -109,14 +116,14 @@ describe "crew install" do
       resurl = "#{Global::DOWNLOAD_BASE}/packages/libtwo/#{resfile}"
       crew 'install', 'libtwo'
       expect(result).to eq(:ok)
-      expect(out).to eq("calculating dependencies for libtwo: \n"                \
-                        "  dependencies to install: libone\n"                    \
-                        "installing dependencies for libtwo:\n"                  \
-                        "downloading #{depurl}\n"                                \
+      expect(out).to eq("calculating dependencies for libtwo: \n"             \
+                        "  dependencies to install: libone\n"                 \
+                        "installing dependencies for libtwo:\n"               \
+                        "downloading #{depurl}\n"                             \
                         "checking integrity of the archive file #{depfile}\n" \
-                        "unpacking archive\n"                                    \
-                        "\n"                                                     \
-                        "downloading #{resurl}\n"                                \
+                        "unpacking archive\n"                                 \
+                        "\n"                                                  \
+                        "downloading #{resurl}\n"                             \
                         "checking integrity of the archive file #{resfile}\n" \
                         "unpacking archive\n")
       expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
@@ -135,17 +142,17 @@ describe "crew install" do
       resurl = "#{Global::DOWNLOAD_BASE}/packages/libthree/#{resfile}"
       crew 'install', 'libthree:2.2.2:1'
       expect(result).to eq(:ok)
-      expect(out).to eq("calculating dependencies for libthree: \n"               \
-                        "  dependencies to install: libone, libtwo\n"             \
-                        "installing dependencies for libthree:\n"                 \
-                        "downloading #{depurl1}\n"                                \
+      expect(out).to eq("calculating dependencies for libthree: \n"            \
+                        "  dependencies to install: libone, libtwo\n"          \
+                        "installing dependencies for libthree:\n"              \
+                        "downloading #{depurl1}\n"                             \
                         "checking integrity of the archive file #{depfile1}\n" \
-                        "unpacking archive\n"                                     \
-                        "downloading #{depurl2}\n"                                \
+                        "unpacking archive\n"                                  \
+                        "downloading #{depurl2}\n"                             \
                         "checking integrity of the archive file #{depfile2}\n" \
-                        "unpacking archive\n"                                     \
-                        "\n"                                                      \
-                        "downloading #{resurl}\n"                                 \
+                        "unpacking archive\n"                                  \
+                        "\n"                                                   \
+                        "downloading #{resurl}\n"                              \
                         "checking integrity of the archive file #{resfile}\n"  \
                         "unpacking archive\n")
       expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
@@ -162,9 +169,9 @@ describe "crew install" do
       crew_checked '-b', 'remove', 'libone'
       crew 'install', 'libone'
       expect(result).to eq(:ok)
-      expect(out).to eq("calculating dependencies for libone: \n"             \
-                        "  dependencies to install: \n"                       \
-                        "using cached file #{file}\n"                         \
+      expect(out).to eq("calculating dependencies for libone: \n"          \
+                        "  dependencies to install: \n"                    \
+                        "using cached file #{file}\n"                      \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
@@ -178,9 +185,9 @@ describe "crew install" do
       url = "#{Global::DOWNLOAD_BASE}/packages/libfour/#{file}"
       crew 'install', 'libfour'
       expect(result).to eq(:ok)
-      expect(out).to eq("calculating dependencies for libfour: \n"            \
-                        "  dependencies to install: \n"                       \
-                        "downloading #{url}\n"                                \
+      expect(out).to eq("calculating dependencies for libfour: \n"         \
+                        "  dependencies to install: \n"                    \
+                        "downloading #{url}\n"                             \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?(:library, 'libfour', '4.4.4', 4)).to eq(true)
@@ -194,9 +201,9 @@ describe "crew install" do
       url = "#{Global::DOWNLOAD_BASE}/packages/libfour/#{file}"
       crew 'install', 'libfour:3.3.3'
       expect(result).to eq(:ok)
-      expect(out).to eq("calculating dependencies for libfour: \n"            \
-                        "  dependencies to install: \n"                       \
-                        "downloading #{url}\n"                                \
+      expect(out).to eq("calculating dependencies for libfour: \n"         \
+                        "  dependencies to install: \n"                    \
+                        "downloading #{url}\n"                             \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?(:library, 'libfour', '3.3.3', 3)).to eq(true)
@@ -210,9 +217,9 @@ describe "crew install" do
       url = "#{Global::DOWNLOAD_BASE}/packages/libfour/#{file}"
       crew 'install', 'libfour:2.2.2:1'
       expect(result).to eq(:ok)
-      expect(out).to eq("calculating dependencies for libfour: \n"            \
-                        "  dependencies to install: \n"                       \
-                        "downloading #{url}\n"                                \
+      expect(out).to eq("calculating dependencies for libfour: \n"         \
+                        "  dependencies to install: \n"                    \
+                        "downloading #{url}\n"                             \
                         "checking integrity of the archive file #{file}\n" \
                         "unpacking archive\n")
       expect(in_cache?(:library, 'libfour', '2.2.2', 1)).to eq(true)

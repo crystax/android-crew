@@ -2,10 +2,16 @@ require_relative 'spec_helper.rb'
 require_relative '../library/global.rb'
 
 describe "crew cleanup" do
-  before(:each) do
-    clean
+  before(:all) do
     ndk_init
+  end
+
+  before(:each) do
+    clean_cache
+    clean_hold
+    clean_engine
     repository_init
+    repository_clone
   end
 
   context "with wrong argument" do
@@ -106,7 +112,6 @@ describe "crew cleanup" do
 
   context "when two releases of the curl utility are installed, releases differ in crystax_version" do
     it "outputs about removing curl 7.42.0:1" do
-      repository_clone
       repository_add_formula :utility, 'curl-2.rb:curl.rb'
       crew_checked 'update'
       crew_checked 'upgrade'
@@ -119,7 +124,6 @@ describe "crew cleanup" do
 
   context "when two releases of the curl utility are installed, releases differ in upstream version" do
     it "outputs about removing curl 7.42.0:1" do
-      repository_clone
       repository_add_formula :utility, 'curl-3.rb:curl.rb'
       crew_checked 'update'
       crew_checked 'upgrade'
@@ -132,7 +136,6 @@ describe "crew cleanup" do
 
   context "when two releases of the two utilities are installed" do
     it "says about removing two old releases" do
-      repository_clone
       repository_add_formula :utility, 'curl-3.rb:curl.rb', 'ruby-2.rb:ruby.rb'
       crew_checked 'update'
       crew_checked 'upgrade'
@@ -147,7 +150,6 @@ describe "crew cleanup" do
 
   context "when three releases of the curl utility are installed" do
     it "outputs about removing curl 7.42.0:3" do
-      repository_clone
       repository_add_formula :utility, 'curl-2.rb:curl.rb'
       crew_checked 'update'
       crew_checked 'upgrade'

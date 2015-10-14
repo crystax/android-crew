@@ -2,46 +2,53 @@
 require_relative 'spec_helper.rb'
 
 describe "crew list" do
-  before(:each) do
-    clean
+  before(:all) do
     ndk_init
+  end
+
+  before(:each) do
+    clean_hold
+    clean_cache
     repository_init
     repository_clone
   end
 
-  context "with 3 incorrect arguments" do
-    it "outputs error message" do
-      crew 'list', 'a', 'b', 'c'
-      expect(exitstatus).to_not be_zero
-      expect(err.chomp).to eq('error: this command requires either one or no arguments')
-      expect(out).to eq('')
-    end
-  end
+  context "when given bad arguments" do
 
-  context "with 2 incorrect arguments" do
-    it "outputs error message" do
-      crew 'list', 'a', 'b'
-      expect(exitstatus).to_not be_zero
-      expect(err.chomp).to eq('error: this command requires either one or no arguments')
-      expect(out).to eq('')
+    context "with 3 incorrect arguments" do
+      it "outputs error message" do
+        crew 'list', 'a', 'b', 'c'
+        expect(exitstatus).to_not be_zero
+        expect(err.chomp).to eq('error: this command requires either one or no arguments')
+        expect(out).to eq('')
+      end
     end
-  end
 
-  context "with 2 correct arguments" do
-    it "outputs error message" do
-      crew 'list', 'utils', 'libs'
-      expect(exitstatus).to_not be_zero
-      expect(err.chomp).to eq('error: this command requires either one or no arguments')
-      expect(out).to eq('')
+    context "with 2 incorrect arguments" do
+      it "outputs error message" do
+        crew 'list', 'a', 'b'
+        expect(exitstatus).to_not be_zero
+        expect(err.chomp).to eq('error: this command requires either one or no arguments')
+        expect(out).to eq('')
+      end
     end
-  end
 
-  context "with incorrect argument" do
-    it "outputs error message" do
-      crew 'list', 'a'
-      expect(exitstatus).to_not be_zero
-      expect(err.chomp).to eq('error: argument must either \'libs\' or \'utils\'')
-      expect(out).to eq('')
+    context "with 2 correct arguments" do
+      it "outputs error message" do
+        crew 'list', 'utils', 'libs'
+        expect(exitstatus).to_not be_zero
+        expect(err.chomp).to eq('error: this command requires either one or no arguments')
+        expect(out).to eq('')
+      end
+    end
+
+    context "with incorrect argument" do
+      it "outputs error message" do
+        crew 'list', 'a'
+        expect(exitstatus).to_not be_zero
+        expect(err.chomp).to eq('error: argument must either \'libs\' or \'utils\'')
+        expect(out).to eq('')
+      end
     end
   end
 
@@ -161,9 +168,8 @@ describe "crew list" do
 
   context "with utils argument" do
 
-    context "one release of every utility, all utils are instaled" do
+    context "when there is one release of every utility" do
       it "outputs info about installed utilities" do
-        copy_utilities
         crew 'list', 'utils'
         expect(result).to eq(:ok)
         expect(out.split("\n")).to eq([" * curl   7.42.0  1",
@@ -171,13 +177,16 @@ describe "crew list" do
                                        " * ruby   2.2.2   1"])
       end
     end
+
+    # todo:
+    # context "when more than one release of one utility installed" do
+    # end
   end
 
   context "whithout arguments" do
 
-    context "some formulas with many releases, one release of every utility" do
+    context "when some formulas are with many releases, and there is one release of every utility" do
       it "outputs info about existing and installed releases" do
-        copy_utilities
         copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb', 'libfour.rb'
         crew_checked 'install', 'libone', 'libtwo', 'libthree', 'libfour'
         crew 'list'

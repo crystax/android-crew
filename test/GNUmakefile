@@ -2,9 +2,8 @@ unit_test_files = ts_crew.rb test_crew.rb test_release.rb
 
 # skip network tests while we're not ready to update crew-test repository
 # cmd_network_spec.rb
-rspec_files = cmd_nocmd_spec.rb cmd_version_spec.rb cmd_help_spec.rb cmd_env_spec.rb   \
-              cmd_install_spec.rb cmd_remove_spec.rb cmd_list_spec.rb cmd_info_spec.rb \
-              cmd_update_spec.rb cmd_upgrade_spec.rb cmd_cleanup_spec.rb
+rspec_files = cmd_simple_spec.rb cmd_install_spec.rb cmd_remove_spec.rb cmd_list_spec.rb \
+              cmd_info_spec.rb cmd_update_spec.rb cmd_upgrade_spec.rb cmd_cleanup_spec.rb
 
 rspec_cmd_tests = $(patubst cmd_%_spec,test-%,$(basename $(rspec_files)))
 

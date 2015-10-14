@@ -131,11 +131,19 @@ module Spec
       FileUtils.mkdir_p(Global::HOLD_DIR)
     end
 
-    def clean
-      clean_cache
-      clean_hold
-      FileUtils.remove_dir(Global::FORMULA_DIR, true)
-      FileUtils.mkdir_p(Global::UTILITIES_DIR)
+    def clean_engine
+      orig_engine_dir = "#{Crew_test::NDK_COPY_DIR}/prebuilt/#{Global::PLATFORM}/crew"
+      engine_dir = "#{Crew_test::NDK_DIR}/prebuilt/#{Global::PLATFORM}/crew"
+      Crew_test::UTILS.each do |util|
+        version = Global.active_util_version(util, orig_engine_dir)
+        File.open(Global.active_file_path(util, engine_dir), 'w') { |f| f.puts version }
+        FileUtils.cd("#{engine_dir}/#{util}") do
+          dirs = Dir['*'].select { |d| File.directory?(d) }
+          d = dirs.pop
+          dirs.each { |d| FileUtils.rm_rf d }
+          FileUtils.mv(d, version) unless d == version
+        end
+      end
     end
 
     def copy_formulas(*names)
@@ -144,25 +152,12 @@ module Spec
       end
     end
 
-    def copy_utilities(dst = Global::UTILITIES_DIR)
-      Crew_test::UTILS.each { |u| FileUtils.cp File.join('data', "#{u}-1.rb"), File.join(dst,  "#{u}.rb") }
-    end
-
-    def install_release(name, version)
-      dir = File.join(Global::HOLD_DIR, name, version)
-      FileUtils.mkdir_p dir
-      FileUtils.mkdir_p File.join(dir, 'include')
-      FileUtils.mkdir_p File.join(dir, 'libs')
-      FileUtils.touch File.join(dir, 'Android.mk')
-    end
-
     def ndk_init
       FileUtils.rm_rf Crew_test::NDK_DIR
       FileUtils.cp_r Crew_test::NDK_COPY_DIR, Crew_test::NDK_DIR
     end
 
     def repository_init
-      clean_hold
       dir = origin_dir
       utils_dir = File.join(dir, 'formula', 'utilities')
       FileUtils.rm_rf dir
@@ -221,8 +216,14 @@ module Spec
       repo.commit "del_#{names.join('_')}"
     end
 
+    private
+
     def origin_dir
       Global::BASE_DIR + '.git'
+    end
+
+    def copy_utilities(dst = Global::UTILITIES_DIR)
+      Crew_test::UTILS.each { |u| FileUtils.cp File.join('data', "#{u}-1.rb"), File.join(dst,  "#{u}.rb") }
     end
   end
 end

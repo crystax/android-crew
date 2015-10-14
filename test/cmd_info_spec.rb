@@ -1,9 +1,13 @@
 require_relative 'spec_helper.rb'
 
 describe "crew info" do
-  before(:each) do
-    clean
+  before(:all) do
     ndk_init
+  end
+
+  before(:each) do
+    clean_cache
+    clean_hold
     repository_init
     repository_clone
   end

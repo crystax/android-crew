@@ -17,7 +17,6 @@ module Crew
       outname = name + ((version and version != 'all') ? ':' + version : "")
 
       formula = formulary[name]
-      # todo: :version, create correct Release object
       release = (version == 'all') ? Release.new : Release.new(version)
       if !formula.installed?(release)
         raise "#{outname} not installed"

@@ -1,8 +1,15 @@
 require_relative 'spec_helper.rb'
 
 describe "crew remove" do
+  before(:all) do
+    ndk_init
+  end
+
   before(:each) do
-    clean
+    clean_cache
+    clean_hold
+    repository_init
+    repository_clone
   end
 
   context "without argument" do
@@ -104,6 +111,14 @@ describe "crew remove" do
       expect(in_cache?(:library, 'libtwo',   '1.1.0', 1)).to eq(true)
       expect(in_cache?(:library, 'libtwo',   '2.2.0', 1)).to eq(true)
       expect(in_cache?(:library, 'libthree', '3.3.3', 1)).to eq(true)
+    end
+  end
+
+  context "try to remove utility" do
+    it "outputs error message" do
+      crew 'remove', 'curl'
+      expect(exitstatus).to_not be_zero
+      expect(err.chomp).to eq('error: no available formula for curl')
     end
   end
 end
