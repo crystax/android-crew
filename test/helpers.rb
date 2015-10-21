@@ -3,6 +3,7 @@ require 'open3'
 require 'socket'
 require 'rugged'
 require 'digest'
+require 'find'
 require_relative '../library/release.rb'
 
 module Spec
@@ -23,39 +24,58 @@ module Spec
       end
     end
 
-
     class Repository
       def self.init_at(dir)
         repo = Rugged::Repository.init_at dir
         repo.config['user.email'] = 'crew-test@crystax.net'
         repo.config['user.name'] = 'Crew Test'
+        repo.close
         Repository.new dir
+      end
+
+      def self.clone_at(url, local_path, options = {})
+        repo = Rugged::Repository.clone_at(url, local_path, options)
+        repo.close
+        Repository.new local_path
       end
 
       def initialize(dir)
         @repo = Rugged::Repository.new dir
         @repo.checkout 'refs/heads/master' unless @repo.head_unborn?
-        @index = @repo.index
+      end
+
+      def remotes
+        @repo.remotes
       end
 
       def add(file)
-        @index.add path: file,
-                   oid: (Rugged::Blob.from_workdir @repo, file),
-                   mode: 0100644
+        @repo.index.add file
+        # @repo.index.add path: file,
+        #                 oid: Rugged::Blob.from_workdir(@repo, file),
+        #                 mode: 0100644
       end
 
       def remove(file)
-        @index.remove file
+        @repo.index.remove file
       end
 
       def commit(message)
-        commit = @index.write_tree @repo
-        @index.write
+        commit = @repo.index.write_tree @repo
+        @repo.index.write
         Rugged::Commit.create @repo,
                               message: message,
                               parents: @repo.head_unborn? ? [] : [@repo.head.target],
                               tree: commit,
                               update_ref: 'HEAD'
+      end
+
+      def push(options)
+        @repo.remotes['origin'].push ['refs/heads/master'], options
+      end
+
+      def close
+        @repo.close
+        @repo = nil
       end
     end
 
@@ -122,13 +142,13 @@ module Spec
     end
 
     def clean_cache
-      FileUtils.remove_dir(Global::CACHE_DIR)
-      FileUtils.mkdir_p(Global::CACHE_DIR)
+      FileUtils.rm_rf   Global::CACHE_DIR
+      FileUtils.mkdir_p Global::CACHE_DIR
     end
 
     def clean_hold
-      FileUtils.remove_dir(Global::HOLD_DIR, true)
-      FileUtils.mkdir_p(Global::HOLD_DIR)
+      FileUtils.rm_rf   Global::HOLD_DIR
+      FileUtils.mkdir_p Global::HOLD_DIR
     end
 
     def clean_engine
@@ -158,31 +178,41 @@ module Spec
     end
 
     def repository_init
-      dir = origin_dir
-      utils_dir = File.join(dir, 'formula', 'utilities')
-      FileUtils.rm_rf dir
-      FileUtils.mkdir_p [File.join(dir, 'cache'), utils_dir]
-      copy_utilities utils_dir
-      FileUtils.cd(dir) do
-        repo = Repository.init_at '.'
-        [File.join('cache', '.placeholder'), File.join('formula', '.placeholder')].each do |file|
-          FileUtils.touch file
-          repo.add file
-        end
-        Dir[File.join('formula', 'utilities', '*')].each { |file| repo.add file }
-        repo.commit 'initial'
-      end
+      FileUtils.rm_rf origin_dir
+      repo = Repository.init_at origin_dir
+      repository_add_initial_files origin_dir, repo
+      repo.close
     end
 
     def repository_clone
-      FileUtils.remove_dir Global::BASE_DIR
-      Rugged::Repository.clone_at origin_dir, Global::BASE_DIR
+      FileUtils.rm_rf Global::BASE_DIR
+      Repository.clone_at(origin_dir, Global::BASE_DIR).close
+    end
+
+    TEST_REPO_GIT_URL   = 'git@github.com:crystaxnet/crew-test.git'
+    TEST_REPO_HTTPS_URL = 'https://github.com/crystaxnet/crew-test.git'
+
+    def repository_network_init
+      # clone network repository, clean it and push back
+      FileUtils.rm_rf net_origin_dir
+      repo = Repository.clone_at(TEST_REPO_GIT_URL, net_origin_dir, credentials: ssl_key)
+      Find.find("#{net_origin_dir}/cache", "#{net_origin_dir}/formula") do |f|
+        if File.file?(f)
+          File.unlink f
+          repo.remove(f.gsub("#{net_origin_dir}/", ''))
+        end
+      end
+      repo.commit "clean repository"
+      repo.push credentials: ssl_key
+      # add new files to the repository and push changes
+      repository_add_initial_files net_origin_dir, repo
+      repo.push credentials: ssl_key
+      repo.close
     end
 
     def repository_network_clone
-      FileUtils.remove_dir Global::BASE_DIR
-      repo = Rugged::Repository.clone_at 'https://github.com/crystaxnet/crew-test.git', Global::BASE_DIR
-      repo.close
+      FileUtils.rm_rf Global::BASE_DIR
+      Repository.clone_at(TEST_REPO_HTTPS_URL, Global::BASE_DIR).close
     end
 
     def repository_add_formula(type, *names)
@@ -222,8 +252,28 @@ module Spec
       Global::BASE_DIR + '.git'
     end
 
-    def copy_utilities(dst = Global::UTILITIES_DIR)
-      Crew_test::UTILS.each { |u| FileUtils.cp File.join('data', "#{u}-1.rb"), File.join(dst,  "#{u}.rb") }
+    def net_origin_dir
+      Global::BASE_DIR + '.net'
+    end
+
+    def ssl_key
+      Rugged::Credentials::SshKey.new(username:   'git',
+                                      publickey:  File.expand_path("~/.ssh/id_rsa.pub"),
+                                      privatekey: File.expand_path("~/.ssh/id_rsa"))
+    end
+
+    def repository_add_initial_files(dir, repo)
+      utils_dir = File.join(dir, 'formula', 'utilities')
+      FileUtils.mkdir_p [File.join(dir, 'cache'), utils_dir]
+      Crew_test::UTILS.each { |u| FileUtils.cp File.join('data', "#{u}-1.rb"), File.join(utils_dir,  "#{u}.rb") }
+      FileUtils.cd(dir) do
+        [File.join('cache', '.placeholder'), File.join('formula', '.placeholder')].each do |file|
+          FileUtils.touch file
+          repo.add file
+        end
+        Dir[File.join('formula', 'utilities', '*')].each { |file| repo.add file }
+        repo.commit 'add initial files'
+      end
     end
   end
 end

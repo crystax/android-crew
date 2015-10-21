@@ -56,7 +56,7 @@ module Crew
         puts "would remove: #{dir}"
       else
         puts "removing: #{dir}"
-        FileUtils.remove_dir(dir)
+        FileUtils.rm_rf(dir)
       end
     end
 
@@ -85,7 +85,7 @@ module Crew
         puts "would remove: #{dir}"
       else
         puts "removing: #{dir}"
-        FileUtils.remove_dir(dir)
+        FileUtils.rm_rf(dir)
       end
     end
 

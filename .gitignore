@@ -4,6 +4,7 @@ cache/*.7z
 test/.testdataprepared
 test/crew
 test/crew.git
+test/crew.net
 test/ndk
 test/ndk.copy
 test/www/log

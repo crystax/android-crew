@@ -76,7 +76,7 @@ all: test clean
 test: test-data unit-tests rspec-tests
 
 clean: clean-test-data
-	$(RM) $(RMFLAGS) crew crew.git ndk
+	$(RM) $(RMFLAGS) crew crew.git crew.net ndk
 
 env:
 	@echo CREW_BASE_DIR  = $(CREW_BASE_DIR)
