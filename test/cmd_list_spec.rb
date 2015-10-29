@@ -172,9 +172,10 @@ describe "crew list" do
       it "outputs info about installed utilities" do
         crew 'list', 'utils'
         expect(result).to eq(:ok)
-        expect(out.split("\n")).to eq([" * curl   7.42.0  1",
-                                       " * p7zip  9.20.1  1",
-                                       " * ruby   2.2.2   1"])
+        expect(out.split("\n")).to eq([" * curl        7.42.0  1",
+                                       " * libarchive  3.1.2   1",
+                                       " * ruby        2.2.2   1",
+                                       " * xz          5.2.2   1"])
       end
     end
 
@@ -192,9 +193,10 @@ describe "crew list" do
         crew 'list'
         expect(result).to eq(:ok)
         expect(out.split("\n")).to eq(["Utilities:",
-                                       " * curl   7.42.0  1",
-                                       " * p7zip  9.20.1  1",
-                                       " * ruby   2.2.2   1",
+                                       " * curl        7.42.0  1",
+                                       " * libarchive  3.1.2   1",
+                                       " * ruby        2.2.2   1",
+                                       " * xz          5.2.2   1",
                                        "Libraries:",
                                        "   libfour   1.1.1  1",
                                        "   libfour   2.2.2  1",

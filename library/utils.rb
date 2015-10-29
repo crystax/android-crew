@@ -4,8 +4,8 @@ require_relative 'exceptions.rb'
 
 module Utils
 
-  @@crew_curl_prog = nil
-  @@crew_7z_prog   = nil
+  @@crew_curl_prog   = nil
+  @@crew_bsdtar_prog = nil
 
 
   def self.run_command(prog, *args)
@@ -36,7 +36,7 @@ module Utils
   end
 
   def self.download(url, outpath)
-    args = [url, '-o', outpath, '--silent', '--fail']
+    args = [url, '-o', outpath, '--silent', '--fail', '-L']
     run_command(crew_curl_prog, *args)
   rescue ErrorDuringExecution => e
     case e.exit_code
@@ -50,8 +50,9 @@ module Utils
   end
 
   def self.unpack(archive, outdir)
-    args = ["x", "-y", "-o#{outdir}", archive]
-    run_command(crew_7z_prog, *args)
+    add_path_to_xz
+    args = ["-C", "#{outdir}", "-xf", "#{archive}"]
+    run_command(crew_bsdtar_prog, *args)
   end
 
   # private
@@ -61,9 +62,9 @@ module Utils
     @@crew_curl_prog
   end
 
-  def self.crew_7z_prog
-    @@crew_7z_prog = Pathname.new(Global.active_util_dir('p7zip')).realpath + "7za#{Global::EXE_EXT}" unless @@crew_7z_prog
-    @@crew_7z_prog
+  def self.crew_bsdtar_prog
+    @@crew_bsdtar_prog = Pathname.new(Global.active_util_dir('libarchive')).realpath + "bsdtar#{Global::EXE_EXT}" unless @@crew_bsdtar_prog
+    @@crew_bsdtar_prog
   end
 
   def self.to_cmd_s(*args)
@@ -71,5 +72,14 @@ module Utils
     s = args.map { |a| a.to_s.gsub " ", "\\ " }.join(" ")
     s.gsub(%r{/}) { '\\' } if Global::OS == 'windows'
     s
+  end
+
+  def self.add_path_to_xz
+    xz_path = Pathname.new(Global.active_util_dir('xz')).realpath.to_s
+    path = ENV['PATH']
+    if not path.start_with?(xz_path)
+      sep = (Global::OS == 'windows') ? ';' : ':'
+      ENV['PATH'] = "#{xz_path}#{sep}#{path}"
+    end
   end
 end

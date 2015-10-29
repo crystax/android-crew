@@ -43,9 +43,9 @@ describe "crew upgrade" do
         crew_checked 'update'
         crew 'upgrade'
         expect(result).to eq(:ok)
-        expect(out).to eq("Will install: libtwo:2.2.0:1\n"                                           \
-                          "downloading #{Global::DOWNLOAD_BASE}/packages/libtwo/libtwo-2.2.0_1.7z\n" \
-                          "checking integrity of the archive file libtwo-2.2.0_1.7z\n"               \
+        expect(out).to eq("Will install: libtwo:2.2.0:1\n"                                                            \
+                          "downloading #{Global::DOWNLOAD_BASE}/packages/libtwo/libtwo-2.2.0_1.#{Global::ARCH_EXT}\n" \
+                          "checking integrity of the archive file libtwo-2.2.0_1.#{Global::ARCH_EXT}\n"               \
                           "unpacking archive\n")
       end
     end
@@ -62,11 +62,11 @@ describe "crew upgrade" do
         crew 'upgrade'
         expect(result).to eq(:ok)
         expect(out).to eq("Will install: libthree:3.3.3:1, libtwo:2.2.0:1\n"                             \
-                          "downloading #{Global::DOWNLOAD_BASE}/packages/libthree/libthree-3.3.3_1.7z\n" \
-                          "checking integrity of the archive file libthree-3.3.3_1.7z\n"                 \
+                          "downloading #{Global::DOWNLOAD_BASE}/packages/libthree/libthree-3.3.3_1.#{Global::ARCH_EXT}\n" \
+                          "checking integrity of the archive file libthree-3.3.3_1.#{Global::ARCH_EXT}\n"                 \
                           "unpacking archive\n"                                                          \
-                          "downloading #{Global::DOWNLOAD_BASE}/packages/libtwo/libtwo-2.2.0_1.7z\n"     \
-                          "checking integrity of the archive file libtwo-2.2.0_1.7z\n"                   \
+                          "downloading #{Global::DOWNLOAD_BASE}/packages/libtwo/libtwo-2.2.0_1.#{Global::ARCH_EXT}\n"     \
+                          "checking integrity of the archive file libtwo-2.2.0_1.#{Global::ARCH_EXT}\n"                   \
                           "unpacking archive\n")
       end
     end
@@ -82,7 +82,7 @@ describe "crew upgrade" do
         crew '-b', 'upgrade'
         ver = "7.42.0"
         cxver = 3
-        file = "curl-#{ver}_#{cxver}-#{Global::PLATFORM}.7z"
+        file = "curl-#{ver}_#{cxver}-#{Global::PLATFORM}.#{Global::ARCH_EXT}"
         expect(result).to eq(:ok)
         expect(out).to eq("Will install: curl:#{ver}:#{cxver}\n"                          \
                           "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/#{file}\n" \
@@ -103,7 +103,7 @@ describe "crew upgrade" do
         crew '-b', 'upgrade'
         ver = "8.21.0"
         cxver = 1
-        file = "curl-#{ver}_#{cxver}-#{Global::PLATFORM}.7z"
+        file = "curl-#{ver}_#{cxver}-#{Global::PLATFORM}.#{Global::ARCH_EXT}"
         expect(result).to eq(:ok)
         expect(out).to eq("Will install: curl:#{ver}:#{cxver}\n"                          \
                           "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/#{file}\n" \
@@ -119,39 +119,40 @@ describe "crew upgrade" do
     context "when there are new releases for all utilities" do
       it "says about installing new releases" do
         repository_clone
-        repository_add_formula :utility, 'curl-3.rb:curl.rb', 'p7zip-2.rb:p7zip.rb', 'ruby-2.rb:ruby.rb'
+        repository_add_formula :utility, 'curl-3.rb:curl.rb', 'libarchive-2.rb:libarchive.rb', 'ruby-2.rb:ruby.rb', 'xz-2.rb:xz.rb'
         crew_checked 'update'
         crew '-b', 'upgrade'
-        curl_ver = "8.21.0"
-        curl_cxver = 1
-        curl_file = "curl-#{curl_ver}_#{curl_cxver}-#{Global::PLATFORM}.7z"
-        p7zip_ver = "9.21.2"
-        p7zip_cxver = 1
-        p7zip_file = "p7zip-#{p7zip_ver}_#{p7zip_cxver}-#{Global::PLATFORM}.7z"
-        ruby_ver = "2.2.3"
-        ruby_cxver = 1
-        ruby_file = "ruby-#{ruby_ver}_#{ruby_cxver}-#{Global::PLATFORM}.7z"
+        curl_file = "curl-8.21.0_1-#{Global::PLATFORM}.#{Global::ARCH_EXT}"
+        libarchive_file = "libarchive-3.1.3_1-#{Global::PLATFORM}.#{Global::ARCH_EXT}"
+        ruby_file = "ruby-2.2.3_1-#{Global::PLATFORM}.#{Global::ARCH_EXT}"
+        xz_file = "xz-5.2.3_1-#{Global::PLATFORM}.#{Global::ARCH_EXT}"
         expect(result).to eq(:ok)
         expect(out).to eq(
-                         "Will install: curl:#{curl_ver}:#{curl_cxver}, p7zip:#{p7zip_ver}:#{p7zip_cxver}, ruby:#{ruby_ver}:#{ruby_cxver}\n" \
-                         "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/#{curl_file}\n"   \
-                         "checking integrity of the archive file #{curl_file}\n"                \
-                         "unpacking archive\n"                                                  \
-                         "downloading #{Global::DOWNLOAD_BASE}/utilities/p7zip/#{p7zip_file}\n" \
-                         "checking integrity of the archive file #{p7zip_file}\n"               \
-                         "unpacking archive\n"                                                  \
-                         "downloading #{Global::DOWNLOAD_BASE}/utilities/ruby/#{ruby_file}\n"   \
-                         "checking integrity of the archive file #{ruby_file}\n"                \
+                         "Will install: curl:8.21.0:1, libarchive:3.1.3:1, ruby:2.2.3:1, xz:5.2.3:1\n"    \
+                         "downloading #{Global::DOWNLOAD_BASE}/utilities/curl/#{curl_file}\n"             \
+                         "checking integrity of the archive file #{curl_file}\n"                          \
+                         "unpacking archive\n"                                                            \
+                         "downloading #{Global::DOWNLOAD_BASE}/utilities/libarchive/#{libarchive_file}\n" \
+                         "checking integrity of the archive file #{libarchive_file}\n"                    \
+                         "unpacking archive\n"                                                            \
+                         "downloading #{Global::DOWNLOAD_BASE}/utilities/ruby/#{ruby_file}\n"             \
+                         "checking integrity of the archive file #{ruby_file}\n"                          \
+                         "unpacking archive\n"                                                            \
+                         "downloading #{Global::DOWNLOAD_BASE}/utilities/xz/#{xz_file}\n"                 \
+                         "checking integrity of the archive file #{xz_file}\n"                            \
                          "unpacking archive\n")
         expect(Dir.exists?("#{Global::ENGINE_DIR}/curl/7.42.0_1")).to eq(true)
         expect(Dir.exists?("#{Global::ENGINE_DIR}/curl/8.21.0_1")).to eq(true)
-        expect(Dir.exists?("#{Global::ENGINE_DIR}/p7zip/9.20.1_1")).to eq(true)
-        expect(Dir.exists?("#{Global::ENGINE_DIR}/p7zip/9.21.2_1")).to eq(true)
+        expect(Dir.exists?("#{Global::ENGINE_DIR}/libarchive/3.1.2_1")).to eq(true)
+        expect(Dir.exists?("#{Global::ENGINE_DIR}/libarchive/3.1.3_1")).to eq(true)
         expect(Dir.exists?("#{Global::ENGINE_DIR}/ruby/2.2.2_1")).to eq(true)
         expect(Dir.exists?("#{Global::ENGINE_DIR}/ruby/2.2.3_1")).to eq(true)
-        expect(in_cache?(:utility, 'curl',  '8.21.0', 1)).to eq(true)
-        expect(in_cache?(:utility, 'p7zip', '9.21.2', 1)).to eq(true)
-        expect(in_cache?(:utility, 'ruby',  '2.2.3',  1)).to eq(true)
+        expect(Dir.exists?("#{Global::ENGINE_DIR}/xz/5.2.2_1")).to eq(true)
+        expect(Dir.exists?("#{Global::ENGINE_DIR}/xz/5.2.3_1")).to eq(true)
+        expect(in_cache?(:utility, 'curl',       '8.21.0', 1)).to eq(true)
+        expect(in_cache?(:utility, 'libarchive', '3.1.3',  1)).to eq(true)
+        expect(in_cache?(:utility, 'ruby',       '2.2.3',  1)).to eq(true)
+        expect(in_cache?(:utility, 'xz',         '5.2.3',  1)).to eq(true)
       end
     end
   end

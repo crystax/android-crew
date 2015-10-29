@@ -47,7 +47,7 @@ class Utility < Formula
   private
 
   def archive_filename(release)
-    "#{name}-#{Formula.package_version(release)}-#{Global::PLATFORM}.7z"
+    "#{name}-#{Formula.package_version(release)}-#{Global::PLATFORM}.tar.xz"
   end
 
   def sha256_sum(release)

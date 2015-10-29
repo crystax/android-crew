@@ -84,7 +84,8 @@ module Global
   UTILITIES_DIR   = Pathname.new(File.join(FORMULA_DIR, 'utilities')).realpath
   REPOSITORY_DIR  = Pathname.new(BASE_DIR).realpath
 
-  EXE_EXT = RUBY_PLATFORM =~ /mingw/ ? '.exe' : ''
+  EXE_EXT  = RUBY_PLATFORM =~ /mingw/ ? '.exe' : ''
+  ARCH_EXT = 'tar.xz'
 
   ACTIVE_UTIL_FILE = 'active_version.txt'
 

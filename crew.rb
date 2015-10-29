@@ -32,7 +32,7 @@ end
 if __FILE__ == $0
   begin
     Global.check_program(Utils.crew_curl_prog)
-    Global.check_program(Utils.crew_7z_prog)
+    Global.check_program(Utils.crew_bsdtar_prog)
 
     goptions, cmd, args = split_arguments(ARGV)
     Global.set_options(goptions)

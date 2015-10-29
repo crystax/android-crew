@@ -19,7 +19,7 @@ class Library < Formula
   private
 
   def archive_filename(release)
-    "#{name}-#{Formula.package_version(release)}.7z"
+    "#{name}-#{Formula.package_version(release)}.tar.xz"
   end
 
   def sha256_sum(release)

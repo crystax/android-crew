@@ -3,14 +3,14 @@ class Libfour < Library
   desc "Library Four"
   homepage "http://www.libfour.org"
 
-  release version: '1.1.1', crystax_version: 1, sha256: '1718131ec3207014ee5a944f476241ff3587309722a2dd65b9ca8376ddd698ea'
-  release version: '2.2.2', crystax_version: 1, sha256: '1718131ec3207014ee5a944f476241ff3587309722a2dd65b9ca8376ddd698ea'
-  release version: '2.2.2', crystax_version: 2, sha256: '0a67e907f53745769d5648d68bdec55a291c6f7f49dd3344ef5d69dcb2e4a779'
-  release version: '3.3.3', crystax_version: 1, sha256: '1718131ec3207014ee5a944f476241ff3587309722a2dd65b9ca8376ddd698ea'
-  release version: '3.3.3', crystax_version: 2, sha256: '0a67e907f53745769d5648d68bdec55a291c6f7f49dd3344ef5d69dcb2e4a779'
-  release version: '3.3.3', crystax_version: 3, sha256: 'df9a5ad65b30a0920d5437a9065ca5fd1f6b1984dcc105c6f95f5364c8ebdf4f'
-  release version: '4.4.4', crystax_version: 1, sha256: '1718131ec3207014ee5a944f476241ff3587309722a2dd65b9ca8376ddd698ea'
-  release version: '4.4.4', crystax_version: 2, sha256: '0a67e907f53745769d5648d68bdec55a291c6f7f49dd3344ef5d69dcb2e4a779'
-  release version: '4.4.4', crystax_version: 3, sha256: 'df9a5ad65b30a0920d5437a9065ca5fd1f6b1984dcc105c6f95f5364c8ebdf4f'
-  release version: '4.4.4', crystax_version: 4, sha256: '5a6ae69d181b320e12e72cdc35eacfe41e4bb415e91a213d81ce71e6bea03736'
+  release version: '1.1.1', crystax_version: 1, sha256: '06ac4f8abfa3be6ad6e1844c43a3d0e9b5ff7f2a39de7d7bd8fcb4e87cc3cb54'
+  release version: '2.2.2', crystax_version: 1, sha256: '06ac4f8abfa3be6ad6e1844c43a3d0e9b5ff7f2a39de7d7bd8fcb4e87cc3cb54'
+  release version: '2.2.2', crystax_version: 2, sha256: '595e7cc15257382fdb88939ded5e45e6d5e584d0165a86beca9be939e0895ff9'
+  release version: '3.3.3', crystax_version: 1, sha256: '06ac4f8abfa3be6ad6e1844c43a3d0e9b5ff7f2a39de7d7bd8fcb4e87cc3cb54'
+  release version: '3.3.3', crystax_version: 2, sha256: '595e7cc15257382fdb88939ded5e45e6d5e584d0165a86beca9be939e0895ff9'
+  release version: '3.3.3', crystax_version: 3, sha256: '38a734f7a6513327683decf505d2f8f9513f5c53f6b1f05472b733b65ef5c9ea'
+  release version: '4.4.4', crystax_version: 1, sha256: '06ac4f8abfa3be6ad6e1844c43a3d0e9b5ff7f2a39de7d7bd8fcb4e87cc3cb54'
+  release version: '4.4.4', crystax_version: 2, sha256: '595e7cc15257382fdb88939ded5e45e6d5e584d0165a86beca9be939e0895ff9'
+  release version: '4.4.4', crystax_version: 3, sha256: '38a734f7a6513327683decf505d2f8f9513f5c53f6b1f05472b733b65ef5c9ea'
+  release version: '4.4.4', crystax_version: 4, sha256: '7eae8e1dec0a3e80806f4e3e8531d048f50bdec4752a526ddb2b89fd9cb29a93'
 end

@@ -44,7 +44,7 @@ describe "crew info" do
 
   context "about all crew utilities, all utilities with one release each" do
     it "outputs info about crew utilities" do
-      crew 'info', 'curl', 'p7zip', 'ruby'
+      crew 'info', 'curl', 'libarchive', 'ruby', 'xz'
       expect(result).to eq(:ok)
       expect(out.split("\n")).to eq(["Name:        curl",
                                      "Formula:     #{Global::UTILITIES_DIR}/curl.rb",
@@ -54,13 +54,13 @@ describe "crew info" do
                                      "Releases:",
                                      "  7.42.0 1  installed",
                                      "",
-                                     "Name:        p7zip",
-                                     "Formula:     #{Global::UTILITIES_DIR}/p7zip.rb",
-                                     "Homepage:    http://p7zip.sourceforge.net/",
-                                     "Description: 7-Zip (high compression file archiver) implementation",
+                                     "Name:        libarchive",
+                                     "Formula:     #{Global::UTILITIES_DIR}/libarchive.rb",
+                                     "Homepage:    http://www.libarchive.org",
+                                     "Description: Multi-format archive and compression library, bsdtar utility",
                                      "Type:        utility",
                                      "Releases:",
-                                     "  9.20.1 1  installed",
+                                     "  3.1.2 1  installed",
                                      "",
                                      "Name:        ruby",
                                      "Formula:     #{Global::UTILITIES_DIR}/ruby.rb",
@@ -68,7 +68,15 @@ describe "crew info" do
                                      "Description: Powerful, clean, object-oriented scripting language",
                                      "Type:        utility",
                                      "Releases:",
-                                     "  2.2.2 1  installed"])
+                                     "  2.2.2 1  installed",
+                                     "",
+                                     "Name:        xz",
+                                     "Formula:     #{Global::UTILITIES_DIR}/xz.rb",
+                                     "Homepage:    http://tukaani.org/xz/",
+                                     "Description: General-purpose data compression with high compression ratio",
+                                     "Type:        utility",
+                                     "Releases:",
+                                     "  5.2.2 1  installed"])
     end
   end
 

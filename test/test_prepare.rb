@@ -107,11 +107,11 @@ def create_archive(orig_release, release, util)
   end
   # make archive
   dir_to_archive = File.join('prebuilt', PLATFORM, 'crew', util, new)
-  archive_path = File.join(UTILS_DOWNLOAD_DIR, util, "#{util}-#{release}-#{PLATFORM}.7z")
+  archive_path = File.join(UTILS_DOWNLOAD_DIR, util, "#{util}-#{release}-#{PLATFORM}.#{Global::ARCH_EXT}")
   FileUtils.mkdir_p File.dirname(archive_path)
   FileUtils.cd('tmp') do
-    args = ['a', archive_path, dir_to_archive]
-    Utils.run_command(File.join(Global::active_util_dir('p7zip', ORIG_ENGINE_DIR), '7za'), *args)
+    args = ['-Jcf', archive_path, dir_to_archive]
+    Utils.run_command(File.join(Global::active_util_dir('libarchive', ORIG_ENGINE_DIR), 'bsdtar'), *args)
   end
   # rename new release back to old
   FileUtils.cd(util_dir) { FileUtils.mv new, old if old != new }
@@ -122,6 +122,13 @@ end
 #
 # create test data for utilities
 #
+
+xz_path = Pathname.new(Global.active_util_dir('xz', ORIG_ENGINE_DIR)).realpath.to_s
+path = ENV['PATH']
+if not path.start_with?(xz_path)
+  sep = (PLATFORM =~ /windows/) ? ';' : ':'
+  ENV['PATH'] = "#{xz_path}#{sep}#{path}"
+end
 
 orig_releases = {}
 Crew_test::UTILS.each do |u|
@@ -143,14 +150,14 @@ File.open(File.join(DATA_DIR, 'curl-1.rb'), 'w') { |f| f.puts replace_releases(c
 File.open(File.join(DATA_DIR, 'curl-2.rb'), 'w') { |f| f.puts replace_releases(curl_formula, curl_releases.slice(0, 2)) }
 File.open(File.join(DATA_DIR, 'curl-3.rb'), 'w') { |f| f.puts replace_releases(curl_formula, curl_releases) }
 
-# create archives and formulas for p7zip
-p7zip_releases = [Release.new('9.20.1', 1), Release.new('9.21.2', 1)].map do |r|
-  r.shasum = { PLATFORM_SYM => create_archive(orig_releases['p7zip'], r, 'p7zip') }
+# create archives and formulas for libarchive
+libarchive_releases = [Release.new('3.1.2', 1), Release.new('3.1.3', 1)].map do |r|
+  r.shasum = { PLATFORM_SYM => create_archive(orig_releases['libarchive'], r, 'libarchive') }
   r
 end
-p7zip_formula = File.join(ORIG_FORMULA_DIR, 'p7zip.rb')
-File.open(File.join(DATA_DIR, 'p7zip-1.rb'), 'w') { |f| f.puts replace_releases(p7zip_formula, p7zip_releases.slice(0, 1)) }
-File.open(File.join(DATA_DIR, 'p7zip-2.rb'), 'w') { |f| f.puts replace_releases(p7zip_formula, p7zip_releases.slice(0, 2)) }
+libarchive_formula = File.join(ORIG_FORMULA_DIR, 'libarchive.rb')
+File.open(File.join(DATA_DIR, 'libarchive-1.rb'), 'w') { |f| f.puts replace_releases(libarchive_formula, libarchive_releases.slice(0, 1)) }
+File.open(File.join(DATA_DIR, 'libarchive-2.rb'), 'w') { |f| f.puts replace_releases(libarchive_formula, libarchive_releases.slice(0, 2)) }
 
 # create archives and formulas for ruby
 ruby_releases = [Release.new('2.2.2', 1), Release.new('2.2.3', 1)].map do |r|
@@ -160,5 +167,14 @@ end
 ruby_formula = File.join(ORIG_FORMULA_DIR, 'ruby.rb')
 File.open(File.join(DATA_DIR, 'ruby-1.rb'), 'w') { |f| f.puts replace_releases(ruby_formula, ruby_releases.slice(0, 1)) }
 File.open(File.join(DATA_DIR, 'ruby-2.rb'), 'w') { |f| f.puts replace_releases(ruby_formula, ruby_releases.slice(0, 2)) }
+
+# create archives and formulas for xz
+xz_releases = [Release.new('5.2.2', 1), Release.new('5.2.3', 1)].map do |r|
+  r.shasum = { PLATFORM_SYM => create_archive(orig_releases['xz'], r, 'xz') }
+  r
+end
+xz_formula = File.join(ORIG_FORMULA_DIR, 'xz.rb')
+File.open(File.join(DATA_DIR, 'xz-1.rb'), 'w') { |f| f.puts replace_releases(xz_formula, xz_releases.slice(0, 1)) }
+File.open(File.join(DATA_DIR, 'xz-2.rb'), 'w') { |f| f.puts replace_releases(xz_formula, xz_releases.slice(0, 2)) }
 
 FileUtils.touch Crew_test::DATA_READY_FILE

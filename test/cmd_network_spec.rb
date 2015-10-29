@@ -18,11 +18,12 @@ describe "Test how Crew works over HTTPS" do
     it "outputs info about only about utilities" do
       crew 'list'
       expect(result).to eq(:ok)
-        expect(out.split("\n")).to eq(["Utilities:",
-                                       " * curl   7.42.0  1",
-                                       " * p7zip  9.20.1  1",
-                                       " * ruby   2.2.2   1",
-                                       "Libraries:"])
+      expect(out.split("\n")).to eq(["Utilities:",
+                                     " * curl        7.42.0  1",
+                                     " * libarchive  3.1.2   1",
+                                     " * ruby        2.2.2   1",
+                                     " * xz          5.2.2   1",
+                                     "Libraries:"])
     end
   end
 
@@ -40,7 +41,7 @@ describe "Test how Crew works over HTTPS" do
   #     oldverbose = $VERBOSE
   #     $VERBOSE = nil
   #     Global::DOWNLOAD_BASE = ENV['CREW_DOWNLOAD_BASE'] = 'https://crew.crystax.net:9876'
-  #     file = 'icu-54.1.7z'
+  #     file = "icu-54.1.#{Global::ARCH_EXT}"
   #     url = File.join(Global::DOWNLOAD_BASE, file)
   #     crew 'install', 'icu'
   #     Global::DOWNLOAD_BASE = ENV['CREW_DOWNLOAD_BASE'] = olddb

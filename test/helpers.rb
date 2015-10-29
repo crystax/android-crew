@@ -130,7 +130,7 @@ module Spec
                else
                  raise "bad archive type #{type}"
                end
-      "#{name}-#{version}_#{cxver}#{suffix}.7z"
+      "#{name}-#{version}_#{cxver}#{suffix}.#{Global::ARCH_EXT}"
     end
 
     def in_cache?(type, name, version, cxver)
