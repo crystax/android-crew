@@ -34,6 +34,10 @@ class Formulary
     formula
   end
 
+  def member?(name)
+    @formulary.member? name
+  end
+
   def select(&block)
     @formulary.select(&block)
   end

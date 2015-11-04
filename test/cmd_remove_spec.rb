@@ -118,7 +118,7 @@ describe "crew remove" do
     it "outputs error message" do
       crew 'remove', 'curl'
       expect(exitstatus).to_not be_zero
-      expect(err.chomp).to eq('error: no available formula for curl')
+      expect(err.chomp).to eq('error: could not remove utility curl')
     end
   end
 end

@@ -25,19 +25,12 @@ class UnknownCommand < UsageError
 end
 
 class FormulaUnavailableError < RuntimeError
+
   attr_reader :name
-  attr_accessor :dependent
 
-  def initialize name
+  def initialize(name)
+    super "no available formula for #{name}"
     @name = name
-  end
-
-  def dependent_s
-    "(dependency of #{dependent})" if dependent and dependent != name
-  end
-
-  def to_s
-    "no available formula for #{name} #{dependent_s}".chomp(' ')
   end
 end
 

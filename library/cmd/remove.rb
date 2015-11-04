@@ -39,5 +39,11 @@ module Crew
         ivers.each { |v| formula.uninstall(v) }
       end
     end
+  rescue FormulaUnavailableError => exc
+    if not Formulary.utilities.member? exc.name
+      raise
+    else
+      raise "could not remove utility #{exc.name}"
+    end
   end
 end
