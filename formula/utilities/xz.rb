@@ -10,6 +10,4 @@ class Xz < Utility
                                                           windows_x86_64: 'c022d9de3c4e258612740f6da35f93b0b502b815f24e7909a632b4f0f9517fa5',
                                                           windows:        '73424dc48553b3f7c59d42ef137b898a2905f2be3c7594841d6ee9617144c802'
                                                          }
-
-  programs 'xz'
 end

@@ -3,14 +3,6 @@ require_relative 'formula.rb'
 
 class Utility < Formula
 
-  def self.programs(*args)
-    if args.size == 0
-      @programs ? @programs : []
-    else
-      @programs = args
-    end
-  end
-
   # formula's ctor marked as 'installed' all releases that are unpacked (resp. dir exixts)
   # but for utilities a release considered 'installed' only if it's version is equal
   # to the one saved in the 'active' file

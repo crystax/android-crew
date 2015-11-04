@@ -46,7 +46,7 @@ NDK_DIR            = Pathname.new(Crew_test::NDK_DIR).realpath.to_s
 
 RELEASE_REGEXP = /^[[:space:]]*release[[:space:]]+version/
 RELEASE_END_REGEXP = /^[[:space:]]+}[[:space:]]*$/
-PROGRAMS_REGEXP = /^[[:space:]]+programs[[:space:]]+'/
+END_REGEXP = /^end/
 
 def replace_releases(formula, releases)
   lines = []
@@ -68,7 +68,7 @@ def replace_releases(formula, releases)
       else
         raise "error in #{fname}: in state '#{state}' unexpected line: #{l}"
       end
-    when PROGRAMS_REGEXP
+    when END_REGEXP
       case state
       when :copy
         releases.each do |r|

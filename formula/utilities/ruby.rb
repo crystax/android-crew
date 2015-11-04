@@ -10,6 +10,4 @@ class Ruby < Utility
                                                           windows_x86_64: 'a6b5dcbad7ae52df16d4e0a09dba659e4659af212d3572fad67917dd22b5b97c',
                                                           windows:        '599f6c41110c96c2b7862e24b4c5a63b96a86ee725a34504f4fb02fcf874bf8a'
                                                         }
-
-  programs 'ruby', 'rspec'
 end

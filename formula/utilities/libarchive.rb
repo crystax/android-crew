@@ -10,6 +10,4 @@ class Libarchive < Utility
                                                           windows_x86_64: '1976ac93938c11a9d0c2ed1dab163218085b4e74c30b27bde84ae583b76c9944',
                                                           windows:        'f3f715d10572f620152810855a8356dbbce75937d3639854ca9c60a0b07396b8'
                                                          }
-
-  programs 'bsdtar'
 end

@@ -10,6 +10,4 @@ class Curl < Utility
                                                            windows_x86_64: '8c00a102c8d7b4c9bd53f8571d34bd167e020431d32e04bd466515c9c4adf0ca',
                                                            windows:        '93054cfcdd952b8c4b3337fab791cf88728a892f4d4d4040d4bffe6c14f4c0a1'
                                                          }
-
-  programs 'curl'
 end
