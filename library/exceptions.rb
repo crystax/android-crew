@@ -1,20 +1,20 @@
 class UsageError < RuntimeError; end
 
 class FormulaUnspecifiedError < UsageError
-  def to_s
-    "this command requires a formula argument"
+  def initialize
+    super "this command requires a formula argument"
   end
 end
 
 class CommandRequresNoArguments < UsageError
-  def to_s
-    "this command requires no arguments"
+  def initialize
+    super "this command requires no arguments"
   end
 end
 
 class CommandRequresOneOrNoArguments < UsageError
-  def to_s
-    "this command requires either one or no arguments"
+  def initialize
+    super "this command requires either one or no arguments"
   end
 end
 
