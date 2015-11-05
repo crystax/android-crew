@@ -84,7 +84,7 @@ describe "crew cleanup" do
     end
   end
 
-  context "when of three formulas one release, two releases and three releases installed" do
+  context "when three formulas has one release, two releases and three releases installed" do
     it "outputs about removing libtwo 1.1.0, libthree 1.1.1 and 2.2.2" do
       copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
       crew_checked 'install', 'libone:1.0.0'
@@ -189,5 +189,69 @@ describe "crew cleanup" do
     end
   end
 
-  # todo: cleaning utilities and libraries at the same time
+  context "when two releases of one library installed and two releases of the curl utility are installed" do
+    it "outputs about removing libtwo 1.1.0 and removing curl 7.42.0:1" do
+      copy_formulas 'libone.rb', 'libtwo.rb'
+      crew_checked 'install', 'libone:1.0.0'
+      crew_checked 'install', 'libtwo:1.1.0'
+      crew_checked 'install', 'libtwo:2.2.0'
+      repository_add_formula :utility, 'curl-3.rb:curl.rb'
+      crew_checked 'update'
+      crew_checked 'upgrade'
+      crew '-b', 'cleanup'
+      expect(result).to eq(:ok)
+      expect(out.split("\n")).to eq(["removing: #{Global::ENGINE_DIR}/curl/7.42.0_1",
+                                     "removing: #{Global::HOLD_DIR}/libtwo/1.1.0",
+                                     "removing: #{Global::CACHE_DIR}/#{archive_name(:library, 'libtwo', '1.1.0', 1)}"
+                                    ])
+      expect(in_cache?(:utility, 'curl', '8.21.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libone', '1.0.0', 1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo', '1.1.0', 1)).to eq(false)
+      expect(in_cache?(:library, 'libtwo', '2.2.0', 1)).to eq(true)
+    end
+  end
+
+  context "when all utilities and all libraries have more than one release installed" do
+    it "says about removing old releases" do
+      repository_clone
+      repository_add_formula :utility, 'curl-2.rb:curl.rb', 'libarchive-2.rb:libarchive.rb', 'ruby-2.rb:ruby.rb', 'xz-2.rb:xz.rb'
+      crew_checked 'update'
+      crew_checked 'upgrade'
+      repository_add_formula :utility, 'curl-3.rb:curl.rb'
+      crew_checked 'update'
+      crew_checked 'upgrade'
+      copy_formulas 'libone.rb', 'libtwo.rb', 'libthree.rb'
+      crew_checked 'install', 'libone:1.0.0'
+      crew_checked 'install', 'libtwo:1.1.0'
+      crew_checked 'install', 'libtwo:2.2.0'
+      crew_checked 'install', 'libthree:1.1.1'
+      crew_checked 'install', 'libthree:2.2.2'
+      crew_checked 'install', 'libthree:3.3.3'
+      crew 'cleanup'
+      expect(result).to eq(:ok)
+      expect(out.split("\n")).to eq(["removing: #{Global::ENGINE_DIR}/curl/7.42.0_1",
+                                     "removing: #{Global::ENGINE_DIR}/curl/7.42.0_3",
+                                     "removing: #{Global::ENGINE_DIR}/libarchive/3.1.2_1",
+                                     "removing: #{Global::ENGINE_DIR}/ruby/2.2.2_1",
+                                     "removing: #{Global::ENGINE_DIR}/xz/5.2.2_1",
+                                     "removing: #{Global::HOLD_DIR}/libthree/1.1.1",
+                                     "removing: #{Global::HOLD_DIR}/libthree/2.2.2",
+                                     "removing: #{Global::HOLD_DIR}/libtwo/1.1.0",
+                                     "removing: #{Global::CACHE_DIR}/curl-7.42.0_3-#{Global::PLATFORM}.#{Global::ARCH_EXT}",
+                                     "removing: #{Global::CACHE_DIR}/libthree-1.1.1_1.#{Global::ARCH_EXT}",
+                                     "removing: #{Global::CACHE_DIR}/libthree-2.2.2_1.#{Global::ARCH_EXT}",
+                                     "removing: #{Global::CACHE_DIR}/libtwo-1.1.0_1.#{Global::ARCH_EXT}"
+                                    ])
+      expect(in_cache?(:utility, 'curl',       '8.21.0', 1)).to eq(true)
+      expect(in_cache?(:utility, 'libarchive', '3.1.3',  1)).to eq(true)
+      expect(in_cache?(:utility, 'ruby',       '2.2.3',  1)).to eq(true)
+      expect(in_cache?(:utility, 'xz',         '5.2.3',  1)).to eq(true)
+      expect(in_cache?(:library, 'libone',     '1.0.0',  1)).to eq(true)
+      expect(in_cache?(:library, 'libtwo',     '1.1.0',  1)).to eq(false)
+      expect(in_cache?(:library, 'libtwo',     '2.2.0',  1)).to eq(true)
+      expect(in_cache?(:library, 'libthree',   '1.1.1',  1)).to eq(false)
+      expect(in_cache?(:library, 'libthree',   '2.2.2',  1)).to eq(false)
+      expect(in_cache?(:library, 'libthree',   '3.3.3',  1)).to eq(true)
+    end
+  end
 end
